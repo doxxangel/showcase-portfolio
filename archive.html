@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOXXANGEL STUDIOS (Archive)</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="dx3.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="dx3.png">
+
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="dx3.png">
+
+  <!-- Directe taal-check om flits te voorkomen -->
+  <script>
+    const savedLangPreference = localStorage.getItem('site_lang') || 'nl';
+    document.documentElement.lang = savedLangPreference;
+  </script>
+
+  <!-- Fonts: Cormorant Garamond & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,300;1,400&family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Tone.js for soft interactive ambient audio -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+
+  <style>
+    :root {
+      --line-thickness: 3px;
+      --line-color: #000000;
+      --col-1: 1.05fr;
+      --col-2: 1.15fr;
+      --row-1: 1.15fr;
+      --row-2: 0.95fr;
+      --row-3: 1.1fr;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-serif-luxury {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+    .font-editorial-nav {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: 0.18em;
+    }
+    .font-sans-clean {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .weight-ultra-thin {
+      font-weight: 200 !important;
+      letter-spacing: 0.08em;
+    }
+    .weight-thin {
+      font-weight: 300 !important;
+      letter-spacing: 0.06em;
+    }
+
+    /* Verticale scheidingslijn conform header */
+    .nav-pipe {
+      width: 2.5px;
+      height: 1.45rem;
+      background-color: #000000;
+      flex-shrink: 0;
+    }
+
+    /* Vaste macOS popovers voor inline woorden */
+    .mac-popover {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: calc(100% + 14px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      transition: opacity 0.16s cubic-bezier(0.16, 1, 0.3, 1), transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+      width: 280px;
+      max-width: calc(100vw - 32px);
+      background: rgba(246, 246, 248, 0.96);
+      backdrop-filter: blur(22px) saturate(190%);
+      -webkit-backdrop-filter: blur(22px) saturate(190%);
+      border: 0.5px solid rgba(0, 0, 0, 0.16);
+      border-radius: 12px;
+      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+      padding: 12px 14px;
+      text-align: left;
+      pointer-events: none;
+    }
+    .mac-popover::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: rgba(246, 246, 248, 0.96) transparent transparent transparent;
+    }
+    @media (min-width: 1024px) {
+      .mac-trigger:hover .mac-popover {
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+    .mac-trigger.popover-open .mac-popover {
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto;
+    }
+
+    /* Muis-volgend Definitiewolkje */
+    #cursorPopover {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 120;
+      width: 270px;
+      pointer-events: none;
+      background: rgba(246, 246, 248, 0.95);
+      backdrop-filter: blur(22px) saturate(190%);
+      -webkit-backdrop-filter: blur(22px) saturate(190%);
+      border: 0.5px solid rgba(0, 0, 0, 0.16);
+      border-radius: 12px;
+      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+      padding: 12px 14px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translate3d(-9999px, -9999px, 0) scale(0.96);
+      transition: opacity 0.15s ease-out, transform 0.06s ease-out;
+      will-change: transform, opacity;
+    }
+    #cursorPopover.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Hamburger icon transition */
+    .burger-line {
+      transition: transform 0.25s ease, opacity 0.2s ease;
+      transform-origin: center;
+    }
+    .menu-open #line-1,
+    .menu-open #mod-line-1 {
+      transform: translateY(5px) rotate(45deg);
+    }
+    .menu-open #line-2,
+    .menu-open #mod-line-2 {
+      opacity: 0;
+    }
+    .menu-open #line-3,
+    .menu-open #mod-line-3 {
+      transform: translateY(-5px) rotate(-45deg);
+    }
+
+    header.menu-active,
+    #module-sticky-header.menu-active {
+      border-bottom-color: transparent !important;
+    }
+
+    /* Scheidingslijnen Grid desktop */
+    @media (min-width: 1024px) {
+      .lg-divider-r::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: var(--line-thickness);
+        height: 100%;
+        background-color: var(--line-color);
+        z-index: 20;
+        pointer-events: none;
+      }
+      .lg-divider-b::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: var(--line-thickness);
+        background-color: var(--line-color);
+        z-index: 20;
+        pointer-events: none;
+      }
+    }
+
+    /* Asymmetrisch Raster op Desktops */
+    @media (min-width: 1024px) {
+      .editorial-grid {
+        grid-template-columns: var(--col-1) var(--col-2);
+        grid-template-rows: var(--row-1) var(--row-2) var(--row-3);
+        transition: grid-template-columns 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                    grid-template-rows 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .editorial-grid.hover-c0-r0 {
+        --col-1: 1.55fr; --col-2: 0.65fr;
+        --row-1: 1.55fr; --row-2: 0.75fr; --row-3: 0.8fr;
+      }
+      .editorial-grid.hover-c1-r0 {
+        --col-1: 0.65fr; --col-2: 1.55fr;
+        --row-1: 1.55fr; --row-2: 0.75fr; --row-3: 0.8fr;
+      }
+      .editorial-grid.hover-c0-r1 {
+        --col-1: 1.55fr; --col-2: 0.65fr;
+        --row-1: 0.8fr; --row-2: 1.55fr; --row-3: 0.8fr;
+      }
+      .editorial-grid.hover-c1-r1 {
+        --col-1: 0.65fr; --col-2: 1.55fr;
+        --row-1: 0.8fr; --row-2: 1.55fr; --row-3: 0.8fr;
+      }
+      .editorial-grid.hover-c0-r2 {
+        --col-1: 1.55fr; --col-2: 0.65fr;
+        --row-1: 0.8fr; --row-2: 0.75fr; --row-3: 1.55fr;
+      }
+      .editorial-grid.hover-c1-r2 {
+        --col-1: 0.65fr; --col-2: 1.55fr;
+        --row-1: 0.8fr; --row-2: 0.75fr; --row-3: 1.55fr;
+      }
+      .editorial-grid.has-hover .grid-cell:not(.is-hovered) .displaced-photo {
+        opacity: 0.25 !important;
+        transform: scale(0.86) !important;
+        filter: blur(1px);
+      }
+      .editorial-grid.has-hover .grid-cell:not(.is-hovered) .displaced-word {
+        opacity: 0.45 !important;
+      }
+    }
+
+    .grid-cell {
+      position: relative;
+      background: transparent;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.4s ease;
+    }
+    .grid-cell.is-hovered {
+      z-index: 40;
+    }
+
+    /* Desktoppositie & offsets EXACT volgens het origineel */
+    @media (min-width: 1024px) {
+      .layer-photo {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .displaced-photo {
+        border: none !important;
+        outline: none !important;
+        transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, filter 0.5s ease;
+        will-change: transform, opacity;
+      }
+      .p-arch   { transform: translate(70px, -40px); }
+      .p-runner { transform: translate(-75px, 65px); }
+      .p-cobble { transform: translate(65px, 75px); }
+      .p-statue { transform: translate(-65px, -45px); }
+      .p-knife  { transform: translate(80px, -35px); }
+      .p-roof   { transform: translate(-70px, -50px); }
+
+      .grid-cell[data-cell="0"]:hover .layer-photo { justify-content: flex-end; padding-right: 4.5rem; }
+      .grid-cell[data-cell="0"]:hover .p-arch { transform: translate(0, 0) scale(1.08); }
+      .grid-cell[data-cell="0"]:hover .layer-typography { max-width: 55%; }
+
+      .grid-cell[data-cell="1"]:hover .layer-photo { justify-content: flex-start; padding-left: 3.5rem; }
+      .grid-cell[data-cell="1"]:hover .p-runner { transform: translate(0, 0) scale(1.06); }
+      .grid-cell[data-cell="1"]:hover .layer-typography { padding-left: 38%; }
+
+      .grid-cell[data-cell="2"]:hover .layer-photo { justify-content: flex-end; padding-right: 3.5rem; }
+      .grid-cell[data-cell="2"]:hover .p-cobble { transform: translate(0, 0) scale(1.08); }
+      .grid-cell[data-cell="2"]:hover .layer-typography { max-width: 50%; }
+
+      .grid-cell[data-cell="3"]:hover .layer-photo { justify-content: flex-start; padding-left: 4.5rem; }
+      .grid-cell[data-cell="3"]:hover .p-statue { transform: translate(0, 0) scale(1.08); }
+      .grid-cell[data-cell="3"]:hover .layer-typography { padding-left: 45%; }
+
+      .grid-cell[data-cell="4"]:hover .layer-photo { justify-content: flex-end; padding-right: 4rem; }
+      .grid-cell[data-cell="4"]:hover .p-knife { transform: translate(0, 0) scale(1.08); }
+      .grid-cell[data-cell="4"]:hover .layer-typography { max-width: 52%; }
+
+      .grid-cell[data-cell="5"]:hover .layer-photo { justify-content: flex-start; padding-left: 4rem; }
+      .grid-cell[data-cell="5"]:hover .p-roof { transform: translate(0, 0) scale(1.08); }
+      .grid-cell[data-cell="5"]:hover .layer-typography { padding-left: 42%; }
+
+      .layer-typography {
+        position: relative;
+        z-index: 35;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        pointer-events: auto;
+        transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .displaced-word {
+        display: inline-block;
+        transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, letter-spacing 0.5s ease;
+        will-change: transform;
+      }
+      .w-date     { transform: translate(-25px, -15px); }
+      .w-stealer  { transform: translate(45px, 20px); }
+      .w-biggirls { transform: translate(50px, -15px); }
+      .w-badge7   { transform: translate(30px, -10px); }
+      .w-scene3   { transform: translate(-30px, 20px); }
+      .w-noway    { transform: translate(-50px, 25px); }
+      .w-knife    { transform: translate(35px, -15px); }
+      .w-enhypen  { transform: translate(35px, -10px); }
+      .w-author   { transform: translate(20px, 10px); }
+
+      .grid-cell:hover .displaced-word {
+        transform: translate(0px, 0px) !important;
+        letter-spacing: 0.12em;
+      }
+    }
+
+    /* Mobiel */
+    @media (max-width: 1023px) {
+      .layer-photo {
+        position: relative;
+        width: 100%;
+        margin-top: 1rem;
+        display: block;
+        opacity: 1 !important;
+        filter: none !important;
+      }
+      .displaced-photo {
+        width: 100% !important;
+        height: 220px !important;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+      }
+      .displaced-photo img {
+        filter: none !important;
+        contrast: 100% !important;
+        object-fit: cover !important;
+      }
+      .layer-typography {
+        position: relative;
+        width: 100%;
+      }
+      .displaced-word {
+        transform: none !important;
+      }
+    }
+
+    .circle-badge-7 {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 9999px;
+      border: 1.5px solid #000000;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: transform 0.4s ease;
+    }
+    @media (min-width: 640px) {
+      .circle-badge-7 {
+        width: 3.5rem;
+        height: 3.5rem;
+        font-size: 0.85rem;
+        border-width: 2px;
+      }
+    }
+    .grid-cell:hover .circle-badge-7 {
+      transform: scale(1.1);
+    }
+
+    /* Video controls & Frosted Glass Play knop */
+    .mac-glass-play-btn {
+      background: rgba(246, 246, 248, 0.95);
+      backdrop-filter: blur(22px) saturate(190%);
+      -webkit-backdrop-filter: blur(22px) saturate(190%);
+      border: 0.5px solid rgba(0, 0, 0, 0.16);
+      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .video-container .center-play-btn {
+      opacity: 1;
+      transform: scale(1);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .video-container.is-playing .center-play-btn {
+      opacity: 0;
+      transform: scale(0.85);
+      pointer-events: none;
+    }
+    .video-container.is-playing:hover .center-play-btn {
+      opacity: 0.95;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    /* Project Module */
+    #projectModuleOverlay {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #projectModuleOverlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #projectModuleContent {
+      transform: translateY(24px) scale(0.99);
+      opacity: 0;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+    }
+    #projectModuleOverlay.active #projectModuleContent {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-white text-black min-h-screen pt-8 md:pt-10 px-8 md:px-14 lg:px-16 selection:bg-black selection:text-white">
+
+  <!-- Muis-volgend Definitiewolkje (alleen desktop hover) -->
+  <div id="cursorPopover" class="hidden lg:block">
+    <div class="flex items-center justify-between mb-1.5 font-sans-clean">
+      <span class="text-[10px] uppercase tracking-widest font-bold text-neutral-500" id="popoverCategory">Project Monograph</span>
+      <span class="text-[10px] text-neutral-400 font-semibold" id="popoverIndex">01 / 06</span>
+    </div>
+    <strong class="block text-sm font-bold text-neutral-900 mb-1 uppercase tracking-wide font-sans-clean" id="popoverTitle">SANRIO CHESS</strong>
+    <p class="text-xs text-neutral-600 leading-relaxed font-sans-clean" id="popoverDescription">3D Sculpting & Character Design.</p>
+    <div class="mt-2.5 pt-2 border-t border-black/10 flex items-center justify-between font-sans-clean">
+      <span class="text-[10px] font-bold tracking-wider text-black uppercase underline underline-offset-2" id="popoverActionText">Klik om te openen ↗</span>
+      <span class="text-[10px] text-neutral-500 font-medium" id="popoverEngine">Blender 3D</span>
+    </div>
+  </div>
+
+  <!-- Notification toast voor audiostatus -->
+  <div 
+    id="toast-msg" 
+    class="fixed bottom-6 right-6 z-50 bg-black text-white text-xs px-4 py-2.5 rounded-lg shadow-xl transition-all duration-300 pointer-events-none flex items-center gap-2 opacity-0 translate-y-2 font-sans-clean"
+  >
+    <i data-lucide="check" id="toast-icon" class="w-3.5 h-3.5 text-emerald-400"></i>
+    <span id="toast-text">Ambient geluid ingeschakeld</span>
+  </div>
+
+  <!-- Bovenste Wrapper (Hoofdpagina) -->
+  <div class="w-full max-w-[1600px] mr-auto">
+
+    <!-- Top Editorial Header -->
+    <header id="main-header" class="w-full mb-16 select-none pr-2 transition-colors duration-200">
+      <div class="flex items-center justify-between font-editorial-nav text-[13px] md:text-sm uppercase font-medium">
+        
+        <!-- Linkerzijde: Navigatie-items gescheiden door pipes -->
+        <div class="flex items-center gap-4 sm:gap-6 flex-wrap">
+          <span class="nav-pipe hidden md:inline-block"></span>
+          <a href="#home" class="tracking-[0.2em] font-semibold text-black hover:opacity-70 transition">
+            DOXXANGEL STUDIOS
+          </a>
+          
+          <!-- Desktop navigatie-items -->
+          <div class="hidden md:flex items-center gap-4 sm:gap-6">
+            <span class="nav-pipe inline-block"></span>
+            <a href="archive.html" class="tracking-[0.2em] text-black font-semibold hover:opacity-60 transition" data-i18n="navArchive">
+              ARCHIVE
+            </a>
+            
+            <span class="nav-pipe inline-block"></span>
+            <a href="info.html" class="tracking-[0.2em] text-black hover:opacity-60 transition" data-i18n="navInfo">
+              INFO
+            </a>
+            
+            <span class="nav-pipe inline-block"></span>
+            <a href="contact.html" class="tracking-[0.2em] text-black hover:opacity-60 transition" data-i18n="navContact">
+              CONTACT
+            </a>
+            
+            <span class="nav-pipe inline-block"></span>
+          </div>
+        </div>
+
+        <!-- Rechterzijde: Taal selector + Hamburger (eerst) + Sound knop (ernaast) -->
+        <div class="flex items-center gap-3.5 tracking-[0.16em] text-[12px] md:text-xs font-semibold">
+          
+          <!-- Taal Toggle -->
+          <div class="flex items-center gap-2">
+            <button id="lang-nl-btn" onclick="setLanguage('nl')" class="text-black transition-colors cursor-pointer font-bold">
+              NL
+            </button>
+            <span class="w-[1.5px] h-3.5 bg-neutral-300"></span>
+            <button id="lang-en-btn" onclick="setLanguage('en')" class="text-neutral-400 hover:text-black transition-colors cursor-pointer font-normal">
+              ENG
+            </button>
+          </div>
+
+          <!-- Mobiele Hamburger knop -->
+          <button 
+            id="mobile-menu-toggle"
+            onclick="toggleMobileMenu()" 
+            aria-label="Toggle Navigation Menu"
+            class="md:hidden flex flex-col justify-center items-center w-7 h-7 gap-[4px] focus:outline-none cursor-pointer"
+          >
+            <span id="line-1" class="burger-line w-[18px] h-[1.5px] bg-black block"></span>
+            <span id="line-2" class="burger-line w-[18px] h-[1.5px] bg-black block"></span>
+            <span id="line-3" class="burger-line w-[18px] h-[1.5px] bg-black block"></span>
+          </button>
+
+          <!-- Rondje Sound Toggle -->
+          <button 
+            id="sound-btn" 
+            onclick="toggleAudio()" 
+            class="hidden md:flex w-7 h-7 rounded-full items-center justify-center bg-neutral-900/80 hover:bg-neutral-900 text-white backdrop-blur-md border border-neutral-700 shadow-sm transition-all duration-200 cursor-pointer active:scale-90"
+            title="Toggle ambient audio"
+          >
+            <i data-lucide="volume-x" id="sound-icon" class="w-3.5 h-3.5 text-neutral-300 transition-transform"></i>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Mobiele Dropdown Navigatie -->
+      <nav 
+        id="mobile-dropdown" 
+        class="hidden md:hidden pt-4 pb-2 font-editorial-nav text-[12px] tracking-[0.2em] uppercase font-medium mt-2 transition-all duration-300"
+      >
+        <div class="flex flex-col space-y-0">
+          <a 
+            href="#home" 
+            onclick="closeMobileMenu()" 
+            class="py-3.5 border-b border-neutral-200 text-black hover:opacity-60 transition-colors block"
+          >
+            DOXXANGEL STUDIOS
+          </a>
+          <a 
+            href="archive.html" 
+            onclick="closeMobileMenu()" 
+            class="py-3.5 border-b border-neutral-200 text-black font-semibold hover:opacity-60 transition-colors block" 
+            data-i18n="navArchive"
+          >
+            ARCHIVE
+          </a>
+          <a 
+            href="info.html" 
+            onclick="closeMobileMenu()" 
+            class="py-3.5 border-b border-neutral-200 text-black hover:opacity-60 transition-colors block" 
+            data-i18n="navInfo"
+          >
+            INFO
+          </a>
+          <a 
+            href="contact.html" 
+            onclick="closeMobileMenu()" 
+            class="py-3.5 text-black hover:opacity-60 transition-colors block" 
+            data-i18n="navContact"
+          >
+            CONTACT
+          </a>
+        </div>
+      </nav>
+
+    </header>
+
+    <!-- Content Header & Description Container -->
+  
+
+  </div>
+
+  <!-- Responsief Raster: Originele Pinterest Foto's & Typografie -->
+  <div class="w-full max-w-[1500px] mx-auto">
+    <main id="posterGrid" class="editorial-grid grid grid-cols-1 lg:grid-cols-2 border-[2px] sm:border-[3px] border-black bg-white">
+      
+      <!-- CELL 0,0: SANRIO CHESS & LP STAND -->
+      <div class="grid-cell lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between"
+           data-cell="0" data-col="0" data-row="0" onclick="openExpandedView(0)" role="button" tabindex="0">
+        <div class="layer-typography">
+          <div class="flex items-center justify-between">
+            <span class="displaced-word w-date font-serif-luxury text-2xl sm:text-4xl lg:text-6xl weight-ultra-thin text-black">
+              01.16.2026
+            </span>
+            <span class="text-[10px] sm:text-xs font-sans-clean tracking-widest text-neutral-800 uppercase font-semibold underline underline-offset-4">
+              BLENDER // 01 ↗
+            </span>
+          </div>
+          <div class="mt-4 lg:mt-auto lg:pt-6">
+            <h2 class="displaced-word w-stealer font-serif-luxury text-3xl sm:text-5xl lg:text-7xl uppercase weight-thin text-black leading-none" data-grid-i18n="cell0Title">
+              SANRIO CHESS
+            </h2>
+            <span class="block text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-600 font-semibold mt-1.5" data-grid-i18n="cell0Subtitle">
+              Kuromi Knight, Cinnamoroll & LP Stand
+            </span>
+          </div>
+        </div>
+        <div class="layer-photo">
+          <div class="displaced-photo p-arch w-full lg:w-56 aspect-[16/9] lg:aspect-[3/4.5] overflow-hidden bg-neutral-100">
+            <img src="https://i.pinimg.com/736x/75/13/27/7513276390ed3eeff2d9f25839318ace.jpg" 
+                 alt="Sanrio Schaak & LP Houder" 
+                 class="w-full h-full object-cover block">
+          </div>
+        </div>
+      </div>
+
+      <!-- CELL 1,0: SOUNDDOG BREDA -->
+      <div class="grid-cell lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between"
+           data-cell="1" data-col="1" data-row="0" onclick="openExpandedView(1)" role="button" tabindex="0">
+        <div class="layer-typography">
+          <div class="flex justify-between items-start">
+            <h2 class="displaced-word w-biggirls font-serif-luxury text-2xl sm:text-4xl lg:text-5xl leading-tight weight-thin text-black" data-grid-i18n="cell1Title">
+              SOUNDDOG<br>
+              <span class="text-xl sm:text-2xl lg:text-3xl weight-ultra-thin">[BREDA]</span>
+            </h2>
+            <div class="displaced-word w-badge7 shrink-0">
+              <div class="circle-badge-7">
+                <span>CMS</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-end mt-4 lg:mt-auto">
+            <span class="font-sans-clean text-[10px] sm:text-xs text-neutral-800 font-semibold tracking-widest uppercase" data-grid-i18n="cell1Chapter">
+              Gothic Magazine // Timetable
+            </span>
+          </div>
+        </div>
+        <div class="layer-photo">
+          <div class="displaced-photo p-runner w-full lg:w-72 aspect-[16/9] lg:aspect-[16/10] overflow-hidden bg-neutral-100">
+            <img src="https://i.pinimg.com/736x/b8/73/30/b873302595741b7ba9321f0d911ca72a.jpg" 
+                 alt="Sound Dog Website" 
+                 class="w-full h-full object-cover block">
+          </div>
+        </div>
+      </div>
+
+      <!-- CELL 0,1: MACOS PORTFOLIO -->
+      <div class="grid-cell lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between"
+           data-cell="2" data-col="0" data-row="1" onclick="openExpandedView(2)" role="button" tabindex="0">
+        <div class="layer-typography">
+          <div>
+            <div class="text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-800 font-semibold mb-1" data-grid-i18n="cell2Scene">
+              macOS Desktop // Audio
+            </div>
+            <span class="text-[9px] sm:text-[11px] font-sans-clean uppercase tracking-wider text-neutral-500" data-grid-i18n="cell2Threshold">
+              Inclusief iPod & Custom Soundtrack
+            </span>
+          </div>
+          <div class="mt-4 lg:mt-auto">
+            <span class="displaced-word w-scene3 font-serif-luxury text-xl sm:text-2xl lg:text-3xl tracking-widest text-black uppercase block weight-thin" data-grid-i18n="cell2Word">
+              SYSTEM DESKTOP
+            </span>
+          </div>
+        </div>
+        <div class="layer-photo">
+          <div class="displaced-photo p-cobble w-full lg:w-64 aspect-[16/9] overflow-hidden bg-neutral-100">
+            <img src="https://i.pinimg.com/736x/5e/60/70/5e60702e8474cf20f7272203af620c0f.jpg" 
+                 alt="macOS Portfolio Website" 
+                 class="w-full h-full object-cover block">
+          </div>
+        </div>
+      </div>
+
+      <!-- CELL 1,1: RPG MAKER GOTHIC HORROR -->
+      <div class="grid-cell lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between"
+           data-cell="3" data-col="1" data-row="1" onclick="openExpandedView(3)" role="button" tabindex="0">
+        <div class="layer-typography text-left lg:text-right">
+          <div>
+            <span class="text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-700 font-semibold block mb-1" data-grid-i18n="cell3Top">
+              RPG Maker // Horror
+            </span>
+          </div>
+          <div class="my-3 lg:my-auto">
+            <h2 class="displaced-word w-noway font-serif-luxury text-4xl sm:text-6xl lg:text-8xl uppercase text-black weight-ultra-thin leading-none" data-grid-i18n="cell3Title">
+              ROOM // HORROR<br>
+              <span class="text-2xl sm:text-4xl lg:text-5xl font-light weight-ultra-thin">[8-BIT]</span>
+            </h2>
+          </div>
+          <div class="text-[10px] sm:text-xs font-sans-clean text-neutral-800 tracking-wider uppercase font-semibold" data-grid-i18n="cell3Bottom">
+            04 // Custom Maps & Characters
+          </div>
+        </div>
+        <div class="layer-photo">
+          <div class="displaced-photo p-statue w-full lg:w-56 aspect-[16/9] lg:aspect-[4/3] overflow-hidden bg-neutral-100">
+            <img src="https://i.pinimg.com/736x/5f/56/ce/5f56ced15deb506f1ec69f26433bb61b.jpg" 
+                 alt="8-Bit Gothic Horror Game" 
+                 class="w-full h-full object-cover block">
+          </div>
+        </div>
+      </div>
+
+      <!-- CELL 0,2: LUNORA // ZEN GARDEN -->
+      <div class="grid-cell lg-divider-r border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between"
+           data-cell="4" data-col="0" data-row="2" onclick="openExpandedView(4)" role="button" tabindex="0">
+        <div class="layer-typography">
+          <div>
+            <h2 class="displaced-word w-knife font-serif-luxury text-3xl sm:text-5xl lg:text-7xl uppercase text-black weight-ultra-thin" data-grid-i18n="cell4Title">
+              LUNORA
+            </h2>
+            <span class="text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-700 font-semibold block mt-1.5" data-grid-i18n="cell4Focus">
+              Unity 3D // Zen Garden & Standbeelden
+            </span>
+          </div>
+        </div>
+        <div class="layer-photo">
+          <div class="displaced-photo p-knife w-full lg:w-52 aspect-[16/9] lg:aspect-[3/4] overflow-hidden bg-neutral-100">
+            <img src="https://i.pinimg.com/736x/a4/05/72/a40572fca98801b5f639cd6fc9039d7b.jpg" 
+                 alt="Unity 3D Zen Garden" 
+                 class="w-full h-full object-cover block">
+          </div>
+        </div>
+      </div>
+
+      <!-- CELL 1,2: POWERPUFF PORTFOLIO GAME -->
+      <div class="grid-cell p-5 sm:p-7 lg:p-10 flex flex-col justify-between"
+           data-cell="5" data-col="1" data-row="2" onclick="openExpandedView(5)" role="button" tabindex="0">
+        <div class="layer-typography">
+          <div class="flex items-start justify-between">
+            <h2 class="displaced-word w-enhypen font-serif-luxury text-3xl sm:text-5xl lg:text-6xl uppercase text-black weight-thin" data-grid-i18n="cell5Title">
+              POWERPUFF
+            </h2>
+            <span class="text-xs font-sans-clean text-neutral-900 font-bold">2D ENGINE</span>
+          </div>
+          <div class="flex justify-start lg:justify-end items-center mt-3 lg:mt-auto">
+            <span class="mac-trigger relative inline-block cursor-pointer" onclick="toggleInlinePopover(event, this)">
+              <span class="displaced-word w-author font-sans-clean text-xs sm:text-base text-black font-semibold tracking-widest lowercase underline underline-offset-4">
+                leeruitkomsten & boeken
+              </span>
+              <span class="mac-popover">
+                <strong class="block text-[11px] font-bold text-neutral-900 mb-0.5 uppercase tracking-wider font-sans-clean" data-grid-i18n="cell5PopTitle">Interactieve Wereld</strong>
+                <span class="block text-[11px] text-neutral-600 leading-snug font-sans-clean" data-grid-i18n="cell5PopDesc">Wandel door het dorp naar school en ontdek de interactieve boeken.</span>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="layer-photo">
+          <div class="displaced-photo p-roof w-full lg:w-56 aspect-[16/9] lg:aspect-[3/4.5] overflow-hidden bg-neutral-100">
+            <img src="https://i.pinimg.com/736x/02/74/1f/02741fd796a24c464d2da3febf11e004.jpg" 
+                 alt="Powerpuff Portfolio Game" 
+                 class="w-full h-full object-cover block">
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="flex flex-wrap items-baseline gap-12 md:gap-36 text-lg md:text-xl font-normal mt-24 mb-12 text-neutral-900 border-t border-neutral-100 pt-8 font-sans-clean">
+      <div>Sep 23, 2026, 3:26:01 PM (e659175)</div>
+      <div>&copy; 2009—2026 DOXXANGEL STUDIOS</div>
+    </footer>
+  </div>
+
+  <!-- =================================================================
+       PROJECT EDITORIAL OVERLAY MODULE
+       ================================================================= -->
+  <div id="projectModuleOverlay" class="fixed inset-0 z-50 overflow-y-auto bg-white">
+    
+    <!-- Top Sticky Navigatie: Links SLUITEN, Rechts HAMBURGER & SOUND -->
+    <div id="module-sticky-header" class="sticky top-0 z-40 bg-white/95 backdrop-blur-md pt-6 sm:pt-8 md:pt-10 px-6 sm:px-8 md:px-14 lg:px-16 pb-4 border-b border-neutral-100 transition-colors duration-200">
+      <div class="w-full flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
+        
+        <!-- Links: Sluiten -->
+        <button onclick="closeExpandedView()" class="flex items-center gap-2 tracking-[0.2em] font-semibold text-black hover:opacity-60 transition cursor-pointer">
+          <span class="text-sm">✕</span>
+          <span data-mod-i18n="btnClose">SLUITEN</span>
+        </button>
+
+        <!-- Rechts: Hamburger Knop (eerst) + Sound Toggle (ernaast) -->
+        <div class="flex items-center gap-3.5 tracking-[0.16em] text-[12px] md:text-xs font-semibold">
+          
+          <!-- Module Hamburger Knop -->
+          <button 
+            id="module-menu-toggle"
+            onclick="toggleModuleDropdownMenu()" 
+            aria-label="Toggle Navigation Menu"
+            class="flex flex-col justify-center items-center w-7 h-7 gap-[4px] focus:outline-none cursor-pointer"
+          >
+            <span id="mod-line-1" class="burger-line w-[18px] h-[1.5px] bg-black block"></span>
+            <span id="mod-line-2" class="burger-line w-[18px] h-[1.5px] bg-black block"></span>
+            <span id="mod-line-3" class="burger-line w-[18px] h-[1.5px] bg-black block"></span>
+          </button>
+
+          <!-- Sound Toggle Knop -->
+          <button 
+            id="mod-sound-btn" 
+            onclick="toggleAudio()" 
+            class="w-7 h-7 rounded-full flex items-center justify-center bg-neutral-900/80 hover:bg-neutral-900 text-white backdrop-blur-md border border-neutral-700 shadow-sm transition-all duration-200 cursor-pointer active:scale-90"
+            title="Toggle ambient audio"
+          >
+            <i data-lucide="volume-x" id="mod-sound-icon" class="w-3.5 h-3.5 text-neutral-300 transition-transform"></i>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Module Navigatie Dropdown -->
+      <nav 
+        id="module-nav-dropdown" 
+        class="hidden pt-4 pb-2 font-editorial-nav text-[12px] tracking-[0.2em] uppercase font-medium mt-2 transition-all duration-300"
+      >
+        <div class="flex flex-col space-y-0">
+          <a 
+            href="#home" 
+            onclick="closeExpandedView(); closeModuleDropdownMenu();" 
+            class="py-3.5 border-b border-neutral-200 text-black hover:opacity-60 transition-colors block"
+          >
+            DOXXANGEL STUDIOS
+          </a>
+          <a 
+            href="archive.html" 
+            onclick="closeExpandedView(); closeModuleDropdownMenu();" 
+            class="py-3.5 border-b border-neutral-200 text-black font-semibold hover:opacity-60 transition-colors block" 
+            data-i18n="navArchive"
+          >
+            ARCHIVE
+          </a>
+          <a 
+            href="info.html" 
+            onclick="closeExpandedView(); closeModuleDropdownMenu();" 
+            class="py-3.5 border-b border-neutral-200 text-black hover:opacity-60 transition-colors block" 
+            data-i18n="navInfo"
+          >
+            INFO
+          </a>
+          <a 
+            href="contact.html" 
+            onclick="closeExpandedView(); closeModuleDropdownMenu();" 
+            class="py-3.5 text-black hover:opacity-60 transition-colors block" 
+            data-i18n="navContact"
+          >
+            CONTACT
+          </a>
+        </div>
+      </nav>
+
+    </div>
+
+    <!-- Hoofdcontainer van het Project -->
+    <div id="projectModuleContent" class="max-w-[1500px] mx-auto px-6 sm:px-8 md:px-14 lg:px-16 pt-6 sm:pt-8 pb-20 sm:pb-28">
+      
+      <!-- BOVENSTE GRID: Titel | Metadata | Beschrijving -->
+      <section class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 pb-12 sm:pb-16 items-start">
+        
+        <div class="md:col-span-4">
+          <h1 class="text-4xl sm:text-5xl lg:text-7xl font-serif-luxury weight-ultra-thin tracking-tight uppercase leading-none text-black m-0 p-0" id="modProjTitle">
+            SANRIO CHESS
+          </h1>
+          <span class="block text-[11px] sm:text-xs font-editorial-nav uppercase tracking-[0.2em] text-neutral-500 font-semibold mt-3 sm:mt-4" id="modProjCat">
+            3D Sculpting & Modeling // 01
+          </span>
+        </div>
+
+        <div class="md:col-span-3 space-y-4 sm:space-y-6 text-xs sm:text-[13px] leading-relaxed font-sans-clean m-0 p-0">
+          <div>
+            <span class="block font-editorial-nav uppercase tracking-widest text-[10px] sm:text-[11px] text-neutral-400 font-semibold mb-1" data-mod-i18n="lblServices">Engine & Tools</span>
+            <div class="font-normal text-neutral-900 whitespace-pre-line leading-relaxed" id="modProjServices">
+              Blender 3D
+              Character Sculpting
+              Product Design
+            </div>
+          </div>
+          <div>
+            <span class="block font-editorial-nav uppercase tracking-widest text-[10px] sm:text-[11px] text-neutral-400 font-semibold mb-1" data-mod-i18n="lblLocation">Discipline</span>
+            <div class="font-normal text-neutral-900" id="modProjLocation">
+              3D Design / Breda
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-5 text-sm sm:text-base md:text-lg leading-[1.66] text-neutral-800 space-y-4 font-sans-clean font-normal m-0 p-0" id="modProjDescription">
+          <!-- Dynamisch geladen -->
+        </div>
+
+      </section>
+
+      <!-- GALERIJ MET MEDIA -->
+      <section class="pt-4">
+        <div id="irregularGalleryGrid" class="space-y-12 sm:space-y-20 md:space-y-24">
+          <!-- Dynamisch opgebouwd via sharedMedia -->
+        </div>
+      </section>
+
+      <!-- ONDERAAN DE PAGINA: VORIG EN VOLGEND PROJECT -->
+      <section class="mt-16 sm:mt-28 pt-8 font-editorial-nav text-xs sm:text-sm uppercase font-semibold border-t border-neutral-100">
+        <div class="w-full flex items-center justify-between select-none">
+          <button onclick="prevSection()" class="flex items-center gap-2 hover:opacity-60 transition cursor-pointer group text-black tracking-[0.16em] sm:tracking-[0.2em]">
+            <span class="group-hover:-translate-x-1 transition-transform">←</span>
+            <span data-mod-i18n="btnPrev">VORIG PROJECT</span>
+          </button>
+
+          <span class="text-neutral-300">•</span>
+
+          <button onclick="nextSection()" class="flex items-center gap-2 hover:opacity-60 transition cursor-pointer group text-black tracking-[0.16em] sm:tracking-[0.2em]">
+            <span data-mod-i18n="btnNext">VOLGEND PROJECT</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. GEDEELDE MEDIABIBLIOTHEEK (ALLES VIA DE MAP 'images/')
+       ========================================================================== */
+    const sharedMedia = {
+      0: [ // SANRIO CHESS & LP STAND (Blender)
+        {
+          type: "split-1-2",
+          left: { 
+            type: "image", 
+            url: "images/Scherm­afbeelding 2026-10-08 om 13.45.56.jpg", 
+            caption: "(01) 3D Model van klasgenoot & Custom LP Houder" 
+          },
+          right: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=80", 
+            caption: "(02) Sanrio Schaakstukken // Kuromi Knight & Cinnamoroll King" 
+          }
+        }
+      ],
+      1: [ // SOUNDDOG BREDA (5 FOTO'S)
+        {
+          type: "split-1-2",
+          left: { 
+            type: "image", 
+            url: "images/sounddog event screen.jpg", 
+            caption: "(01) Sound Dog Breda // Gothic Magazine Homepage" 
+          },
+          right: { 
+            type: "image", 
+            url: "images/sounddog event screen 2.jpg", 
+            caption: "(02) SMS Achtergrond // Filterbare Timetable" 
+          }
+        },
+        {
+          type: "fullwidth",
+          media: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1600&q=80", 
+            caption: "(03) Concertzaal Sfeer & Live Fotogalerij" 
+          }
+        },
+        {
+          type: "split-2-1",
+          left: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1600&q=80", 
+            caption: "(04) Programmering & Artist Lineup Detail" 
+          },
+          right: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80", 
+            caption: "(05) Oefenruimtes & Tarieven Beheer" 
+          }
+        }
+      ],
+      2: [ // MACOS PORTFOLIO (1 VIDEO + 4 FOTO'S)
+        {
+          type: "split-2-1",
+          left: { 
+            type: "video", 
+            url: "images/Schermopname 2026-10-08 om 12.56.13.mov", 
+            poster: "images/macos start.jpg",
+            caption: "(01) macOS Portfolio // Interactieve Opname & Audio" 
+          },
+          right: { 
+            type: "image", 
+            url: "images/macos index.jpg", 
+            caption: "(02) Desktop Interface & Vintage Widgets" 
+          }
+        },
+        {
+          type: "split-1-2",
+          left: { 
+            type: "image", 
+            url: "images/macos message.jpg", 
+            caption: "(03) iPod Mini Player & Soundtrack Detail" 
+          },
+          right: { 
+            type: "image", 
+            url: "images/macos project.jpg", 
+            caption: "(04) Berichtenvenster & Notities" 
+          }
+        },
+        {
+          type: "fullwidth",
+          media: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80", 
+            caption: "(05) Sfeervol Bureaublad Landschap & Typografie" 
+          }
+        }
+      ],
+      3: [ // RPG MAKER GOTHIC HORROR
+        {
+          type: "split-1-2",
+          left: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80", 
+            caption: "(01) 8-Bit Gothic Horror // Eigen Kamer als Map" 
+          },
+          right: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80", 
+            caption: "(02) Custom Character Sprites & Atmosfeer" 
+          }
+        }
+      ],
+      4: [ // LUNORA // ZEN GARDEN (Unity 3D)
+        {
+          type: "split-2-1",
+          left: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=80", 
+            caption: "(01) Lunora Zen Garden // Paarse Sfeerverlichting & Kaarsen" 
+          },
+          right: { 
+            type: "image", 
+            url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80", 
+            caption: "(02) Klassieke Standbeelden & Virtuele Rust" 
+          }
+        }
+      ],
+      5: [ // POWERPUFF PORTFOLIO GAME (2 VIDEO'S + 1 FOTO)
+        {
+          type: "fullwidth",
+          media: { 
+            type: "video", 
+            url: "images/Schermopname 2026-10-08 om 13.09.49.mov", 
+            poster: "images/powerpuff home screen .jpg",
+            caption: "(01) Powerpuff Game // Gameplay & Wandeling naar School" 
+          }
+        },
+        {
+          type: "split-1-2",
+          left: { 
+            type: "video", 
+            url: "images/Schermopname 2026-10-08 om 13.09.49.mov", 
+            poster: "images/powerpuff home screen .jpg",
+            caption: "(02) Boeken & Leeruitkomsten Showcase" 
+          },
+          right: { 
+            type: "image", 
+            url: "images/powerpuff home screen .jpg", 
+            caption: "(03) 2D Pixel Art Wereld & Karakterontwerp" 
+          }
+        }
+      ]
+    };
+
+    /* ==========================================================================
+       2. PROJECTTEKSTEN & VERTALINGEN
+       ========================================================================== */
+    const sectionsData = {
+      nl: [
+        {
+          id: 0,
+          title: "SANRIO CHESS",
+          category: "ARCHIEF 01: 3D MODELLING",
+          indexStr: "01 / 06",
+          services: "Blender 3D\nCharacter Design\nProduct Sculpting",
+          location: "Blender // Breda",
+          description: [
+            "Voor dit 3D-project heb ik een unieke set schaakstukken ontworpen gebaseerd op bekende Sanrio karakters. Zo werd onder andere een Kuromi Knight gemodelleerd en een Cinnamoroll King, waarbij schattige esthetiek gecombineerd werd met strakke 3D geometrie.",
+            "Daarnaast heb ik binnen hetzelfde traject een 3D-model gemaakt van mijn klasgenoot, die een grote passie heeft voor vinyl en LP's. Speciaal voor hem ontwierp ik een custom 3D LP-houder die perfect aansluit bij zijn muzikale identiteit."
+          ],
+          popoverSummary: "Kuromi Knight, Cinnamoroll King & een gepersonaliseerde 3D LP-houder gemodelleerd in Blender.",
+          engineTag: "Blender 3D",
+          tonePitch: "C4"
+        },
+        {
+          id: 1,
+          title: "SOUNDDOG BREDA",
+          category: "ARCHIEF 02: WEB & CMS",
+          indexStr: "02 / 06",
+          services: "Web Design & Development\nCMS & SMS Integratie\nGothic Magazine Styling",
+          location: "Live Web // Breda",
+          description: [
+            "Een op maat gemaakt webplatform ontworpen voor live muzieklocatie Sound Dog in Breda. De site heeft een uitgesproken gothic magazine stijl die perfect past bij het rauwe, authentieke karakter van de zaal.",
+            "Het platform beschikt over een eenvoudig beheersysteem (CMS/SMS-achtergrond) waarmee de crew zelf gemakkelijk de concertplanning kan posten, optredens kan wijzigen, foto's kan uploaden en zaalhuur-tarieven kan aanpassen."
+          ],
+          popoverSummary: "Gothic magazine stijl website voor Sound Dog Breda inclusief planning en beheerpaneel.",
+          engineTag: "Web // CMS",
+          tonePitch: "E4"
+        },
+        {
+          id: 2,
+          title: "MACOS PORTFOLIO",
+          category: "ARCHIEF 03: INTERACTION",
+          indexStr: "03 / 06",
+          services: "Operating System UI\nAmbient Audio Design\nInteractief Prototyping",
+          location: "Interactive Desktop",
+          description: [
+            "In plaats van een traditionele scrollende website is dit portfolio vormgegeven als een complete macOS desktop omgeving. Bezoekers hebben het gevoel dat ze rechtstreeks in mijn computer navigeren via vensters, iconen en mappen.",
+            "De interactieve ervaring is verrijkt met een zelf gecomponeerde soundtrack die kan worden afgespeeld via een nostalgische iPod-widget op het bureaublad, wat zorgt voor een immersieve, tactiele sfeer."
+          ],
+          popoverSummary: "Een portfolio vermomd als macOS desktop met interactieve vensters en zelfgemaakte muziek.",
+          engineTag: "macOS Engine",
+          tonePitch: "G4"
+        },
+        {
+          id: 3,
+          title: "ROOM // HORROR",
+          category: "ARCHIEF 04: GAME DESIGN",
+          indexStr: "04 / 06",
+          services: "RPG Maker\n8-Bit Pixel Art\nNarratieve Gotische Horror",
+          location: "RPG Maker",
+          description: [
+            "Een sfeervolle 8-bit gotische horror game ontwikkeld in RPG Maker. Het concept vertrekt vanuit een intieme setting: de levels en maps zijn direct gemodelleerd naar mijn eigen kamer en leefomgeving.",
+            "Door herkenbare alledaagse ruimtes te combineren met gotische spanning, custom sprite-designs en donkere pixel-art ontstaat een beklemmende en persoonlijke spelervaring."
+          ],
+          popoverSummary: "Gotische 8-bit horror game gemaakt in RPG Maker met levels gebaseerd op mijn eigen kamer.",
+          engineTag: "RPG Maker",
+          tonePitch: "A4"
+        },
+        {
+          id: 4,
+          title: "LUNORA GARDEN",
+          category: "ARCHIEF 05: 3D WORLD",
+          indexStr: "05 / 06",
+          services: "Unity 3D Engine\nOmgevingsontwerp\nSelf-Care App Concept",
+          location: "Unity 3D",
+          description: [
+            "Een kalmerende virtuele Zen Garden ontworpen voor Lunora, een hypothetische self-care en wellness applicatie. Het doel was om de gebruiker onder te dompelen in een rustgevende, dromerige 3D-wereld.",
+            "De tuin heeft een kenmerkend paars kleurenpalet en is opgebouwd met klassieke marmeren standbeelden, zacht kaarslicht, kabbelend water en serene wandelpaden voor ontspanning en mindfulness."
+          ],
+          popoverSummary: "Rustgevende paarse 3D Zen Garden in Unity voor de hypothetische self-care app Lunora.",
+          engineTag: "Unity 3D",
+          tonePitch: "B4"
+        },
+        {
+          id: 5,
+          title: "POWERPUFF RPG",
+          category: "ARCHIEF 06: GAME PORTFOLIO",
+          indexStr: "06 / 06",
+          services: "2D Game Development\nGamified Portfolio\nKarakteranimatie",
+          location: "Playable Web Game",
+          description: [
+            "Een speelbare portfolio-website vermomd als een retro 2D avonturengame in Powerpuff-stijl. De bezoeker bestuurt mijn gepixelde avatar die zich verplaatst tussen huis, de supermarkt en school.",
+            "Onderweg ontdek je interactieve boeken waarin docenten en beoordelaars mijn officiële leeruitkomsten en projectdocumentatie op een speelse, memorabele manier konden lezen."
+          ],
+          popoverSummary: "Gamified portfolio waarin je door een interactieve 2D-wereld loopt en leeruitkomsten leest via boeken.",
+          engineTag: "2D Game Engine",
+          tonePitch: "C5"
+        }
+      ],
+      en: [
+        {
+          id: 0,
+          title: "SANRIO CHESS",
+          category: "ARCHIVE 01: 3D MODELLING",
+          indexStr: "01 / 06",
+          services: "Blender 3D\nCharacter Design\nProduct Sculpting",
+          location: "Blender // Breda",
+          description: [
+            "For this 3D sculpting assignment, I designed a bespoke chess set utilizing iconic Sanrio characters. The project featured custom sculpts including a Kuromi Knight and a Cinnamoroll King, harmonizing cute aesthetics with clean 3D geometry.",
+            "Additionally, I created a full 3D sculpt of my classmate who is deeply passionate about vinyl records. As a personalized piece, I designed and modeled a custom vinyl LP stand tailored to his style."
+          ],
+          popoverSummary: "Kuromi Knight, Cinnamoroll King & a personalized 3D LP record stand created in Blender.",
+          engineTag: "Blender 3D",
+          tonePitch: "C4"
+        },
+        {
+          id: 1,
+          title: "SOUNDDOG BREDA",
+          category: "ARCHIVE 02: WEB & CMS",
+          indexStr: "02 / 06",
+          services: "Web Design & Development\nCMS & Admin Architecture\nGothic Magazine Styling",
+          location: "Live Web // Breda",
+          description: [
+            "A tailored web platform developed for live music venue Sound Dog in Breda. The visual identity embraces a gothic magazine editorial look that reflects the underground, authentic energy of the venue.",
+            "The site includes a clean content management background allowing the crew to effortlessly post concert schedules, update show listings, upload live photographs, and modify rehearsal studio booking rates."
+          ],
+          popoverSummary: "Gothic magazine style website for Sound Dog Breda with concert scheduling and admin CMS.",
+          engineTag: "Web // CMS",
+          tonePitch: "E4"
+        },
+        {
+          id: 2,
+          title: "MACOS PORTFOLIO",
+          category: "ARCHIVE 03: INTERACTION",
+          indexStr: "03 / 06",
+          services: "Operating System UI\nAmbient Audio Design\nInteractive Prototyping",
+          location: "Interactive Desktop",
+          description: [
+            "Rather than a standard scrolling page, this portfolio is built as a complete macOS desktop experience. Visitors interact directly with desktop folders, finder windows, and app icons as if operating inside a personal computer.",
+            "The project includes an original self-composed soundtrack embedded inside a nostalgic desktop iPod widget, crafting a tactile and atmospheric digital environment."
+          ],
+          popoverSummary: "An interactive portfolio structured like a macOS desktop with custom sound and an iPod player.",
+          engineTag: "macOS Engine",
+          tonePitch: "G4"
+        },
+        {
+          id: 3,
+          title: "ROOM // HORROR",
+          category: "ARCHIVE 04: GAME DESIGN",
+          indexStr: "04 / 06",
+          services: "RPG Maker\n8-Bit Pixel Art\nNarrative Gothic Horror",
+          location: "RPG Maker",
+          description: [
+            "An atmospheric 8-bit gothic horror game developed in RPG Maker. The environment was directly drafted from my own personal room and familiar everyday spaces to build an intimate sense of unease.",
+            "By juxtaposing comforting surroundings with eerie gothic storytelling, custom pixel character sprites, and dark ambient sound, the game constructs an eerie and personal narrative."
+          ],
+          popoverSummary: "Gothic 8-bit horror game developed in RPG Maker with maps designed after my personal room.",
+          engineTag: "RPG Maker",
+          tonePitch: "A4"
+        },
+        {
+          id: 4,
+          title: "LUNORA GARDEN",
+          category: "ARCHIVE 05: 3D WORLD",
+          indexStr: "05 / 06",
+          services: "Unity 3D Engine\nEnvironment Design\nSelf-Care App Concept",
+          location: "Unity 3D",
+          description: [
+            "A tranquil virtual Zen Garden created for Lunora, a conceptual self-care and mental wellness app. The environment invites users into an ethereal, calming 3D refuge.",
+            "Bathed in a soothing violet light, the garden features classical statues, flickering candles, quiet water features, and classical architectural elements tailored for relaxation."
+          ],
+          popoverSummary: "A calming violet 3D Zen Garden built in Unity for the hypothetical self-care app Lunora.",
+          engineTag: "Unity 3D",
+          tonePitch: "B4"
+        },
+        {
+          id: 5,
+          title: "POWERPUFF RPG",
+          category: "ARCHIVE 06: GAME PORTFOLIO",
+          indexStr: "06 / 06",
+          services: "2D Game Development\nGamified Portfolio\nCharacter Animation",
+          location: "Playable Web Game",
+          description: [
+            "A gamified portfolio experience styled like a nostalgic 2D Powerpuff adventure. Players control my pixel avatar roaming through town between school, groceries, and home.",
+            "Scattered across the map are interactive books where teachers and reviewers can examine my semester learning outcomes and design processes directly inside the game."
+          ],
+          popoverSummary: "A playable 2D game portfolio where professors explore my learning outcomes through interactive books.",
+          engineTag: "2D Game Engine",
+          tonePitch: "C5"
+        }
+      ]
+    };
+
+    const translations = {
+      nl: {
+        pageTitle: "(Archive)",
+        navArchive: "ARCHIVE",
+        navInfo: "INFO",
+        navContact: "CONTACT",
+        mainTitle: "ARCHIVE",
+        introHTML: `
+          <p>
+            Gecureerde visuele sequenties en 
+            <span class="mac-trigger relative inline-block cursor-pointer underline underline-offset-4 decoration-[1.5px]" onmouseenter="playHoverSound(392)" onclick="toggleInlinePopover(event, this)">
+              projectmonografieën
+              <span class="mac-popover">
+                <strong class="block text-xs font-bold text-neutral-900 mb-1 uppercase tracking-wider font-sans-clean">Projecten</strong>
+                <span class="block text-xs text-neutral-600 leading-relaxed font-sans-clean">Een collectie van 3D modellen, interactieve engines, games en redactioneel webdesign.</span>
+              </span>
+            </span> 
+            die ruimtelijke spanning, interactie en digitale esthetiek tonen. Selecteer een 
+            <span class="mac-trigger relative inline-block cursor-pointer underline underline-offset-4 decoration-[1.5px]" onmouseenter="playHoverSound(440)" onclick="toggleInlinePopover(event, this)">
+              module hieronder.
+              <span class="mac-popover">
+                <strong class="block text-xs font-bold text-neutral-900 mb-1 uppercase tracking-wider font-sans-clean">Interactief Raster</strong>
+                <span class="block text-xs text-neutral-600 leading-relaxed font-sans-clean">Klik op een tegel om de uitgebreide galerij en beschrijving te openen.</span>
+              </span>
+            </span> 
+          </p>
+        `,
+        popoverAction: "Klik om te openen ↗",
+        toastAudioOn: "Ambient geluid ingeschakeld",
+        toastAudioOff: "Audio uitgeschakeld",
+        grid: {
+          cell0Title: "SANRIO CHESS",
+          cell0Subtitle: "Kuromi Knight, Cinnamoroll & LP Stand",
+          cell1Title: "SOUNDDOG<br><span class=\"text-xl sm:text-2xl lg:text-3xl weight-ultra-thin\">[BREDA]</span>",
+          cell1Chapter: "Gothic Magazine // Timetable",
+          cell2Scene: "macOS Desktop // Audio",
+          cell2Threshold: "Inclusief iPod & Custom Soundtrack",
+          cell2Word: "SYSTEM DESKTOP",
+          cell3Top: "RPG Maker // Horror",
+          cell3Title: "ROOM // HORROR<br><span class=\"text-2xl sm:text-4xl lg:text-5xl font-light weight-ultra-thin\">[8-BIT]</span>",
+          cell3Bottom: "04 // Custom Maps & Characters",
+          cell4Title: "LUNORA",
+          cell4Focus: "Unity 3D // Zen Garden & Standbeelden",
+          cell5Title: "POWERPUFF",
+          cell5PopTitle: "Interactieve Wereld",
+          cell5PopDesc: "Wandel door het dorp naar school en ontdek de interactieve boeken."
+        },
+        module: {
+          btnClose: "SLUITEN",
+          btnPrev: "VORIG PROJECT",
+          btnNext: "VOLGEND PROJECT",
+          lblServices: "Engine & Tools",
+          lblLocation: "Discipline"
+        }
+      },
+      en: {
+        pageTitle: "(Archive)",
+        navArchive: "ARCHIVE",
+        navInfo: "INFO",
+        navContact: "CONTACT",
+        mainTitle: "ARCHIVE",
+        introHTML: `
+          <p>
+            Curated visual sequences and 
+            <span class="mac-trigger relative inline-block cursor-pointer underline underline-offset-4 decoration-[1.5px]" onmouseenter="playHoverSound(392)" onclick="toggleInlinePopover(event, this)">
+              project monographs
+              <span class="mac-popover">
+                <strong class="block text-xs font-bold text-neutral-900 mb-1 uppercase tracking-wider font-sans-clean">Monographs</strong>
+                <span class="block text-xs text-neutral-600 leading-relaxed font-sans-clean">A collection of 3D modeling, interactive OS prototypes, games, and web design.</span>
+              </span>
+            </span> 
+            documenting spatial pacing, interactivity, and digital style. Select any 
+            <span class="mac-trigger relative inline-block cursor-pointer underline underline-offset-4 decoration-[1.5px]" onmouseenter="playHoverSound(440)" onclick="toggleInlinePopover(event, this)">
+              module below.
+              <span class="mac-popover">
+                <strong class="block text-xs font-bold text-neutral-900 mb-1 uppercase tracking-wider font-sans-clean">Interactive Grid</strong>
+                <span class="block text-xs text-neutral-600 leading-relaxed font-sans-clean">Click on any section to open the extended gallery and project documentation.</span>
+              </span>
+            </span> 
+          </p>
+        `,
+        popoverAction: "Click to open ↗",
+        toastAudioOn: "Ambient audio enabled",
+        toastAudioOff: "Audio muted",
+        grid: {
+          cell0Title: "SANRIO CHESS",
+          cell0Subtitle: "Kuromi Knight, Cinnamoroll & LP Stand",
+          cell1Title: "SOUNDDOG<br><span class=\"text-xl sm:text-2xl lg:text-3xl weight-ultra-thin\">[BREDA]</span>",
+          cell1Chapter: "Gothic Magazine // Timetable",
+          cell2Scene: "macOS Desktop // Audio",
+          cell2Threshold: "Featuring iPod & Custom Track",
+          cell2Word: "SYSTEM DESKTOP",
+          cell3Top: "RPG Maker // Horror",
+          cell3Title: "ROOM // HORROR<br><span class=\"text-2xl sm:text-4xl lg:text-5xl font-light weight-ultra-thin\">[8-BIT]</span>",
+          cell3Bottom: "04 // Custom Maps & Characters",
+          cell4Title: "LUNORA",
+          cell4Focus: "Unity 3D // Zen Garden & Statues",
+          cell5Title: "POWERPUFF",
+          cell5PopTitle: "Interactive World",
+          cell5PopDesc: "Roam across town to school and inspect hidden outcome books."
+        },
+        module: {
+          btnClose: "CLOSE",
+          btnPrev: "PREVIOUS PROJECT",
+          btnNext: "NEXT PROJECT",
+          lblServices: "Engine & Tools",
+          lblLocation: "Discipline"
+        }
+      }
+    };
+
+    let currentLang = "nl";
+
+    /* ==========================================================================
+       3. TONE.JS AMBIENT AUDIO ENGINE
+       ========================================================================== */
+    const isMobile = window.innerWidth < 768;
+    let audioActive = isMobile ? true : false;
+    let polySynth = null;
+
+    function getSynth() {
+      if (!polySynth && typeof Tone !== "undefined") {
+        try {
+          polySynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "sine" },
+            envelope: { attack: 0.01, decay: 0.25, sustain: 0.05, release: 0.8 }
+          }).toDestination();
+          polySynth.volume.value = -14;
+        } catch (e) {
+          console.warn("Audio init warning:", e);
+        }
+      }
+      return polySynth;
+    }
+
+    async function unlockAudio() {
+      if (typeof Tone === "undefined") return;
+      try {
+        if (Tone.context.state !== "running") {
+          await Tone.start();
+        }
+        getSynth();
+      } catch (err) {
+        console.warn("Tone unlock error:", err);
+      }
+    }
+
+    window.addEventListener("pointerdown", unlockAudio, { passive: true });
+    window.addEventListener("touchstart", unlockAudio, { passive: true });
+    window.addEventListener("click", unlockAudio, { passive: true });
+
+    async function toggleAudio() {
+      const dict = translations[currentLang];
+      const soundBtn = document.getElementById('sound-btn');
+      const icon = document.getElementById('sound-icon');
+      const modSoundBtn = document.getElementById('mod-sound-btn');
+      const modIcon = document.getElementById('mod-sound-icon');
+
+      await unlockAudio();
+
+      if (!audioActive) {
+        audioActive = true;
+        
+        [soundBtn, modSoundBtn].forEach(b => {
+          if (b) {
+            b.classList.add('border-neutral-500', 'bg-neutral-700');
+            b.classList.remove('bg-neutral-900/80');
+          }
+        });
+
+        [icon, modIcon].forEach(i => {
+          if (i) {
+            i.setAttribute('data-lucide', 'volume-2');
+            i.classList.remove('text-neutral-300');
+            i.classList.add('text-white');
+          }
+        });
+
+        lucide.createIcons();
+        playChord(["C5", "G5"]);
+        showToast(dict.toastAudioOn);
+      } else {
+        audioActive = false;
+        
+        [soundBtn, modSoundBtn].forEach(b => {
+          if (b) {
+            b.classList.remove('border-neutral-500', 'bg-neutral-700');
+            b.classList.add('bg-neutral-900/80');
+          }
+        });
+
+        [icon, modIcon].forEach(i => {
+          if (i) {
+            i.setAttribute('data-lucide', 'volume-x');
+            i.classList.remove('text-white');
+            i.classList.add('text-neutral-300');
+          }
+        });
+
+        lucide.createIcons();
+        showToast(dict.toastAudioOff);
+      }
+    }
+
+    function playHoverSound(noteOrFreq) {
+      if (!audioActive) return;
+      unlockAudio();
+      const synth = getSynth();
+      if (!synth) return;
+      try {
+        synth.triggerAttackRelease(noteOrFreq, "16n", undefined, 0.25);
+      } catch (e) {}
+    }
+
+    function playChord(notes) {
+      if (!audioActive) return;
+      unlockAudio();
+      const synth = getSynth();
+      if (!synth) return;
+      try {
+        synth.triggerAttackRelease(notes, "8n");
+      } catch (e) {}
+    }
+
+    /* ==========================================================================
+       4. INLINE WOORD-POPOVERS
+       ========================================================================== */
+    function toggleInlinePopover(e, triggerEl) {
+      e.stopPropagation();
+      const isOpen = triggerEl.classList.contains('popover-open');
+      closeAllPopovers();
+
+      if (!isOpen) {
+        triggerEl.classList.add('popover-open');
+        adjustPopoverBounds(triggerEl);
+        playHoverSound(440);
+      }
+    }
+
+    function closeAllPopovers() {
+      document.querySelectorAll('.mac-trigger').forEach(el => {
+        el.classList.remove('popover-open');
+        const pop = el.querySelector('.mac-popover');
+        if (pop) {
+          pop.style.left = '50%';
+          pop.style.transform = 'translateX(-50%) translateY(4px)';
+        }
+      });
+      if (cursorPopover) cursorPopover.classList.remove('active');
+    }
+
+    function adjustPopoverBounds(triggerEl) {
+      const popover = triggerEl.querySelector('.mac-popover');
+      if (!popover) return;
+
+      popover.style.left = '50%';
+      popover.style.transform = 'translateX(-50%) translateY(0)';
+      
+      const rect = popover.getBoundingClientRect();
+      const margin = 12;
+
+      if (rect.left < margin) {
+        const offset = margin - rect.left;
+        popover.style.transform = `translateX(calc(-50% + ${offset}px)) translateY(0)`;
+      } else if (rect.right > window.innerWidth - margin) {
+        const offset = rect.right - (window.innerWidth - margin);
+        popover.style.transform = `translateX(calc(-50% - ${offset}px)) translateY(0)`;
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.mac-trigger')) {
+        closeAllPopovers();
+      }
+    });
+
+    window.addEventListener('scroll', () => {
+      closeAllPopovers();
+    }, { passive: true });
+
+    /* ==========================================================================
+       5. DESKTOP CURSOR POPOVER
+       ========================================================================== */
+    const cursorPopover = document.getElementById('cursorPopover');
+    const posterGrid = document.getElementById('posterGrid');
+    const cells = document.querySelectorAll('.grid-cell');
+
+    function updateCursorPosition(e) {
+      if (window.innerWidth < 1024) return;
+      const popoverWidth = 270;
+      const popoverHeight = 125;
+      const padding = 16;
+      let x = e.clientX + padding;
+      let y = e.clientY + padding;
+
+      if (x + popoverWidth > window.innerWidth - padding) {
+        x = e.clientX - popoverWidth - padding;
+      }
+      if (y + popoverHeight > window.innerHeight - padding) {
+        y = e.clientY - popoverHeight - padding;
+      }
+      cursorPopover.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
+
+    cells.forEach(cell => {
+      const col = cell.getAttribute('data-col');
+      const row = cell.getAttribute('data-row');
+      const hoverClass = `hover-c${col}-r${row}`;
+      const cellIdx = parseInt(cell.getAttribute('data-cell'), 10);
+
+      cell.addEventListener('mouseenter', (e) => {
+        if (window.innerWidth < 1024) return;
+        const list = sectionsData[currentLang] || sectionsData.nl;
+        const data = list[cellIdx] || list[0];
+        posterGrid.classList.add('has-hover', hoverClass);
+        cell.classList.add('is-hovered');
+
+        document.getElementById('popoverCategory').textContent = data.category;
+        document.getElementById('popoverIndex').textContent = data.indexStr;
+        document.getElementById('popoverTitle').textContent = data.title;
+        document.getElementById('popoverDescription').textContent = data.popoverSummary;
+        document.getElementById('popoverEngine').textContent = data.engineTag || "Digital";
+
+        updateCursorPosition(e);
+        cursorPopover.classList.add('active');
+        playHoverSound(data.tonePitch);
+      });
+
+      cell.addEventListener('mousemove', (e) => updateCursorPosition(e));
+
+      cell.addEventListener('mouseleave', () => {
+        if (window.innerWidth < 1024) return;
+        posterGrid.classList.remove('has-hover', hoverClass);
+        cell.classList.remove('is-hovered');
+        cursorPopover.classList.remove('active');
+      });
+    });
+
+    /* ==========================================================================
+       6. MOBIELE MENUS
+       ========================================================================== */
+    function toggleMobileMenu() {
+      playHoverSound(523);
+      const menu = document.getElementById('mobile-dropdown');
+      const btn = document.getElementById('mobile-menu-toggle');
+      const header = document.getElementById('main-header');
+      const isOpen = !menu.classList.contains('hidden');
+
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        menu.classList.remove('hidden');
+        btn.classList.add('menu-open');
+        if (header) header.classList.add('menu-active');
+      }
+    }
+
+    function closeMobileMenu() {
+      const menu = document.getElementById('mobile-dropdown');
+      const btn = document.getElementById('mobile-menu-toggle');
+      const header = document.getElementById('main-header');
+      if (menu) menu.classList.add('hidden');
+      if (btn) btn.classList.remove('menu-open');
+      if (header) header.classList.remove('menu-active');
+    }
+
+    function toggleModuleDropdownMenu() {
+      playHoverSound(523);
+      const menu = document.getElementById('module-nav-dropdown');
+      const btn = document.getElementById('module-menu-toggle');
+      const header = document.getElementById('module-sticky-header');
+      const isOpen = !menu.classList.contains('hidden');
+
+      if (isOpen) {
+        closeModuleDropdownMenu();
+      } else {
+        menu.classList.remove('hidden');
+        btn.classList.add('menu-open');
+        if (header) header.classList.add('menu-active');
+      }
+    }
+
+    function closeModuleDropdownMenu() {
+      const menu = document.getElementById('module-nav-dropdown');
+      const btn = document.getElementById('module-menu-toggle');
+      const header = document.getElementById('module-sticky-header');
+      if (menu) menu.classList.add('hidden');
+      if (btn) btn.classList.remove('menu-open');
+      if (header) header.classList.remove('menu-active');
+    }
+
+    /* ==========================================================================
+       7. TAAL SELECTIE
+       ========================================================================== */
+    function setLanguage(lang) {
+      currentLang = lang;
+
+      try {
+        localStorage.setItem('site_lang', lang);
+      } catch (e) {
+        console.warn("Kon taal niet bewaren in localStorage:", e);
+      }
+
+      const dict = translations[lang];
+
+      document.title = dict.pageTitle;
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (dict[key]) el.innerText = dict[key];
+      });
+
+      document.getElementById("archive-intro").innerHTML = dict.introHTML;
+      document.getElementById("popoverActionText").innerText = dict.popoverAction;
+
+      document.querySelectorAll("[data-grid-i18n]").forEach(el => {
+        const key = el.getAttribute("data-grid-i18n");
+        if (dict.grid[key]) el.innerHTML = dict.grid[key];
+      });
+
+      document.querySelectorAll("[data-mod-i18n]").forEach(el => {
+        const key = el.getAttribute("data-mod-i18n");
+        if (dict.module[key]) el.innerText = dict.module[key];
+      });
+
+      const btnNl = document.getElementById("lang-nl-btn");
+      const btnEn = document.getElementById("lang-en-btn");
+
+      if (lang === "nl") {
+        btnNl.className = "text-black transition-colors cursor-default font-bold";
+        btnEn.className = "text-neutral-400 hover:text-black transition-colors cursor-pointer font-normal";
+      } else {
+        btnEn.className = "text-black transition-colors cursor-default font-bold";
+        btnNl.className = "text-neutral-400 hover:text-black transition-colors cursor-pointer font-normal";
+      }
+
+      if (document.getElementById('projectModuleOverlay').classList.contains('active')) {
+        populateProjectModule();
+      }
+
+      playHoverSound(587);
+    }
+
+    let toastTimeout;
+    function showToast(text) {
+      const toast = document.getElementById('toast-msg');
+      const toastLabel = document.getElementById('toast-text');
+      if (!toast || !toastLabel) return;
+
+      toastLabel.innerText = text;
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 2600);
+    }
+
+    /* ==========================================================================
+       8. VIDEO COMPONENT MET THUMBNAIL, PLAY-KNOP & VERGROTEN (FULLSCREEN)
+       ========================================================================== */
+    function toggleVideoPlayback(videoId, containerId) {
+      const video = document.getElementById(videoId);
+      const container = document.getElementById(containerId);
+      const playBtnIcon = container.querySelector('.play-icon-state');
+
+      if (!video) return;
+
+      if (video.paused) {
+        video.play().then(() => {
+          container.classList.add('is-playing');
+          if (playBtnIcon) {
+            playBtnIcon.setAttribute('data-lucide', 'pause');
+            lucide.createIcons();
+          }
+        }).catch((err) => {
+          console.warn("Video play error:", err);
+        });
+      } else {
+        video.pause();
+        container.classList.remove('is-playing');
+        if (playBtnIcon) {
+          playBtnIcon.setAttribute('data-lucide', 'play');
+          lucide.createIcons();
+        }
+      }
+    }
+
+    function requestFullscreenVideo(videoId) {
+      const video = document.getElementById(videoId);
+      if (!video) return;
+
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+      }
+    }
+
+    function createVideoComponent(media, uniqueId, caption, aspectClass = "aspect-[16/9]") {
+      const posterAttr = media.poster ? `poster="${media.poster}"` : '';
+      return `
+        <div class="w-full flex flex-col">
+          <div id="video-wrap-${uniqueId}" class="video-container relative w-full ${aspectClass} bg-neutral-900 overflow-hidden cursor-pointer group">
+            <video 
+              id="video-${uniqueId}" 
+              ${posterAttr} 
+              playsinline 
+              preload="metadata" 
+              class="w-full h-full object-cover block"
+              onclick="toggleVideoPlayback('video-${uniqueId}', 'video-wrap-${uniqueId}')"
+            >
+              <source src="${media.url}" type="video/mp4">
+              <source src="${media.url}" type="video/quicktime">
+            </video>
+
+            <!-- Centrale Play Knop -->
+            <button 
+              type="button"
+              onclick="toggleVideoPlayback('video-${uniqueId}', 'video-wrap-${uniqueId}')" 
+              class="center-play-btn mac-glass-play-btn absolute inset-0 m-auto w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-all duration-300 z-20 hover:scale-105 active:scale-95 cursor-pointer"
+              title="Afspelen / Pauzeren"
+            >
+              <i data-lucide="play" class="play-icon-state w-5 h-5 sm:w-6 sm:h-6 ml-0.5 text-neutral-900"></i>
+            </button>
+
+            <!-- Vergroot / Fullscreen Knop -->
+            <div class="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
+              <button 
+                type="button"
+                onclick="requestFullscreenVideo('video-${uniqueId}')" 
+                class="mac-glass-play-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                title="Volledig Scherm (Vergroten)"
+              >
+                <i data-lucide="maximize" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neutral-900"></i>
+              </button>
+            </div>
+          </div>
+          <span class="text-[11px] sm:text-xs font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2 sm:mt-3 block">${caption}</span>
+        </div>
+      `;
+    }
+
+    const moduleOverlay = document.getElementById('projectModuleOverlay');
+
+    moduleOverlay.addEventListener('scroll', () => {
+      closeAllPopovers();
+    }, { passive: true });
+
+    let currentSectionIndex = 0;
+
+    function openExpandedView(index) {
+      closeAllPopovers();
+      closeModuleDropdownMenu();
+      currentSectionIndex = index;
+      populateProjectModule();
+      moduleOverlay.classList.add('active');
+      moduleOverlay.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+      
+      const list = sectionsData[currentLang] || sectionsData.nl;
+      playHoverSound(list[index].tonePitch);
+    }
+
+    function closeExpandedView() {
+      moduleOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+      closeModuleDropdownMenu();
+      const videos = moduleOverlay.querySelectorAll('video');
+      videos.forEach(v => {
+        v.pause();
+        const parent = v.closest('.video-container');
+        if (parent) {
+          parent.classList.remove('is-playing');
+          const playBtnIcon = parent.querySelector('.play-icon-state');
+          if (playBtnIcon) {
+            playBtnIcon.setAttribute('data-lucide', 'play');
+          }
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function nextSection() {
+      const list = sectionsData[currentLang] || sectionsData.nl;
+      currentSectionIndex = (currentSectionIndex + 1) % list.length;
+      populateProjectModule();
+      moduleOverlay.scrollTop = 0;
+      closeModuleDropdownMenu();
+      playHoverSound(list[currentSectionIndex].tonePitch);
+    }
+
+    function prevSection() {
+      const list = sectionsData[currentLang] || sectionsData.nl;
+      currentSectionIndex = (currentSectionIndex - 1 + list.length) % list.length;
+      populateProjectModule();
+      moduleOverlay.scrollTop = 0;
+      closeModuleDropdownMenu();
+      playHoverSound(list[currentSectionIndex].tonePitch);
+    }
+
+    function populateProjectModule() {
+      const list = sectionsData[currentLang] || sectionsData.nl;
+      const proj = list[currentSectionIndex] || list[0];
+
+      document.getElementById('modProjTitle').textContent = proj.title;
+      document.getElementById('modProjCat').textContent = `${proj.category} • ${proj.indexStr}`;
+      document.getElementById('modProjServices').textContent = proj.services;
+      document.getElementById('modProjLocation').textContent = proj.location;
+
+      const descContainer = document.getElementById('modProjDescription');
+      descContainer.innerHTML = '';
+      proj.description.forEach(pText => {
+        const p = document.createElement('p');
+        p.textContent = pText;
+        descContainer.appendChild(p);
+      });
+
+      const gallery = document.getElementById('irregularGalleryGrid');
+      gallery.innerHTML = '';
+      const projectMediaRows = sharedMedia[currentSectionIndex] || [];
+
+      if (projectMediaRows && projectMediaRows.length > 0) {
+        projectMediaRows.forEach((row, rowIdx) => {
+          const rowDiv = document.createElement('div');
+
+          if (row.type === 'split-1-2') {
+            rowDiv.className = "grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start";
+            
+            const leftHTML = row.left.type === 'video' 
+              ? `<div class="md:col-span-4">${createVideoComponent(row.left, `${rowIdx}-l`, row.left.caption, "aspect-[4/5]")}</div>`
+              : `
+                <div class="md:col-span-4 flex flex-col">
+                  <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden">
+                    <img src="${row.left.url}" alt="${row.left.caption}" class="w-full h-full object-cover block">
+                  </div>
+                  <span class="text-[11px] sm:text-xs font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2 sm:mt-3 block">${row.left.caption}</span>
+                </div>
+              `;
+
+            const rightHTML = row.right.type === 'video' 
+              ? `<div class="md:col-span-8">${createVideoComponent(row.right, `${rowIdx}-r`, row.right.caption, "aspect-[16/10]")}</div>`
+              : `
+                <div class="md:col-span-8 flex flex-col">
+                  <div class="w-full aspect-[16/10] bg-neutral-100 overflow-hidden">
+                    <img src="${row.right.url}" alt="${row.right.caption}" class="w-full h-full object-cover block">
+                  </div>
+                  <span class="text-[11px] sm:text-xs font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2 sm:mt-3 block">${row.right.caption}</span>
+                </div>
+              `;
+
+            rowDiv.innerHTML = leftHTML + rightHTML;
+
+          } else if (row.type === 'split-2-1') {
+            rowDiv.className = "grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start";
+
+            const leftHTML = row.left.type === 'video' 
+              ? `<div class="md:col-span-8">${createVideoComponent(row.left, `${rowIdx}-l`, row.left.caption, "aspect-[16/10]")}</div>`
+              : `
+                <div class="md:col-span-8 flex flex-col">
+                  <div class="w-full aspect-[16/10] bg-neutral-100 overflow-hidden">
+                    <img src="${row.left.url}" alt="${row.left.caption}" class="w-full h-full object-cover block">
+                  </div>
+                  <span class="text-[11px] sm:text-xs font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2 sm:mt-3 block">${row.left.caption}</span>
+                </div>
+              `;
+
+            const rightHTML = row.right.type === 'video' 
+              ? `<div class="md:col-span-4">${createVideoComponent(row.right, `${rowIdx}-r`, row.right.caption, "aspect-[4/5]")}</div>`
+              : `
+                <div class="md:col-span-4 flex flex-col">
+                  <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden">
+                    <img src="${row.right.url}" alt="${row.right.caption}" class="w-full h-full object-cover block">
+                  </div>
+                  <span class="text-[11px] sm:text-xs font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2 sm:mt-3 block">${row.right.caption}</span>
+                </div>
+              `;
+
+            rowDiv.innerHTML = leftHTML + rightHTML;
+
+          } else if (row.type === 'fullwidth') {
+            rowDiv.className = "w-full flex flex-col";
+            if (row.media.type === 'video') {
+              rowDiv.innerHTML = createVideoComponent(row.media, `${rowIdx}-fw`, row.media.caption, "aspect-[16/9] md:aspect-[21/9]");
+            } else {
+              rowDiv.innerHTML = `
+                <div class="w-full aspect-[16/9] md:aspect-[21/9] bg-neutral-100 overflow-hidden">
+                  <img src="${row.media.url}" alt="${row.media.caption}" class="w-full h-full object-cover block">
+                </div>
+                <span class="text-[11px] sm:text-xs font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2 sm:mt-3 block">${row.media.caption}</span>
+              `;
+            }
+          }
+          gallery.appendChild(rowDiv);
+        });
+      }
+      lucide.createIcons();
+    }
+
+    // Escape en pijltoetsen navigatie
+    window.addEventListener('keydown', (e) => {
+      if (moduleOverlay.classList.contains('active')) {
+        if (e.key === 'Escape') closeExpandedView();
+        if (e.key === 'ArrowRight') nextSection();
+        if (e.key === 'ArrowLeft') prevSection();
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+
+      // Haal opgeslagen taal op, anders standaard 'nl'
+      const savedLang = localStorage.getItem('site_lang') || 'nl';
+      setLanguage(savedLang);
+    });
+  </script>
+</body>
+</html>
