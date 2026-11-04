@@ -1,0 +1,428 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   1. ROOT VARIABLES & LAYOUT FRACTIONS
+   ========================================================================== */
+:root {
+  --line-thickness: 3px;
+  --line-color: #000000;
+  --col-1: 1.05fr;
+  --col-2: 1.15fr;
+  --row-1: 1.15fr;
+  --row-2: 0.95fr;
+  --row-3: 1.1fr;
+}
+
+/* ==========================================================================
+   2. GLOBAL BASE & TYPOGRAPHY
+   ========================================================================== */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-serif-luxury {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-editorial-nav {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0.18em;
+}
+
+.font-sans-clean {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-mono-code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.weight-ultra-thin {
+  font-weight: 200 !important;
+  letter-spacing: 0.08em;
+}
+
+.weight-thin {
+  font-weight: 300 !important;
+  letter-spacing: 0.06em;
+}
+
+/* Vertical separator line */
+.nav-pipe {
+  width: 2.5px;
+  height: 1.45rem;
+  background-color: #000000;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   3. MACOS FROSTED GLASS POPOVERS & TOOLTIPS
+   ========================================================================== */
+.mac-popover {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  transition: opacity 0.16s cubic-bezier(0.16, 1, 0.3, 1), transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  width: 280px;
+  max-width: calc(100vw - 32px);
+  background: rgba(246, 246, 248, 0.96);
+  backdrop-filter: blur(22px) saturate(190%);
+  -webkit-backdrop-filter: blur(22px) saturate(190%);
+  border: 0.5px solid rgba(0, 0, 0, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  padding: 12px 14px;
+  text-align: left;
+  pointer-events: none;
+}
+
+.mac-popover::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: rgba(246, 246, 248, 0.96) transparent transparent transparent;
+}
+
+@media (min-width: 1024px) {
+  .mac-trigger:hover .mac-popover {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.mac-trigger.popover-open .mac-popover {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
+/* Mouse-following definition preview */
+#cursorPopover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  width: 270px;
+  pointer-events: none;
+  background: rgba(246, 246, 248, 0.95);
+  backdrop-filter: blur(22px) saturate(190%);
+  -webkit-backdrop-filter: blur(22px) saturate(190%);
+  border: 0.5px solid rgba(0, 0, 0, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  padding: 12px 14px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(-9999px, -9999px, 0) scale(0.96);
+  transition: opacity 0.15s ease-out, transform 0.06s ease-out;
+  will-change: transform, opacity;
+}
+
+#cursorPopover.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* macOS playhead button */
+.mac-glass-play-btn {
+  background: rgba(246, 246, 248, 0.95);
+  backdrop-filter: blur(22px) saturate(190%);
+  -webkit-backdrop-filter: blur(22px) saturate(190%);
+  border: 0.5px solid rgba(0, 0, 0, 0.16);
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ==========================================================================
+   4. EDITORIAL ASYMMETRIC GRID (ARCHIVE)
+   ========================================================================== */
+@media (min-width: 1024px) {
+  .lg-divider-r::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--line-thickness);
+    height: 100%;
+    background-color: var(--line-color);
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .lg-divider-b::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--line-thickness);
+    background-color: var(--line-color);
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .editorial-grid {
+    grid-template-columns: var(--col-1) var(--col-2);
+    grid-template-rows: var(--row-1) var(--row-2) var(--row-3);
+    transition: grid-template-columns 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                grid-template-rows 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .editorial-grid.hover-c0-r0 {
+    --col-1: 1.55fr; --col-2: 0.65fr;
+    --row-1: 1.55fr; --row-2: 0.75fr; --row-3: 0.8fr;
+  }
+  .editorial-grid.hover-c1-r0 {
+    --col-1: 0.65fr; --col-2: 1.55fr;
+    --row-1: 1.55fr; --row-2: 0.75fr; --row-3: 0.8fr;
+  }
+  .editorial-grid.hover-c0-r1 {
+    --col-1: 1.55fr; --col-2: 0.65fr;
+    --row-1: 0.8fr; --row-2: 1.55fr; --row-3: 0.8fr;
+  }
+  .editorial-grid.hover-c1-r1 {
+    --col-1: 0.65fr; --col-2: 1.55fr;
+    --row-1: 0.8fr; --row-2: 1.55fr; --row-3: 0.8fr;
+  }
+  .editorial-grid.hover-c0-r2 {
+    --col-1: 1.55fr; --col-2: 0.65fr;
+    --row-1: 0.8fr; --row-2: 0.75fr; --row-3: 1.55fr;
+  }
+  .editorial-grid.hover-c1-r2 {
+    --col-1: 0.65fr; --col-2: 1.55fr;
+    --row-1: 0.8fr; --row-2: 0.75fr; --row-3: 1.55fr;
+  }
+
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .displaced-photo {
+    opacity: 0.25 !important;
+    transform: scale(0.86) !important;
+    filter: blur(1px);
+  }
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .displaced-word {
+    opacity: 0.45 !important;
+  }
+}
+
+.grid-cell {
+  position: relative;
+  background: transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.4s ease;
+}
+.grid-cell.is-hovered {
+  z-index: 40;
+}
+
+/* Desktop absolute photo positioning and hover offsets */
+@media (min-width: 1024px) {
+  .layer-photo {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .displaced-photo {
+    border: none !important;
+    outline: none !important;
+    transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, filter 0.5s ease;
+    will-change: transform, opacity;
+  }
+
+  .p-arch   { transform: translate(70px, -40px); }
+  .p-runner { transform: translate(-75px, 65px); }
+  .p-cobble { transform: translate(65px, 75px); }
+  .p-statue { transform: translate(-65px, -45px); }
+  .p-knife  { transform: translate(80px, -35px); }
+  .p-roof   { transform: translate(-70px, -50px); }
+
+  .grid-cell[data-cell="0"]:hover .layer-photo { justify-content: flex-end; padding-right: 4.5rem; }
+  .grid-cell[data-cell="0"]:hover .p-arch { transform: translate(0, 0) scale(1.08); }
+  .grid-cell[data-cell="0"]:hover .layer-typography { max-width: 55%; }
+
+  .grid-cell[data-cell="1"]:hover .layer-photo { justify-content: flex-start; padding-left: 3.5rem; }
+  .grid-cell[data-cell="1"]:hover .p-runner { transform: translate(0, 0) scale(1.06); }
+  .grid-cell[data-cell="1"]:hover .layer-typography { padding-left: 38%; }
+
+  .grid-cell[data-cell="2"]:hover .layer-photo { justify-content: flex-end; padding-right: 3.5rem; }
+  .grid-cell[data-cell="2"]:hover .p-cobble { transform: translate(0, 0) scale(1.08); }
+  .grid-cell[data-cell="2"]:hover .layer-typography { max-width: 50%; }
+
+  .grid-cell[data-cell="3"]:hover .layer-photo { justify-content: flex-start; padding-left: 4.5rem; }
+  .grid-cell[data-cell="3"]:hover .p-statue { transform: translate(0, 0) scale(1.08); }
+  .grid-cell[data-cell="3"]:hover .layer-typography { padding-left: 45%; }
+
+  .grid-cell[data-cell="4"]:hover .layer-photo { justify-content: flex-end; padding-right: 4rem; }
+  .grid-cell[data-cell="4"]:hover .p-knife { transform: translate(0, 0) scale(1.08); }
+  .grid-cell[data-cell="4"]:hover .layer-typography { max-width: 52%; }
+
+  .grid-cell[data-cell="5"]:hover .layer-photo { justify-content: flex-start; padding-left: 4rem; }
+  .grid-cell[data-cell="5"]:hover .p-roof { transform: translate(0, 0) scale(1.08); }
+  .grid-cell[data-cell="5"]:hover .layer-typography { padding-left: 42%; }
+
+  .layer-typography {
+    position: relative;
+    z-index: 35;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: auto;
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .displaced-word {
+    display: inline-block;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, letter-spacing 0.5s ease;
+    will-change: transform;
+  }
+
+  .w-date     { transform: translate(-25px, -15px); }
+  .w-stealer  { transform: translate(45px, 20px); }
+  .w-biggirls { transform: translate(50px, -15px); }
+  .w-badge7   { transform: translate(30px, -10px); }
+  .w-scene3   { transform: translate(-30px, 20px); }
+  .w-noway    { transform: translate(-50px, 25px); }
+  .w-knife    { transform: translate(35px, -15px); }
+  .w-enhypen  { transform: translate(35px, -10px); }
+  .w-author   { transform: translate(20px, 10px); }
+
+  .grid-cell:hover .displaced-word {
+    transform: translate(0px, 0px) !important;
+    letter-spacing: 0.12em;
+  }
+}
+
+/* Mobile grid fallbacks */
+@media (max-width: 1023px) {
+  .layer-photo {
+    position: relative;
+    width: 100%;
+    margin-top: 1rem;
+    display: block;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  .displaced-photo {
+    width: 100% !important;
+    height: 220px !important;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  .displaced-photo img {
+    filter: none !important;
+    contrast: 100% !important;
+    object-fit: cover !important;
+  }
+  .layer-typography {
+    position: relative;
+    width: 100%;
+  }
+  .displaced-word {
+    transform: none !important;
+  }
+}
+
+.circle-badge-7 {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  border: 1.5px solid #000000;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: transform 0.4s ease;
+}
+@media (min-width: 640px) {
+  .circle-badge-7 {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 0.85rem;
+    border-width: 2px;
+  }
+}
+.grid-cell:hover .circle-badge-7 {
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   5. MINIMAL FORM INPUTS & PULSE ANIMATIONS (CONTACT & INFO)
+   ========================================================================== */
+.minimal-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid #d4d4d4;
+  border-radius: 0;
+  padding: 0.6rem 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+  width: 100%;
+}
+.minimal-input:focus {
+  border-bottom-color: #000000;
+  box-shadow: 0 1px 0 0 #000000;
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+}
+
+.status-pulse {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ==========================================================================
+   6. HAMBURGER MENU TRANSITION
+   ========================================================================== */
+.burger-line {
+  transition: transform 0.25s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+.menu-open #line-1,
+.menu-open #mod-line-1 {
+  transform: translateY(5px) rotate(45deg);
+}
+.menu-open #line-2,
+.menu-open #mod-line-2 {
+  opacity: 0;
+}
+.menu-open #line-3,
+.menu-open #mod-line-3 {
+  transform: translateY(-5px) rotate(-45deg);
+}
+
+header.menu-active,
+#module-sticky-header.menu-active {
+  border-bottom-color: transparent !important;
+}
