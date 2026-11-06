@@ -367,7 +367,7 @@ export default function ContactPage() {
                   </div>
                 ) : (
                   <form onSubmit={handleFormSubmit} className="space-y-8">
-                    <input type="hidden" name="access_key" value={process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || "JOUW_ACCESS_KEY_HIER"} />
+                    <input type="hidden" name="access_key" value={process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || "642dadec-09c4-4b1e-b3b0-bcd497307c75"} />
                     <input type="hidden" name="from_name" value="DOXXANGEL STUDIOS Contact" />
                     <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
 
