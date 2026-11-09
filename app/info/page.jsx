@@ -355,7 +355,7 @@ export default function InfoPage() {
             <aside className="w-full mt-4 lg:mt-0">
               <div className="w-full aspect-square overflow-hidden bg-neutral-100">
                 <img 
-                  src="https://i.pinimg.com/1200x/d2/0b/88/d20b88935cda6016504048e15569d8ff.jpg" 
+                  src="images/fotoinfo.jpg" 
                   alt="Portrait sitting outdoors" 
                   className="w-full h-full object-cover contrast-110 brightness-95 block hover:scale-105 transition-transform duration-700 ease-out"
                 />
