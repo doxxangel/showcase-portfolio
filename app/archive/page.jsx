@@ -205,7 +205,7 @@ export default function ArchivePage() {
           <div className="flex items-center justify-between font-editorial-nav text-[13px] md:text-sm uppercase font-medium">
             <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
               <span className="nav-pipe hidden md:inline-block"></span>
-              <Link href="/archive" className="tracking-[0.2em] font-semibold text-black hover:opacity-70 transition">
+              <Link href="/" className="tracking-[0.2em] font-semibold text-black hover:opacity-70 transition">
                 DOXXANGEL STUDIOS
               </Link>
               <div className="hidden md:flex items-center gap-4 sm:gap-6">
