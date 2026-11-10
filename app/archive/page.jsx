@@ -396,7 +396,16 @@ export default function ArchivePage() {
 
       {/* Project modal */}
       {activeModalIdx !== null && currentProject && (
-        <div data-lenis-prevent className="fixed inset-0 z-[80] overflow-y-auto bg-white">
+        <div
+          data-lenis-prevent
+          data-lenis-prevent-touch
+          data-lenis-prevent-wheel
+          onWheel={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+          style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
+          className="fixed inset-0 z-[80] overflow-y-auto overscroll-contain bg-white"
+        >
           <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md pt-6 sm:pt-8 md:pt-10 px-5 sm:px-8 md:px-14 lg:px-16 pb-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
             <button onClick={closeProject} className="flex items-center gap-2 tracking-[0.2em] font-semibold text-black hover:opacity-60 transition cursor-pointer">
               <span className="text-sm">✕</span> <span>{lang === 'nl' ? 'SLUITEN' : 'CLOSE'}</span>
