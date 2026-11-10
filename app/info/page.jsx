@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { useSite } from '@/context/SiteContext';
 import SiteHeader from '@/components/SiteHeader';
+import { clampPopover } from '@/lib/clampPopover';
 import Pop from '@/components/Pop';
 
 const translations = {
@@ -47,6 +48,7 @@ export default function InfoPage() {
 
   const togglePopover = (e, id, pitch) => {
     e.stopPropagation();
+    clampPopover(e.currentTarget);
     setOpenPopoverId(openPopoverId === id ? null : id);
     if (pitch) playHover(pitch);
   };
@@ -154,7 +156,7 @@ export default function InfoPage() {
                 <p className="mb-2">{dict.contactPrompt}</p>
                 <span
                   className={`mac-trigger relative inline-block break-all text-sm sm:text-lg md:text-xl underline underline-offset-4 hover:opacity-75 transition cursor-pointer font-mono ${openPopoverId === 'mail' ? 'popover-open' : ''}`}
-                  onMouseEnter={() => playHover(659)}
+                  onMouseEnter={(e) => { clampPopover(e.currentTarget); playHover(659); }}
                   onClick={(e) => togglePopover(e, 'mail', 659)}
                 >
                   Info@doxxangelstudios.nl

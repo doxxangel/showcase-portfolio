@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Check, ArrowRight, RotateCcw, AlertCircle, Loader2 } from 'lucide-react';
 import { useSite } from '@/context/SiteContext';
 import SiteHeader from '@/components/SiteHeader';
+import { clampPopover } from '@/lib/clampPopover';
 import Pop from '@/components/Pop';
 
 const availabilityConfig = { openDays: [1, 2, 3, 4, 5], startHour: 9, endHour: 16, timeZone: 'Europe/Amsterdam' };
@@ -87,6 +88,7 @@ export default function ContactPage() {
 
   const togglePopover = (e, id, pitch) => {
     e.stopPropagation();
+    clampPopover(e.currentTarget);
     setOpenPopoverId(openPopoverId === id ? null : id);
     if (pitch) playHover(pitch);
   };
@@ -176,7 +178,7 @@ export default function ContactPage() {
                 <h3 className="text-xs font-bold tracking-widest uppercase text-neutral-400 mb-2">{dict.lblDirectMail}</h3>
                 <span
                   className={`mac-trigger relative inline-block break-all text-sm sm:text-lg md:text-xl underline underline-offset-4 hover:opacity-70 transition font-mono cursor-pointer ${openPopoverId === 'c-mail' ? 'popover-open' : ''}`}
-                  onMouseEnter={() => playHover(659)}
+                  onMouseEnter={(e) => { clampPopover(e.currentTarget); playHover(659); }}
                   onClick={(e) => togglePopover(e, 'c-mail', 659)}
                 >
                   Info@doxxangelstudios.nl

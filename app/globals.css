@@ -465,25 +465,16 @@ html.lenis, html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}.mac-popover::after {
+  left: calc(50% - var(--shift, 0px));
 }
-@media (max-width: 1023px) {
-  .mac-trigger .mac-popover {
-    position: fixed;
-    top: auto;
-    left: 16px;
-    right: 16px;
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    width: auto;
-    max-width: none;
-    padding: 14px 16px;
-    transform: translateY(10px);
-    z-index: 150;
-  }
-  .mac-trigger.popover-open .mac-popover {
-    transform: translateY(0);
-  }
-  .mac-trigger .mac-popover::after {
-    display: none;
-  }
+.mac-popover[data-flip] {
+  bottom: auto;
+  top: calc(100% + 14px);
+}
+.mac-popover[data-flip]::after {
+  top: auto;
+  bottom: 100%;
+  border-color: transparent transparent rgba(246, 246, 248, 0.96) transparent;
 }
  

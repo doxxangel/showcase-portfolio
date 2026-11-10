@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Check } from 'lucide-react';
 import { useSite } from '@/context/SiteContext';
 import SiteHeader from '@/components/SiteHeader';
+import { clampPopover } from '@/lib/clampPopover';
 
 const sharedMedia = {
   0: [
@@ -154,14 +155,15 @@ export default function ArchivePage() {
   };
 
   const openProject = (idx) => {
+    handleCellLeave();
     setActiveModalIdx(idx);
-    document.body.style.overflow = 'hidden';
+    window.scrollTo(0, 0);
     if (playHover) playHover(sectionsData[lang][idx].tonePitch);
   };
 
   const closeProject = useCallback(() => {
     setActiveModalIdx(null);
-    document.body.style.overflow = '';
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -177,6 +179,7 @@ export default function ArchivePage() {
     const list = sectionsData[lang];
     const nxt = (activeModalIdx + 1) % list.length;
     setActiveModalIdx(nxt);
+    window.scrollTo(0, 0);
     if (playHover) playHover(list[nxt].tonePitch);
   };
 
@@ -184,11 +187,13 @@ export default function ArchivePage() {
     const list = sectionsData[lang];
     const prv = (activeModalIdx - 1 + list.length) % list.length;
     setActiveModalIdx(prv);
+    window.scrollTo(0, 0);
     if (playHover) playHover(list[prv].tonePitch);
   };
 
   const toggleInlinePopover = (e, id, pitch) => {
     e.stopPropagation();
+    clampPopover(e.currentTarget);
     setOpenPopoverId(openPopoverId === id ? null : id);
     if (pitch && playHover) playHover(pitch);
   };
@@ -229,7 +234,7 @@ export default function ArchivePage() {
         <SiteHeader onToggleAudio={handleToggleAudio} />
       </div>
 
-      <div className="w-full max-w-[1500px] mx-auto">
+      <div className={`w-full max-w-[1500px] mx-auto ${activeModalIdx !== null ? 'hidden' : ''}`}>
         <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 border-[2px] sm:border-[3px] border-black bg-white ${hoverGridClass}`}>
 
           {/* CELL 0: SANRIO CHESS */}
@@ -370,6 +375,7 @@ export default function ArchivePage() {
               <div className="flex justify-start lg:justify-end items-center mt-3 lg:mt-auto">
                 <span
                   className={`mac-trigger relative inline-block cursor-pointer ${openPopoverId === 'c5-pop' ? 'popover-open' : ''}`}
+                  onMouseEnter={(e) => clampPopover(e.currentTarget)}
                   onClick={(e) => toggleInlinePopover(e, 'c5-pop', 440)}
                 >
                   <span className="displaced-word w-author font-sans-clean text-xs sm:text-base text-black font-semibold tracking-widest lowercase underline underline-offset-4">leeruitkomsten & boeken</span>
@@ -396,17 +402,8 @@ export default function ArchivePage() {
 
       {/* Project modal */}
       {activeModalIdx !== null && currentProject && (
-        <div
-          data-lenis-prevent
-          data-lenis-prevent-touch
-          data-lenis-prevent-wheel
-          onWheel={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-          onTouchMove={(e) => e.stopPropagation()}
-          style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
-          className="fixed inset-0 z-[80] overflow-y-auto overscroll-contain bg-white"
-        >
-          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md pt-6 sm:pt-8 md:pt-10 px-5 sm:px-8 md:px-14 lg:px-16 pb-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
+        <div className="w-full max-w-[1500px] mx-auto">
+          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md py-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
             <button onClick={closeProject} className="flex items-center gap-2 tracking-[0.2em] font-semibold text-black hover:opacity-60 transition cursor-pointer">
               <span className="text-sm">✕</span> <span>{lang === 'nl' ? 'SLUITEN' : 'CLOSE'}</span>
             </button>
@@ -417,7 +414,7 @@ export default function ArchivePage() {
             </div>
           </div>
 
-          <div className="max-w-[1500px] mx-auto px-5 sm:px-8 md:px-14 lg:px-16 pt-8 pb-28">
+          <div className="pt-8 pb-28">
             <section className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 pb-10 sm:pb-16 items-start">
               <div className="md:col-span-4">
                 <h1 className="text-3xl sm:text-5xl lg:text-7xl font-serif-luxury weight-ultra-thin tracking-tight uppercase leading-none text-black m-0 p-0">

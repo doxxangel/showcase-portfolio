@@ -1,9 +1,11 @@
 /* Klikbaar/hoverbaar woord met macOS-wolkje. Vervangt de herhaalde <span className="mac-trigger">-blokken. */
+import { clampPopover } from '@/lib/clampPopover';
+
 export default function Pop({ id, pitch, title, desc, openId, toggle, play, plain = false, children }) {
   return (
     <span
       className={`mac-trigger relative inline-block cursor-pointer underline underline-offset-4 decoration-[1.5px] ${openId === id ? 'popover-open' : ''}`}
-      onMouseEnter={() => play(pitch)}
+      onMouseEnter={(e) => { clampPopover(e.currentTarget); play(pitch); }}
       onClick={(e) => toggle(e, id, pitch)}
     >
       {children}
