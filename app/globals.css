@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 /* ==========================================================================
    1. ROOT VARIABLES & LAYOUT FRACTIONS
    ========================================================================== */
@@ -425,4 +427,42 @@ body {
 header.menu-active,
 #module-sticky-header.menu-active {
   border-bottom-color: transparent !important;
+}
+/* Rustige waas fade-in voor paginawissels */
+@keyframes calmHazeIn {
+  0% {
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+}
+
+.calm-haze-entry {
+  animation: calmHazeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: opacity, filter, transform;
+}
+/* Lenis aanbevolen basis styles */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }

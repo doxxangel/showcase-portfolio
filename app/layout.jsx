@@ -1,5 +1,6 @@
 import './globals.css';
 import { SiteProvider } from '@/context/SiteContext';
+import SmoothScroll from '@/components/SmoothScroll';
 
 export const metadata = {
   title: 'DOXXANGEL STUDIOS',
@@ -22,9 +23,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="bg-white text-black min-h-screen selection:bg-black selection:text-white antialiased">
-        <SiteProvider>
-          {children}
-        </SiteProvider>
+        <SmoothScroll>
+          <SiteProvider>
+            {children}
+          </SiteProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

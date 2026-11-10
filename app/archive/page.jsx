@@ -1,14 +1,15 @@
 'use client';
-import { useState, useRef } from 'react';
-import Link from 'next/link';
-import { Volume2, VolumeX, Check, Menu, X, Play, Maximize } from 'lucide-react';
+
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Check } from 'lucide-react';
 import { useSite } from '@/context/SiteContext';
+import SiteHeader from '@/components/SiteHeader';
 
 const sharedMedia = {
   0: [
     {
       type: "split-1-2",
-      left: { type: "image", url: "/images/Scherm­afbeelding 2026-10-08 om 13.45.56.jpg", caption: "(01) 3D Model van klasgenoot & Custom LP Houder" },
+      left: { type: "image", url: "/images/Scherm\u00ADafbeelding 2026-10-08 om 13.45.56.jpg", caption: "(01) 3D Model van klasgenoot & Custom LP Houder" },
       right: { type: "image", url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=80", caption: "(02) Sanrio Schaakstukken // Kuromi Knight & Cinnamoroll King" }
     }
   ],
@@ -90,15 +91,37 @@ const sectionsData = {
   ]
 };
 
+function MediaViewer({ media, caption, className = "w-full h-full object-cover block" }) {
+  if (!media) return null;
+  const isVideo = media.type === 'video' || (typeof media.url === 'string' && media.url.endsWith('.mov'));
+  if (isVideo) {
+    return <video src={media.url} poster={media.poster} controls playsInline className={className} />;
+  }
+  return <img src={media.url} alt={caption || ''} loading="lazy" className={className} />;
+}
+
+const capClass = "text-[11px] font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2";
+
 export default function ArchivePage() {
-  const { lang, setLang, audioActive, toggleAudio, playHover } = useSite();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { lang, audioActive, toggleAudio, playHover } = useSite();
   const [activeModalIdx, setActiveModalIdx] = useState(null);
   const [hoverGridClass, setHoverGridClass] = useState('');
   const [hoveredCell, setHoveredCell] = useState(null);
-  const [cursorData, setCursorData] = useState({ visible: false, x: 0, y: 0, item: null, index: '01 / 06' });
+  const [activeCursorItem, setActiveCursorItem] = useState(null);
   const [toast, setToast] = useState({ show: false, text: '' });
   const [openPopoverId, setOpenPopoverId] = useState(null);
+
+  const popoverRef = useRef(null);
+
+  const handleMouseMove = useCallback((e) => {
+    if (!popoverRef.current || window.innerWidth < 1024) return;
+    const padding = 16;
+    let x = e.clientX + padding;
+    let y = e.clientY + padding;
+    if (x + 280 > window.innerWidth - padding) x = e.clientX - 280 - padding;
+    if (y + 140 > window.innerHeight - padding) y = e.clientY - 140 - padding;
+    popoverRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  }, []);
 
   const showToast = (text) => {
     setToast({ show: true, text });
@@ -110,150 +133,108 @@ export default function ArchivePage() {
     showToast(!audioActive ? (lang === 'nl' ? 'Ambient geluid ingeschakeld' : 'Ambient audio enabled') : (lang === 'nl' ? 'Audio uitgeschakeld' : 'Audio muted'));
   };
 
-  const handleMouseMove = (e) => {
-    if (window.innerWidth < 1024 || !cursorData.visible) return;
-    const padding = 16;
-    let x = e.clientX + padding;
-    let y = e.clientY + padding;
-    if (x + 270 > window.innerWidth - padding) x = e.clientX - 270 - padding;
-    if (y + 125 > window.innerHeight - padding) y = e.clientY - 125 - padding;
-    setCursorData(prev => ({ ...prev, x, y }));
-  };
-
   const handleCellEnter = (idx, col, row, e) => {
     if (window.innerWidth < 1024) return;
-    const list = sectionsData[lang];
-    const item = list[idx];
+    const item = sectionsData[lang][idx];
     setHoverGridClass(`has-hover hover-c${col}-r${row}`);
     setHoveredCell(idx);
-    setCursorData({ visible: true, x: e.clientX + 16, y: e.clientY + 16, item, index: item.indexStr });
-    playHover(item.tonePitch);
+    setActiveCursorItem({ item, index: item.indexStr });
+    if (popoverRef.current) {
+      popoverRef.current.classList.add('active');
+      popoverRef.current.style.transform = `translate3d(${e.clientX + 16}px, ${e.clientY + 16}px, 0)`;
+    }
+    if (playHover) playHover(item.tonePitch);
   };
 
   const handleCellLeave = () => {
     setHoverGridClass('');
     setHoveredCell(null);
-    setCursorData(prev => ({ ...prev, visible: false }));
+    setActiveCursorItem(null);
+    if (popoverRef.current) popoverRef.current.classList.remove('active');
   };
 
   const openProject = (idx) => {
     setActiveModalIdx(idx);
     document.body.style.overflow = 'hidden';
-    playHover(sectionsData[lang][idx].tonePitch);
+    if (playHover) playHover(sectionsData[lang][idx].tonePitch);
   };
 
-  const closeProject = () => {
+  const closeProject = useCallback(() => {
     setActiveModalIdx(null);
     document.body.style.overflow = '';
-  };
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') closeProject(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [closeProject]);
 
   const nextProject = () => {
     const list = sectionsData[lang];
     const nxt = (activeModalIdx + 1) % list.length;
     setActiveModalIdx(nxt);
-    playHover(list[nxt].tonePitch);
+    if (playHover) playHover(list[nxt].tonePitch);
   };
 
   const prevProject = () => {
     const list = sectionsData[lang];
     const prv = (activeModalIdx - 1 + list.length) % list.length;
     setActiveModalIdx(prv);
-    playHover(list[prv].tonePitch);
+    if (playHover) playHover(list[prv].tonePitch);
   };
 
   const toggleInlinePopover = (e, id, pitch) => {
     e.stopPropagation();
     setOpenPopoverId(openPopoverId === id ? null : id);
-    if (pitch) playHover(pitch);
+    if (pitch && playHover) playHover(pitch);
   };
 
   const currentProject = activeModalIdx !== null ? sectionsData[lang][activeModalIdx] : null;
   const currentMediaRows = activeModalIdx !== null ? (sharedMedia[activeModalIdx] || []) : [];
 
   return (
-    <div className="bg-white text-black min-h-screen pt-8 md:pt-10 px-8 md:px-14 lg:px-16 selection:bg-black selection:text-white" onMouseMove={handleMouseMove} onClick={() => setOpenPopoverId(null)}>
-      
-      {/* Toast Notification */}
-      <div className={`fixed bottom-6 right-6 z-50 bg-black text-white text-xs px-4 py-2.5 rounded-lg shadow-xl transition-all duration-300 pointer-events-none flex items-center gap-2 ${toast.show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+    <div
+      className="bg-white text-black min-h-screen pt-8 md:pt-10 px-5 sm:px-8 md:px-14 lg:px-16 selection:bg-black selection:text-white"
+      onMouseMove={handleMouseMove}
+      onClick={() => setOpenPopoverId(null)}
+    >
+      <div className={`fixed bottom-6 right-6 z-[90] bg-black text-white text-xs px-4 py-2.5 rounded-lg shadow-xl transition-all duration-300 pointer-events-none flex items-center gap-2 ${toast.show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
         <Check className="w-3.5 h-3.5 text-emerald-400" />
         <span>{toast.text}</span>
       </div>
 
-      {/* Mouse-following Definition Popover */}
-      {cursorData.visible && cursorData.item && (
-        <div 
-          id="cursorPopover" 
-          className="active"
-          style={{ transform: `translate3d(${cursorData.x}px, ${cursorData.y}px, 0)` }}
-        >
-          <div className="flex items-center justify-between mb-1.5 font-sans-clean">
-            <span className="text-[10px] uppercase tracking-widest font-bold text-neutral-500">{cursorData.item.category}</span>
-            <span className="text-[10px] text-neutral-400 font-semibold">{cursorData.index}</span>
-          </div>
-          <strong className="block text-sm font-bold text-neutral-900 mb-1 uppercase tracking-wide font-sans-clean">{cursorData.item.title}</strong>
-          <p className="text-xs text-neutral-600 leading-relaxed font-sans-clean">{cursorData.item.popoverSummary}</p>
-          <div className="mt-2.5 pt-2 border-t border-black/10 flex items-center justify-between font-sans-clean">
-            <span className="text-[10px] font-bold tracking-wider text-black uppercase underline underline-offset-2">{lang === 'nl' ? 'Klik om te openen ↗' : 'Click to open ↗'}</span>
-            <span className="text-[10px] text-neutral-500 font-medium">{cursorData.item.engineTag}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Header */}
-      <div className="w-full max-w-[1600px] mr-auto">
-        <header className="w-full mb-16 select-none pr-2">
-          <div className="flex items-center justify-between font-editorial-nav text-[13px] md:text-sm uppercase font-medium">
-            <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
-              <span className="nav-pipe hidden md:inline-block"></span>
-              <Link href="/" className="tracking-[0.2em] font-semibold text-black hover:opacity-70 transition">
-                DOXXANGEL STUDIOS
-              </Link>
-              <div className="hidden md:flex items-center gap-4 sm:gap-6">
-                <span className="nav-pipe inline-block"></span>
-                <Link href="/archive" className="tracking-[0.2em] text-black font-semibold hover:opacity-60 transition">ARCHIVE</Link>
-                <span className="nav-pipe inline-block"></span>
-                <Link href="/info" className="tracking-[0.2em] text-black hover:opacity-60 transition">INFO</Link>
-                <span className="nav-pipe inline-block"></span>
-                <Link href="/contact" className="tracking-[0.2em] text-black hover:opacity-60 transition">CONTACT</Link>
-                <span className="nav-pipe inline-block"></span>
-              </div>
+      {/* Mouse-following definition popover */}
+      <div ref={popoverRef} id="cursorPopover" className={activeCursorItem ? 'active' : ''}>
+        {activeCursorItem && activeCursorItem.item && (
+          <div>
+            <div className="flex items-center justify-between mb-1.5 font-sans-clean">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-neutral-500">{activeCursorItem.item.category}</span>
+              <span className="text-[10px] text-neutral-400 font-semibold">{activeCursorItem.index}</span>
             </div>
-
-            <div className="flex items-center gap-3.5 tracking-[0.16em] text-[12px] md:text-xs font-semibold">
-              <div className="flex items-center gap-2">
-                <button type="button" onClick={() => setLang('nl')} className={`transition-colors cursor-pointer ${lang === 'nl' ? 'text-black font-bold' : 'text-neutral-400 hover:text-black font-normal'}`}>NL</button>
-                <span className="w-[1.5px] h-3.5 bg-neutral-300"></span>
-                <button type="button" onClick={() => setLang('en')} className={`transition-colors cursor-pointer ${lang === 'en' ? 'text-black font-bold' : 'text-neutral-400 hover:text-black font-normal'}`}>ENG</button>
-              </div>
-
-              <button type="button" onClick={handleToggleAudio} className="hidden md:flex w-7 h-7 rounded-full items-center justify-center bg-neutral-900/80 hover:bg-neutral-900 text-white backdrop-blur-md border border-neutral-700 shadow-sm transition-all duration-200 cursor-pointer active:scale-90" title="Toggle ambient audio">
-                {audioActive ? <Volume2 className="w-3.5 h-3.5 text-white" /> : <VolumeX className="w-3.5 h-3.5 text-neutral-300" />}
-              </button>
-
-              <button type="button" onClick={() => setMenuOpen(!menuOpen)} className="md:hidden flex flex-col justify-center items-center w-7 h-7 gap-[4px] focus:outline-none cursor-pointer ml-1">
-                {menuOpen ? <X className="w-5 h-5 text-black" /> : <Menu className="w-5 h-5 text-black" />}
-              </button>
+            <strong className="block text-sm font-bold text-neutral-900 mb-1 uppercase tracking-wide font-sans-clean">{activeCursorItem.item.title}</strong>
+            <p className="text-xs text-neutral-600 leading-relaxed font-sans-clean">{activeCursorItem.item.popoverSummary}</p>
+            <div className="mt-2.5 pt-2 border-t border-black/10 flex items-center justify-between font-sans-clean">
+              <span className="text-[10px] font-bold tracking-wider text-black uppercase underline underline-offset-2">{lang === 'nl' ? 'Klik om te openen ↗' : 'Click to open ↗'}</span>
+              <span className="text-[10px] text-neutral-500 font-medium">{activeCursorItem.item.engineTag}</span>
             </div>
           </div>
-
-          {menuOpen && (
-            <nav className="md:hidden pt-4 pb-2 font-editorial-nav text-[12px] tracking-[0.2em] uppercase font-medium mt-2 border-t border-neutral-200 flex flex-col">
-              <Link href="/archive" className="py-3.5 border-b border-neutral-200 text-black">DOXXANGEL STUDIOS</Link>
-              <Link href="/archive" className="py-3.5 border-b border-neutral-200 text-black font-semibold">ARCHIVE</Link>
-              <Link href="/info" className="py-3.5 border-b border-neutral-200 text-black">INFO</Link>
-              <Link href="/contact" className="py-3.5 text-black">CONTACT</Link>
-            </nav>
-          )}
-        </header>
+        )}
       </div>
 
-      {/* The 6 Poster Grid Cells */}
+      <div className="w-full max-w-[1600px] mr-auto">
+        <SiteHeader onToggleAudio={handleToggleAudio} />
+      </div>
+
       <div className="w-full max-w-[1500px] mx-auto">
         <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 border-[2px] sm:border-[3px] border-black bg-white ${hoverGridClass}`}>
-          
+
           {/* CELL 0: SANRIO CHESS */}
-          <div 
-            className={`grid-cell lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between ${hoveredCell === 0 ? 'is-hovered' : ''}`}
+          <div
+            className={`grid-cell lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 0 ? 'is-hovered' : ''}`}
             data-cell="0"
             onClick={() => openProject(0)}
             onMouseEnter={(e) => handleCellEnter(0, 0, 0, e)}
@@ -277,8 +258,8 @@ export default function ArchivePage() {
           </div>
 
           {/* CELL 1: SOUNDDOG BREDA */}
-          <div 
-            className={`grid-cell lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between ${hoveredCell === 1 ? 'is-hovered' : ''}`}
+          <div
+            className={`grid-cell lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 1 ? 'is-hovered' : ''}`}
             data-cell="1"
             onClick={() => openProject(1)}
             onMouseEnter={(e) => handleCellEnter(1, 1, 0, e)}
@@ -305,8 +286,8 @@ export default function ArchivePage() {
           </div>
 
           {/* CELL 2: MACOS PORTFOLIO */}
-          <div 
-            className={`grid-cell lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between ${hoveredCell === 2 ? 'is-hovered' : ''}`}
+          <div
+            className={`grid-cell lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 2 ? 'is-hovered' : ''}`}
             data-cell="2"
             onClick={() => openProject(2)}
             onMouseEnter={(e) => handleCellEnter(2, 0, 1, e)}
@@ -329,8 +310,8 @@ export default function ArchivePage() {
           </div>
 
           {/* CELL 3: ROOM // HORROR */}
-          <div 
-            className={`grid-cell lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between ${hoveredCell === 3 ? 'is-hovered' : ''}`}
+          <div
+            className={`grid-cell lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 3 ? 'is-hovered' : ''}`}
             data-cell="3"
             onClick={() => openProject(3)}
             onMouseEnter={(e) => handleCellEnter(3, 1, 1, e)}
@@ -339,7 +320,7 @@ export default function ArchivePage() {
             <div className="layer-typography text-left lg:text-right">
               <span className="text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-700 font-semibold block mb-1">RPG Maker // Horror</span>
               <div className="my-3 lg:my-auto">
-                <h2 className="displaced-word w-noway font-serif-luxury text-4xl sm:text-6xl lg:text-8xl uppercase text-black weight-ultra-thin leading-none">
+                <h2 className="displaced-word w-noway font-serif-luxury text-3xl sm:text-5xl lg:text-8xl uppercase text-black weight-ultra-thin leading-none">
                   ROOM // HORROR<br /><span className="text-2xl sm:text-4xl lg:text-5xl font-light weight-ultra-thin">[8-BIT]</span>
                 </h2>
               </div>
@@ -353,8 +334,8 @@ export default function ArchivePage() {
           </div>
 
           {/* CELL 4: LUNORA */}
-          <div 
-            className={`grid-cell lg-divider-r border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between ${hoveredCell === 4 ? 'is-hovered' : ''}`}
+          <div
+            className={`grid-cell lg-divider-r border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 4 ? 'is-hovered' : ''}`}
             data-cell="4"
             onClick={() => openProject(4)}
             onMouseEnter={(e) => handleCellEnter(4, 0, 2, e)}
@@ -374,8 +355,8 @@ export default function ArchivePage() {
           </div>
 
           {/* CELL 5: POWERPUFF */}
-          <div 
-            className={`grid-cell p-5 sm:p-7 lg:p-10 flex flex-col justify-between ${hoveredCell === 5 ? 'is-hovered' : ''}`}
+          <div
+            className={`grid-cell p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 5 ? 'is-hovered' : ''}`}
             data-cell="5"
             onClick={() => openProject(5)}
             onMouseEnter={(e) => handleCellEnter(5, 1, 2, e)}
@@ -387,12 +368,12 @@ export default function ArchivePage() {
                 <span className="text-xs font-sans-clean text-neutral-900 font-bold">2D ENGINE</span>
               </div>
               <div className="flex justify-start lg:justify-end items-center mt-3 lg:mt-auto">
-                <span 
+                <span
                   className={`mac-trigger relative inline-block cursor-pointer ${openPopoverId === 'c5-pop' ? 'popover-open' : ''}`}
                   onClick={(e) => toggleInlinePopover(e, 'c5-pop', 440)}
                 >
                   <span className="displaced-word w-author font-sans-clean text-xs sm:text-base text-black font-semibold tracking-widest lowercase underline underline-offset-4">leeruitkomsten & boeken</span>
-                  <span className="mac-popover">
+                  <span className={`mac-popover ${openPopoverId === 'c5-pop' ? 'active' : ''}`}>
                     <strong className="block text-[11px] font-bold text-neutral-900 mb-0.5 uppercase tracking-wider font-sans-clean">Interactieve Wereld</strong>
                     <span className="block text-[11px] text-neutral-600 leading-snug font-sans-clean">Wandel door het dorp naar school en ontdek de interactieve boeken.</span>
                   </span>
@@ -405,33 +386,32 @@ export default function ArchivePage() {
               </div>
             </div>
           </div>
-
         </main>
 
-        <footer className="flex flex-wrap items-baseline gap-12 md:gap-36 text-lg md:text-xl font-normal mt-24 mb-12 text-neutral-900 border-t border-neutral-100 pt-8 font-sans-clean">
+        <footer className="flex flex-wrap items-baseline gap-3 md:gap-36 text-sm md:text-xl font-normal mt-16 md:mt-24 mb-12 text-neutral-900 border-t border-neutral-100 pt-8 font-sans-clean">
           <div>Sep 23, 2026, 3:26:01 PM (e659175)</div>
           <div>&copy; 2009—2026 DOXXANGEL STUDIOS</div>
         </footer>
       </div>
 
-      {/* Project Modal Overlay */}
+      {/* Project modal */}
       {activeModalIdx !== null && currentProject && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
-          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md pt-6 sm:pt-8 md:pt-10 px-6 sm:px-8 md:px-14 lg:px-16 pb-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
+        <div data-lenis-prevent className="fixed inset-0 z-[80] overflow-y-auto bg-white">
+          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md pt-6 sm:pt-8 md:pt-10 px-5 sm:px-8 md:px-14 lg:px-16 pb-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
             <button onClick={closeProject} className="flex items-center gap-2 tracking-[0.2em] font-semibold text-black hover:opacity-60 transition cursor-pointer">
               <span className="text-sm">✕</span> <span>{lang === 'nl' ? 'SLUITEN' : 'CLOSE'}</span>
             </button>
             <div className="flex items-center gap-4">
-              <button onClick={prevProject} className="hover:opacity-60 transition">{lang === 'nl' ? '← VORIG' : '← PREV'}</button>
+              <button onClick={prevProject} className="hover:opacity-60 transition cursor-pointer">{lang === 'nl' ? '← VORIG' : '← PREV'}</button>
               <span>•</span>
-              <button onClick={nextProject} className="hover:opacity-60 transition">{lang === 'nl' ? 'VOLGEND →' : 'NEXT →'}</button>
+              <button onClick={nextProject} className="hover:opacity-60 transition cursor-pointer">{lang === 'nl' ? 'VOLGEND →' : 'NEXT →'}</button>
             </div>
           </div>
 
-          <div className="max-w-[1500px] mx-auto px-6 sm:px-8 md:px-14 lg:px-16 pt-8 pb-28">
-            <section className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 pb-12 sm:pb-16 items-start">
+          <div className="max-w-[1500px] mx-auto px-5 sm:px-8 md:px-14 lg:px-16 pt-8 pb-28">
+            <section className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 pb-10 sm:pb-16 items-start">
               <div className="md:col-span-4">
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif-luxury weight-ultra-thin tracking-tight uppercase leading-none text-black m-0 p-0">
+                <h1 className="text-3xl sm:text-5xl lg:text-7xl font-serif-luxury weight-ultra-thin tracking-tight uppercase leading-none text-black m-0 p-0">
                   {currentProject.title}
                 </h1>
                 <span className="block text-[11px] sm:text-xs font-editorial-nav uppercase tracking-[0.2em] text-neutral-500 font-semibold mt-3 sm:mt-4">
@@ -450,28 +430,23 @@ export default function ArchivePage() {
                 </div>
               </div>
 
-              <div className="md:col-span-5 text-sm sm:text-base md:text-lg leading-[1.66] text-neutral-800 space-y-4 font-sans-clean font-normal">
+              <div className="md:col-span-5 text-sm sm:text-base md:text-lg leading-[1.6] md:leading-[1.66] text-neutral-800 space-y-4 font-sans-clean font-normal">
                 {currentProject.description.map((p, i) => <p key={i}>{p}</p>)}
               </div>
             </section>
 
-            {/* Media Rows */}
-            <section className="space-y-12 sm:space-y-20 md:space-y-24 pt-4">
+            <section className="space-y-10 sm:space-y-20 md:space-y-24 pt-4">
               {currentMediaRows.map((row, rIdx) => {
                 if (row.type === 'split-1-2') {
                   return (
                     <div key={rIdx} className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
                       <div className="md:col-span-4 flex flex-col">
-                        <div className="w-full aspect-[4/5] bg-neutral-100 overflow-hidden">
-                          <img src={row.left.url} alt={row.left.caption} className="w-full h-full object-cover block" />
-                        </div>
-                        <span className="text-[11px] font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2">{row.left.caption}</span>
+                        <div className="w-full aspect-[4/5] bg-neutral-100 overflow-hidden"><MediaViewer media={row.left} caption={row.left.caption} /></div>
+                        <span className={capClass}>{row.left.caption}</span>
                       </div>
                       <div className="md:col-span-8 flex flex-col">
-                        <div className="w-full aspect-[16/10] bg-neutral-100 overflow-hidden">
-                          <img src={row.right.url} alt={row.right.caption} className="w-full h-full object-cover block" />
-                        </div>
-                        <span className="text-[11px] font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2">{row.right.caption}</span>
+                        <div className="w-full aspect-[16/10] bg-neutral-100 overflow-hidden"><MediaViewer media={row.right} caption={row.right.caption} /></div>
+                        <span className={capClass}>{row.right.caption}</span>
                       </div>
                     </div>
                   );
@@ -479,26 +454,20 @@ export default function ArchivePage() {
                   return (
                     <div key={rIdx} className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
                       <div className="md:col-span-8 flex flex-col">
-                        <div className="w-full aspect-[16/10] bg-neutral-100 overflow-hidden">
-                          <img src={row.left.url} alt={row.left.caption} className="w-full h-full object-cover block" />
-                        </div>
-                        <span className="text-[11px] font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2">{row.left.caption}</span>
+                        <div className="w-full aspect-[16/10] bg-neutral-100 overflow-hidden"><MediaViewer media={row.left} caption={row.left.caption} /></div>
+                        <span className={capClass}>{row.left.caption}</span>
                       </div>
                       <div className="md:col-span-4 flex flex-col">
-                        <div className="w-full aspect-[4/5] bg-neutral-100 overflow-hidden">
-                          <img src={row.right.url} alt={row.right.caption} className="w-full h-full object-cover block" />
-                        </div>
-                        <span className="text-[11px] font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2">{row.right.caption}</span>
+                        <div className="w-full aspect-[4/5] bg-neutral-100 overflow-hidden"><MediaViewer media={row.right} caption={row.right.caption} /></div>
+                        <span className={capClass}>{row.right.caption}</span>
                       </div>
                     </div>
                   );
                 } else if (row.type === 'fullwidth') {
                   return (
                     <div key={rIdx} className="w-full flex flex-col">
-                      <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-neutral-100 overflow-hidden">
-                        <img src={row.media.url} alt={row.media.caption} className="w-full h-full object-cover block" />
-                      </div>
-                      <span className="text-[11px] font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2">{row.media.caption}</span>
+                      <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-neutral-100 overflow-hidden"><MediaViewer media={row.media} caption={row.media.caption} /></div>
+                      <span className={capClass}>{row.media.caption}</span>
                     </div>
                   );
                 }

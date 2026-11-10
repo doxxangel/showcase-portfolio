@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX, Menu, X } from "lucide-react";
+import { useSite } from "@/context/SiteContext";
 import FlourishCursor from "./FlourishCursor";
 
 const NAV = [
@@ -13,15 +15,39 @@ const NAV = [
 type GateState = "closed" | "peek" | "open";
 
 export default function GateLanding() {
+  const { lang, setLang, audioActive, toggleAudio, playHover } = useSite();
   const [gate, setGate] = useState<GateState>("closed");
   const [desktop, setDesktop] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const root = useRef<HTMLElement>(null);
   const popover = useRef<HTMLDivElement>(null);
+
+  // Audio standaard direct aanzetten bij laden + resume bij eerste interactie
+  useEffect(() => {
+    if (!audioActive && toggleAudio) {
+      toggleAudio();
+    }
+
+    const unlockAudio = () => {
+      if (playHover) playHover(330);
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+
+    window.addEventListener("pointerdown", unlockAudio, { once: true });
+    window.addEventListener("keydown", unlockAudio, { once: true });
+
+    return () => {
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+  }, [audioActive, toggleAudio, playHover]);
 
   const open = useCallback(() => {
     setGate("open");
     popover.current?.classList.remove("active");
-  }, []);
+    if (playHover) playHover(440);
+  }, [playHover]);
 
   /* klik buiten het midden (titel + links), of Esc: poort weer dicht */
   const onMainClick = (e: React.MouseEvent) => {
@@ -73,17 +99,97 @@ export default function GateLanding() {
     "aspect-[813/1338] h-full shrink-0 origin-[var(--o)] transition-transform duration-[1600ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none [backface-visibility:hidden]";
 
   return (
-    <>
+    <div className="bg-white text-black min-h-screen pt-8 md:pt-10 px-8 md:px-14 lg:px-16 selection:bg-black selection:text-white flex flex-col justify-between">
+      
+      {/* 1. HEADER: Identiek aan de archive-pagina met logo, navigatie, NL/ENG en geluidsknop */}
+      <div className="w-full max-w-[1600px] mr-auto">
+        <header className="w-full mb-4 select-none pr-2">
+          <div className="flex items-center justify-between font-editorial-nav text-[13px] md:text-sm uppercase font-medium">
+            <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
+              <span className="nav-pipe hidden md:inline-block"></span>
+              <Link href="/" className="tracking-[0.2em] font-semibold text-black hover:opacity-70 transition">
+                DOXXANGEL STUDIOS
+              </Link>
+              <div className="hidden md:flex items-center gap-4 sm:gap-6">
+                <span className="nav-pipe inline-block"></span>
+                <Link href="/archive" className="tracking-[0.2em] text-black hover:opacity-60 transition">ARCHIVE</Link>
+                <span className="nav-pipe inline-block"></span>
+                <Link href="/info" className="tracking-[0.2em] text-black hover:opacity-60 transition">INFO</Link>
+                <span className="nav-pipe inline-block"></span>
+                <Link href="/contact" className="tracking-[0.2em] text-black hover:opacity-60 transition">CONTACT</Link>
+                <span className="nav-pipe inline-block"></span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3.5 tracking-[0.16em] text-[12px] md:text-xs font-semibold">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLang("nl");
+                    if (playHover) playHover(523.25);
+                  }}
+                  className={`transition-colors cursor-pointer ${
+                    lang === "nl" ? "text-black font-bold" : "text-neutral-400 hover:text-black font-normal"
+                  }`}
+                >
+                  NL
+                </button>
+                <span className="w-[1.5px] h-3.5 bg-neutral-300"></span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLang("en");
+                    if (playHover) playHover(587.33);
+                  }}
+                  className={`transition-colors cursor-pointer ${
+                    lang === "en" ? "text-black font-bold" : "text-neutral-400 hover:text-black font-normal"
+                  }`}
+                >
+                  ENG
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={toggleAudio}
+                className="hidden md:flex w-7 h-7 rounded-full items-center justify-center bg-neutral-900/80 hover:bg-neutral-900 text-white backdrop-blur-md border border-neutral-700 shadow-sm transition-all duration-200 cursor-pointer active:scale-90"
+                title={audioActive ? "Mute ambient audio" : "Enable ambient audio"}
+              >
+                {audioActive ? <Volume2 className="w-3.5 h-3.5 text-white" /> : <VolumeX className="w-3.5 h-3.5 text-neutral-300" />}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="md:hidden flex flex-col justify-center items-center w-7 h-7 gap-[4px] focus:outline-none cursor-pointer ml-1"
+              >
+                {menuOpen ? <X className="w-5 h-5 text-black" /> : <Menu className="w-5 h-5 text-black" />}
+              </button>
+            </div>
+          </div>
+
+          {menuOpen && (
+            <nav className="md:hidden pt-4 pb-2 font-editorial-nav text-[12px] tracking-[0.2em] uppercase font-medium mt-2 border-t border-neutral-200 flex flex-col">
+              <Link href="/archive" className="py-3.5 border-b border-neutral-200 text-black">ARCHIVE</Link>
+              <Link href="/info" className="py-3.5 border-b border-neutral-200 text-black">INFO</Link>
+              <Link href="/contact" className="py-3.5 text-black">CONTACT</Link>
+            </nav>
+          )}
+        </header>
+      </div>
+
+      {/* 2. GATE WORKSPACE */}
       <main
         ref={root}
         onClick={onMainClick}
-        className="relative grid h-[calc(100dvh-6rem)] min-h-[520px] w-full place-items-center overflow-hidden !bg-white !text-black"
+        className="relative grid flex-1 min-h-[520px] w-full place-items-center overflow-hidden !bg-white !text-black"
       >
-        {/* TITEL + NAVIGATIE LINKS: Blijft netjes gecentreerd binnen de afmetingen van het hekwerk */}
+        {/* TITEL + NAVIGATIE LINKS IN DE POORT */}
         <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 text-center">
           <div
             data-center
-            className={`flex max-w-[min(calc((100dvh-6rem)*0.84*0.9),60vw)] flex-col items-center gap-4 sm:gap-6 ${
+            className={`flex max-w-[min(calc((100dvh-10rem)*0.84*0.9),60vw)] flex-col items-center gap-4 sm:gap-6 ${
               gate === "open" ? "pointer-events-auto" : "pointer-events-none"
             }`}
           >
@@ -122,12 +228,11 @@ export default function GateLanding() {
 
         {/* HET HEKWERK */}
         <div
-          className={`relative z-20 flex h-[min(calc((100dvh-6rem)*0.84),72vw)] items-stretch justify-center gap-[1.4vh] [perspective:1800px] ${
+          className={`relative z-20 flex h-[min(calc((100dvh-10rem)*0.84),72vw)] items-stretch justify-center gap-[1.4vh] [perspective:1800px] ${
             gate === "open" ? "pointer-events-none" : ""
           }`}
           aria-hidden={gate === "open"}
         >
-          {/* eslint-disable @next/next/no-img-element */}
           <div
             className={swing}
             style={{ ["--o" as string]: "left", transform: `rotateY(${-angle}deg)` }}
@@ -156,14 +261,16 @@ export default function GateLanding() {
               className="block h-full w-full select-none"
             />
           </div>
-          {/* eslint-enable @next/next/no-img-element */}
 
           <button
             type="button"
             data-popover
             aria-label="Enter Doxxangel Studios"
             onClick={open}
-            onMouseEnter={() => setGate((g) => (g === "closed" ? "peek" : g))}
+            onMouseEnter={() => {
+              setGate((g) => (g === "closed" ? "peek" : g));
+              if (playHover) playHover(392);
+            }}
             onMouseLeave={() => setGate((g) => (g === "peek" ? "closed" : g))}
             onFocus={() => setGate((g) => (g === "closed" ? "peek" : g))}
             onBlur={() => setGate((g) => (g === "peek" ? "closed" : g))}
@@ -171,7 +278,7 @@ export default function GateLanding() {
           />
         </div>
 
-        {/* macOS-wolkje dat de cursor volgt */}
+        {/* macOS-wolkje */}
         <div id="cursorPopover" ref={popover} aria-hidden>
           <div className="font-sans-clean text-[13px] font-semibold leading-tight text-black">
             Enter Doxxangel Studios
@@ -183,6 +290,6 @@ export default function GateLanding() {
       </main>
 
       <FlourishCursor />
-    </>
+    </div>
   );
 }
