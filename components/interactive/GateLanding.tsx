@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSite } from "@/context/SiteContext";
 import SiteHeader from "../SiteHeader";
-import FlourishCursor from "./FlourishCursor";
 
 const NAV = [
   { href: "/archive", label: "Archive" },
@@ -15,15 +14,14 @@ const NAV = [
 type GateState = "closed" | "peek" | "open";
 
 export default function GateLanding() {
-  const { audioActive, toggleAudio, playHover } = useSite();
+  const { playHover } = useSite();
   const [gate, setGate] = useState<GateState>("closed");
   const [desktop, setDesktop] = useState(false);
   const root = useRef<HTMLElement>(null);
   const popover = useRef<HTMLDivElement>(null);
 
-  // Audio standaard aan bij laden + ontgrendelen bij de eerste interactie
+  // Audio-voorkeur wordt in SiteContext onthouden; hier alleen ontgrendelen bij de eerste interactie
   useEffect(() => {
-    if (!audioActive && toggleAudio) toggleAudio();
 
     const unlockAudio = () => {
       if (playHover) playHover(330);
@@ -186,7 +184,6 @@ export default function GateLanding() {
         </div>
       </main>
 
-      <FlourishCursor />
     </div>
   );
 }

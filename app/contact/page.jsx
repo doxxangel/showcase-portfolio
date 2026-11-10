@@ -124,6 +124,7 @@ export default function ContactPage() {
   const field = "minimal-input text-base md:text-xl text-black placeholder:text-neutral-300";
 
   return (
+    <>
     <div className="bg-white text-black min-h-screen pt-8 md:pt-10 px-5 sm:px-8 md:px-14 lg:px-16 selection:bg-black selection:text-white" onClick={() => setOpenPopoverId(null)}>
 
       <div className={`fixed bottom-6 right-6 z-[70] bg-black text-white text-xs px-4 py-2.5 rounded-lg shadow-xl transition-all duration-300 pointer-events-none flex items-center gap-2 ${toast.show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
@@ -279,10 +280,10 @@ export default function ContactPage() {
               </section>
             </div>
           </main>
-
-          <SiteFooter />
         </div>
       </div>
     </div>
+    <SiteFooter />
+    </>
   );
 }

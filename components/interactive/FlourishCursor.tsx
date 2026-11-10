@@ -4,9 +4,11 @@ import { useEffect, useRef } from "react";
 
 /* Cursor: een fleur-de-lis uit je moodboard die zacht achter je muis aan zweeft.
    Hij draait niet; alleen een klein beetje groter boven links, knoppen en de poort.
-   Zet <FlourishCursor /> in layout.jsx om hem op de hele site te gebruiken. */
+   Staat in app/layout.jsx, dus hij werkt op elke pagina. */
 
-const HEIGHT = 40; // px, breedte volgt vanzelf (2:3)
+// iets korter dan het origineel (392x587), zodat hij meer op een fleur-de-lis lijkt
+const WIDTH = 28;
+const HEIGHT = 33;
 const HOT_SCALE = 1.35;
 
 export default function FlourishCursor() {
@@ -67,8 +69,8 @@ html.flourish-cursor input, html.flourish-cursor textarea { cursor: text !import
         alt=""
         aria-hidden
         draggable={false}
-        className="pointer-events-none fixed left-0 top-0 z-[300] hidden select-none opacity-0 transition-opacity duration-200 will-change-transform [filter:drop-shadow(0_0_1.5px_#fff)] lg:block"
-        style={{ height: HEIGHT, width: "auto" }}
+        className="pointer-events-none fixed left-0 top-0 z-[300] hidden select-none opacity-0 transition-opacity duration-200 will-change-transform [filter:drop-shadow(0_0_0.4px_#000)_drop-shadow(0_0_0.4px_#000)_drop-shadow(0_0_1.5px_#fff)] lg:block"
+        style={{ width: WIDTH, height: HEIGHT, objectFit: "fill" }}
       />
     </>
   );

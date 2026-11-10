@@ -111,6 +111,9 @@ const CELLS = [
   { cls: '', side: 'left', ro: '22px', ry: '38%', ar: '2 / 3', ph: '80%', img: 'https://i.pinimg.com/736x/02/74/1f/02741fd796a24c464d2da3febf11e004.jpg' }
 ];
 
+/* rusthoogte van elke rij (zelfde als --row-1/2/3 in globals.css, totaal 3.2) */
+const ROW_FR = [1.15, 0.95, 1.1];
+
 /* vaste "willekeurige" verschuiving (zelfde op server en client), altijd naar binnen */
 const rnd = (i, k) => { const x = Math.sin((i + 1) * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
 const jit = (i, k, min, max) => `${Math.round(min + rnd(i, k) * (max - min))}px`;
@@ -288,6 +291,7 @@ export default function ArchivePage() {
   const currentMediaRows = activeModalIdx !== null ? (sharedMedia[activeModalIdx] || []) : [];
 
   return (
+    <>
     <div
       className="bg-white text-black min-h-screen pt-8 md:pt-10 px-5 sm:px-8 md:px-14 lg:px-16 selection:bg-black selection:text-white"
       onMouseMove={handleMouseMove}
@@ -302,10 +306,6 @@ export default function ArchivePage() {
       <div ref={popoverRef} id="cursorPopover" className={activeCursorItem ? 'active' : ''}>
         {activeCursorItem && activeCursorItem.item && (
           <div>
-            <div className="flex items-center justify-between mb-1.5 font-sans-clean">
-              <span className="text-[10px] uppercase tracking-widest font-bold text-neutral-500">{activeCursorItem.item.category}</span>
-              <span className="text-[10px] text-neutral-400 font-semibold">{activeCursorItem.index}</span>
-            </div>
             <strong className="block text-sm font-bold text-neutral-900 mb-1 uppercase tracking-wide font-sans-clean">{activeCursorItem.item.title}</strong>
             <p className="text-xs text-neutral-600 leading-relaxed font-sans-clean">{activeCursorItem.item.popoverSummary}</p>
             <div className="mt-2.5 pt-2 border-t border-black/10 flex items-center justify-between font-sans-clean">
@@ -320,8 +320,8 @@ export default function ArchivePage() {
         <SiteHeader onToggleAudio={handleToggleAudio} />
       </div>
 
-      <div className={`w-full max-w-[1500px] mx-auto ${activeModalIdx !== null ? 'hidden' : ''}`}>
-        <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 lg:h-[calc(100dvh-8.5rem)] lg:min-h-[800px] border-[2px] sm:border-[3px] border-black bg-white ${hoverGridClass}`}>
+      <div className={`calm-haze-entry w-full max-w-[1500px] mx-auto ${activeModalIdx !== null ? 'hidden' : ''}`}>
+        <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 lg:h-[var(--grid-h)] border-[2px] sm:border-[3px] border-black bg-white ${hoverGridClass}`}>
 
           {sectionsData[lang].map((p, i) => {
             const c = CELLS[i];
@@ -332,7 +332,7 @@ export default function ArchivePage() {
                 className={`grid-cell cell ${c.cls} border-black ${hoveredCell === i ? 'is-hovered' : ''}`}
                 data-cell={i}
                 data-side={c.side}
-                style={{ '--ro': c.ro, '--ry': c.ry, '--ar': c.ar, '--ph': c.ph }}
+                style={{ '--ro': c.ro, '--ry': c.ry, '--ar': c.ar, '--ph': c.ph, '--rf': ROW_FR[Math.floor(i / 2)], '--ph-n': parseFloat(c.ph) / 100 }}
                 onClick={() => openProject(i)}
                 onMouseEnter={(e) => handleCellEnter(i, i % 2, Math.floor(i / 2), e)}
                 onMouseLeave={handleCellLeave}
@@ -369,7 +369,7 @@ export default function ArchivePage() {
 
       {/* Project modal */}
       {activeModalIdx !== null && currentProject && (
-        <div className="w-full max-w-[1500px] mx-auto">
+        <div key={activeModalIdx} className="calm-haze-entry w-full max-w-[1500px] mx-auto">
           <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md py-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
             <button onClick={closeProject} className="flex items-center gap-2 tracking-[0.2em] font-semibold text-black hover:opacity-60 transition cursor-pointer">
               <span className="text-sm">✕</span> <span>{lang === 'nl' ? 'SLUITEN' : 'CLOSE'}</span>
@@ -451,9 +451,8 @@ export default function ArchivePage() {
         </div>
       )}
 
-      <div className="w-full max-w-[1500px] mx-auto">
-        <SiteFooter />
-      </div>
     </div>
+    <SiteFooter />
+    </>
   );
 }

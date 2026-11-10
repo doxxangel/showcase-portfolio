@@ -1,102 +1,69 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { ArrowUp } from 'lucide-react';
-import { useSite } from '@/context/SiteContext';
+import { useEffect, useRef } from 'react';
 
-const LINKS = [
-  { href: '/archive', label: 'ARCHIVE' },
-  { href: '/info', label: 'INFO' },
-  { href: '/contact', label: 'CONTACT' },
-];
+const TEXT = 'doxxangel studios';
+const VISIBLE = 0.2; // deel van de staartjes onder de lijn (de g) dat zichtbaar is onderaan
+const FONT = 'Jeffrson';
 
 /* Footer voor Archive, Info en Contact (niet voor de landing).
-   Gebruik: <SiteFooter /> onderaan de pagina. */
+   Over de hele breedte van het scherm staat doxxangel studios in Jeffrson;
+   helemaal onderaan zie je alleen het bovenste deel (VISIBLE) van de letters.
+   Gebruik: <SiteFooter /> BUITEN de pagina-wrapper met padding, zodat hij de volle breedte pakt. */
 export default function SiteFooter() {
-  const { lang } = useSite();
-  const [time, setTime] = useState('');
+  const box = useRef(null);
+  const word = useRef(null);
 
   useEffect(() => {
-    const tick = () =>
-      setTime(
-        new Date().toLocaleTimeString('nl-NL', {
-          timeZone: 'Europe/Amsterdam',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        })
-      );
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
+    const el = box.current;
+    const span = word.current;
+    if (!el || !span) return;
+    const ctx = document.createElement('canvas').getContext('2d');
+    let alive = true;
+
+    const fit = () => {
+      if (!alive || !ctx) return;
+      ctx.font = `100px ${FONT}`;
+      const m = ctx.measureText(TEXT);
+      const ink = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
+      if (!ink) return;
+      const k = el.clientWidth / ink; // schaal van 100px naar de echte maat
+      const size = 100 * k;
+      const fontAsc = m.fontBoundingBoxAscent ?? m.actualBoundingBoxAscent;
+      const fontDesc = m.fontBoundingBoxDescent ?? m.actualBoundingBoxDescent;
+      // met line-height 1 ligt de baseline op: halve leading + ascent
+      const baseline = (size - (fontAsc + fontDesc) * k) / 2 + fontAsc * k;
+      const capTop = baseline - m.actualBoundingBoxAscent * k;
+
+      span.style.fontSize = `${size}px`;
+      span.style.left = `${m.actualBoundingBoxLeft * k}px`;
+      span.style.top = `${-capTop}px`;
+      // alle letters helemaal zichtbaar, alleen de staart van de g valt deels weg
+      el.style.height = `${(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent * VISIBLE) * k}px`;
+      span.style.opacity = '1';
+    };
+
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    document.fonts.load(`100px ${FONT}`).then(fit, fit);
+
+    return () => {
+      alive = false;
+      ro.disconnect();
+    };
   }, []);
 
-  const t =
-    lang === 'nl'
-      ? { top: 'NAAR BOVEN', made: 'Gemaakt in Breda', mail: 'Schrijf me' }
-      : { top: 'BACK TO TOP', made: 'Made in Breda', mail: 'Write to me' };
-
   return (
-    <footer className="mt-20 w-full select-none md:mt-32">
-      {/* dikke lijn, zoals de rasterranden op Archive */}
-      <div className="border-t-[3px] border-black" />
-
-      {/* rij 1: navigatie met dezelfde strepen als de header */}
-      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 py-6 font-editorial-nav text-[12px] font-medium uppercase md:text-sm">
-        <nav aria-label="Footer" className="flex flex-wrap items-center gap-3 sm:gap-5">
-          <span className="nav-pipe" />
-          {LINKS.map((l) => (
-            <span key={l.href} className="flex items-center gap-3 sm:gap-5">
-              <Link href={l.href} className="tracking-[0.2em] transition hover:opacity-60">
-                {l.label}
-              </Link>
-              <span className="nav-pipe" />
-            </span>
-          ))}
-        </nav>
-
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="group flex cursor-pointer items-center gap-2 tracking-[0.2em] transition hover:opacity-60"
-        >
-          {t.top}
-          <ArrowUp className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-1" />
-        </button>
-      </div>
-
-      {/* rij 2: groot woordmerk met de fleur-de-lis */}
-      <div className="relative overflow-hidden border-t border-neutral-200 py-8 md:py-12">
-        <div className="font-serif-luxury weight-ultra-thin text-[clamp(2.75rem,11vw,9.5rem)] uppercase leading-[0.9] text-black">
-          <div>Doxxangel</div>
-          <div>Studios</div>
-        </div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/cursor-fleur.png"
-          alt=""
+    <footer className="mt-10 w-full select-none md:mt-16" aria-label="Doxxangel Studios">
+      <div ref={box} className="relative h-[11vw] w-full overflow-hidden">
+        <span
+          ref={word}
           aria-hidden
-          draggable={false}
-          className="pointer-events-none absolute right-2 top-1/2 hidden h-[78%] w-auto -translate-y-1/2 opacity-90 sm:block"
-        />
-      </div>
-
-      {/* rij 3: kleine regel */}
-      <div className="flex flex-col gap-3 border-t-[3px] border-black py-5 font-sans-clean text-xs text-neutral-700 sm:flex-row sm:items-center sm:justify-between md:text-sm">
-        <a
-          href="mailto:Info@doxxangelstudios.nl"
-          className="font-mono underline underline-offset-4 transition hover:opacity-60"
+          className="font-jeffrson pointer-events-none absolute left-0 top-0 whitespace-nowrap leading-none text-black opacity-0 transition-opacity duration-500"
         >
-          {t.mail}: Info@doxxangelstudios.nl
-        </a>
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
-          <span className="font-mono tabular-nums">Amsterdam {time || '--:--:--'}</span>
-          <span>{t.made}</span>
-          <span>&copy; 2009&mdash;2026 DOXXANGEL STUDIOS</span>
-        </div>
+          {TEXT}
+        </span>
       </div>
-      <div className="pb-8" />
     </footer>
   );
 }

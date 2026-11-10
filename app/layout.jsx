@@ -1,6 +1,7 @@
 import './globals.css';
 import { SiteProvider } from '@/context/SiteContext';
 import SmoothScroll from '@/components/SmoothScroll';
+import FlourishCursor from '@/components/interactive/FlourishCursor';
 
 export const metadata = {
   title: 'DOXXANGEL STUDIOS',
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
             {children}
           </SiteProvider>
         </SmoothScroll>
+        <FlourishCursor />
       </body>
     </html>
   );

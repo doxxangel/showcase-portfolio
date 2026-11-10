@@ -4,6 +4,16 @@
 
 
 
+@font-face {
+  font-family: 'Jeffrson';
+  src: url('./fonts/Jeffrson.woff2') format('woff2'), url('./fonts/Jeffrson.woff') format('woff');
+  font-display: swap;
+}
+
+.font-jeffrson {
+  font-family: 'Jeffrson', 'Cormorant Garamond', Georgia, serif;
+}
+
 /* ==========================================================================
    1. ROOT VARIABLES & LAYOUT FRACTIONS
    ========================================================================== */
@@ -159,7 +169,7 @@ body {
     width: var(--line-thickness);
     height: 100%;
     background-color: var(--line-color);
-    z-index: 20;
+    z-index: 50;
     pointer-events: none;
   }
 
@@ -171,7 +181,18 @@ body {
     width: 100%;
     height: var(--line-thickness);
     background-color: var(--line-color);
-    z-index: 20;
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  /* buitenrand als laag bovenop, zodat foto's die over de rand hangen er altijd achter zitten */
+  .editorial-grid { position: relative; --grid-h: clamp(860px, 112dvh, 1080px); }
+  .editorial-grid::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--line-thickness) * -1);
+    border: var(--line-thickness) solid var(--line-color);
+    z-index: 50;
     pointer-events: none;
   }
 
@@ -437,14 +458,15 @@ header.menu-active,
   }
   100% {
     opacity: 1;
-    filter: blur(0px);
-    transform: translateY(0);
+    filter: none;
+    transform: none;
   }
 }
 
+/* geen 'forwards' en geen blijvende will-change: na de fade blijft er geen filter/transform
+   op de hele pagina hangen (dat maakte scrollen/hover traag en brak position: fixed) */
 .calm-haze-entry {
-  animation: calmHazeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  will-change: opacity, filter, transform;
+  animation: calmHazeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 /* Lenis aanbevolen basis styles */
 html.lenis, html.lenis body {
@@ -535,21 +557,23 @@ html.lenis, html.lenis body {
   .grid-cell:hover .cell-meta,
   .grid-cell.is-hovered .cell-meta { transform: none; }
 
+  /* foto heeft een vaste maat (rusthoogte van zijn rij), dus hij groeit niet mee bij hover */
   /* foto: in rust rechts en mag over de rand van het vak hangen (--ro, in px),
      bij hover staat hij binnen het vak, naast de tekst */
   .cell-photo {
     position: absolute; z-index: 5; margin: 0;
     left: calc(100% + var(--ro, 0px)); top: var(--ry, 50%); translate: -100% -50%;
-    height: var(--ph, 78%); width: auto; aspect-ratio: var(--ar, 3 / 4);
+    height: calc(var(--grid-h) * var(--rf, 1) / 3.2 * var(--ph-n, 0.78)); width: auto; aspect-ratio: var(--ar, 3 / 4);
     pointer-events: none;
     transition: left 0.75s cubic-bezier(0.16, 1, 0.3, 1), top 0.75s cubic-bezier(0.16, 1, 0.3, 1),
       translate 0.75s cubic-bezier(0.16, 1, 0.3, 1), scale 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-      opacity 0.5s ease, filter 0.5s ease;
+      opacity 0.5s ease;
+    will-change: left, top, translate, opacity;
   }
   .cell[data-side="right"]:hover .cell-photo,
-  .cell[data-side="right"].is-hovered .cell-photo { left: calc(100% - 2.5rem); top: 50%; translate: -100% -50%; scale: 1.04; }
+  .cell[data-side="right"].is-hovered .cell-photo { left: calc(100% - 2.5rem); top: 50%; translate: -100% -50%; }
   .cell[data-side="left"]:hover .cell-photo,
-  .cell[data-side="left"].is-hovered .cell-photo { left: 2.5rem; top: 50%; translate: 0 -50%; scale: 1.04; }
+  .cell[data-side="left"].is-hovered .cell-photo { left: 2.5rem; top: 50%; translate: 0 -50%; }
 
   .cell[data-side="right"]:hover .cell-body,
   .cell[data-side="right"].is-hovered .cell-body { width: 50%; }
@@ -557,7 +581,7 @@ html.lenis, html.lenis body {
   .cell[data-side="left"].is-hovered .cell-body { width: 50%; margin-left: auto; }
 
   /* de andere vakken treden terug en worden rustig (kleinere titel, geen verschuiving) */
-  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-photo { opacity: 0.25; scale: 0.86; filter: blur(1px); }
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-photo { opacity: 0.25; scale: 0.86; }
   .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-body { opacity: 0.45; width: 100%; }
   .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-meta { transform: none; }
   .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-title { font-size: clamp(1.1rem, 2vw, 2.4rem); }

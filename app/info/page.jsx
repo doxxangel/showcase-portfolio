@@ -8,27 +8,47 @@ import { clampPopover } from '@/lib/clampPopover';
 import Pop from '@/components/Pop';
 
 const translations = {
-  nl: {
-    lblApps: "APPS DIE IK GEBRUIK", lblContact: "Contact",
-    contactPrompt: "Spreekt iets je aan of wil je van gedachten wisselen? Laat het horen:",
-    popDirectTitle: "Directe Post", popDirectDesc: "Opent je mailclient om direct een bericht te sturen.",
-    popBlender: "Open-source 3D software voor modelleren, animatie en visualisaties.",
-    popUnity: "Real-time engine voor interactieve 3D ervaringen.",
-    popFigma: "Interface design en interactieve prototypes voor digitale producten.",
-    popVscode: "Lichtgewicht editor voor software-architectuur en code.",
-    toastAudioOn: "Ambient geluid ingeschakeld", toastAudioOff: "Audio uitgeschakeld"
-  },
-  en: {
-    lblApps: "APPS I USE", lblContact: "Contact",
-    contactPrompt: "Like something I've said? Think I'm a heretic? Let me hear it:",
-    popDirectTitle: "Direct Dispatch", popDirectDesc: "Opens your preferred email client to write directly.",
-    popBlender: "Open-source 3D creation suite for modeling, animation, and visualization.",
-    popUnity: "Real-time engine for interactive 3D virtual experiences.",
-    popFigma: "Interface design and collaborative prototyping tool.",
-    popVscode: "Lightweight source-code editor for software architecture.",
-    toastAudioOn: "Ambient audio enabled", toastAudioOff: "Audio muted"
-  }
+  nl: { lblApps: "APPS DIE IK GEBRUIK", lblStack: "TECHSTACK", toastAudioOn: "Ambient geluid ingeschakeld", toastAudioOff: "Audio uitgeschakeld" },
+  en: { lblApps: "APPS I USE", lblStack: "TECH STACK", toastAudioOn: "Ambient audio enabled", toastAudioOff: "Audio muted" }
 };
+
+const APPS = [
+  { name: 'VSCode', title: 'Visual Studio Code', pitch: 523, nl: 'Mijn code-editor voor alles wat ik bouw, van sites tot scripts.', en: 'My code editor for everything I build, from sites to scripts.' },
+  { name: 'Figma', pitch: 440, nl: 'Interfaces ontwerpen en klikbare prototypes maken.', en: 'Designing interfaces and building clickable prototypes.' },
+  { name: 'Pinterest', pitch: 587, nl: 'Mijn visuele archief vol textuur, typografie en sfeer.', en: 'My visual archive of texture, typography and mood.' },
+  { name: 'Trello', pitch: 392, nl: 'Projecten plannen en taken bijhouden op borden.', en: 'Planning projects and keeping track of tasks on boards.' },
+  { name: 'Blender', pitch: 349, nl: '3D modelleren, texturen en renders maken.', en: '3D modelling, texturing and rendering.' },
+  { name: 'RPG Maker', pitch: 659, nl: 'Kleine games bouwen met eigen maps en karakters.', en: 'Building small games with custom maps and characters.' },
+  { name: 'Polycam', pitch: 698, nl: 'Echte objecten en ruimtes 3D scannen met mijn telefoon.', en: 'Scanning real objects and spaces into 3D with my phone.' },
+  { name: 'Unity', pitch: 784, nl: 'Real-time engine voor interactieve 3D-ervaringen.', en: 'Real-time engine for interactive 3D experiences.' },
+];
+
+const STACK = [
+  { name: 'Next.js', pitch: 523, nl: 'React-framework waar deze site op draait.', en: 'The React framework this site runs on.' },
+  { name: 'TS', title: 'TypeScript', pitch: 587, nl: 'TypeScript: JavaScript met types, voor minder fouten.', en: 'TypeScript: JavaScript with types, for fewer bugs.' },
+  { name: 'JS', title: 'JavaScript', pitch: 659, nl: 'JavaScript voor interactie, animatie en geluid.', en: 'JavaScript for interaction, animation and sound.' },
+  { name: 'CMS', title: 'Content Management System', pitch: 698, nl: 'Beheersystemen zodat klanten zelf content kunnen aanpassen.', en: 'Content systems so clients can edit their own content.' },
+  { name: 'Tailwind', title: 'Tailwind CSS', pitch: 740, nl: 'CSS-framework voor snelle, consistente styling direct in de code.', en: 'CSS framework for fast, consistent styling right in the markup.' },
+  { name: 'GitHub', pitch: 784, nl: 'Versiebeheer en opslag van al mijn code.', en: 'Version control and a home for all my code.' },
+  { name: 'Vercel', pitch: 880, nl: 'Hosting en automatische deploys bij elke push.', en: 'Hosting with automatic deploys on every push.' },
+];
+
+/* Rijtje woorden met macOS-wolkje dat uitlegt wat het is */
+function ToolList({ title, items, lang, pp, prefix }) {
+  return (
+    <section className="pb-2 pt-2">
+      <h2 className="text-base md:text-lg font-bold tracking-wider uppercase underline underline-offset-4 mb-3">{title}</h2>
+      <div className="flex flex-wrap gap-x-2 gap-y-1">
+        {items.map((t, i) => (
+          <span key={t.name}>
+            <Pop {...pp} id={`${prefix}-${i}`} pitch={t.pitch} title={t.title || t.name} desc={t[lang]}>{t.name}</Pop>
+            {i < items.length - 1 && ','}
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export default function InfoPage() {
   const { lang, audioActive, toggleAudio, playHover } = useSite();
@@ -55,14 +75,8 @@ export default function InfoPage() {
   };
   const pp = { openId: openPopoverId, toggle: togglePopover, play: playHover };
 
-  const apps = [
-    { id: 'app-b', pitch: 349, name: 'Blender', title: 'Blender 3D', desc: dict.popBlender },
-    { id: 'app-u', pitch: 392, name: 'UNITY', title: 'Unity Engine', desc: dict.popUnity },
-    { id: 'app-f', pitch: 440, name: 'Figma', title: 'Figma', desc: dict.popFigma },
-    { id: 'app-v', pitch: 523, name: 'VS Code', title: 'Visual Studio Code', desc: dict.popVscode },
-  ];
-
   return (
+    <>
     <div className="bg-white text-black min-h-screen pt-8 md:pt-10 px-5 sm:px-8 md:px-14 lg:px-16 selection:bg-black selection:text-white" onClick={() => setOpenPopoverId(null)}>
       <div className={`fixed bottom-6 right-6 z-[70] bg-black text-white text-xs px-4 py-2.5 rounded-lg shadow-xl transition-all duration-300 pointer-events-none flex items-center gap-2 ${toast.show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
         <Check className="w-3.5 h-3.5 text-emerald-400" />
@@ -140,34 +154,8 @@ export default function InfoPage() {
 
               <div className="border-t border-neutral-200 pt-2 md:pt-6"></div>
 
-              <section className="pt-2">
-                <h2 className="text-base md:text-lg font-bold tracking-wider uppercase underline underline-offset-4 mb-3">{dict.lblApps}</h2>
-                <div className="flex flex-wrap gap-x-2 gap-y-1">
-                  {apps.map((a, i) => (
-                    <span key={a.id}>
-                      <Pop {...pp} id={a.id} pitch={a.pitch} title={a.title} desc={a.desc} plain>{a.name}</Pop>
-                      {i < apps.length - 1 && ','}
-                    </span>
-                  ))}
-                </div>
-              </section>
-
-              <section className="pt-2 md:pt-4">
-                <h2 className="text-base md:text-lg font-bold tracking-wider uppercase underline underline-offset-4 mb-3">{dict.lblContact}</h2>
-                <p className="mb-2">{dict.contactPrompt}</p>
-                <span
-                  className={`mac-trigger relative inline-block break-all text-sm sm:text-lg md:text-xl underline underline-offset-4 hover:opacity-75 transition cursor-pointer font-mono ${openPopoverId === 'mail' ? 'popover-open' : ''}`}
-                  onMouseEnter={(e) => { clampPopover(e.currentTarget); playHover(659); }}
-                  onClick={(e) => togglePopover(e, 'mail', 659)}
-                >
-                  Info@doxxangelstudios.nl
-                  <span className="mac-popover">
-                    <strong className="block text-xs font-bold text-neutral-900 mb-1 font-sans-clean">{dict.popDirectTitle}</strong>
-                    <span className="block text-xs text-neutral-600 leading-relaxed font-sans-clean">{dict.popDirectDesc}</span>
-                    <a href="mailto:Info@doxxangelstudios.nl" className="block text-[11px] font-bold text-black uppercase underline underline-offset-2 mt-2">Stuur e-mail ↗</a>
-                  </span>
-                </span>
-              </section>
+              <ToolList title={dict.lblApps} items={APPS} lang={lang} pp={pp} prefix="app" />
+              <ToolList title={dict.lblStack} items={STACK} lang={lang} pp={pp} prefix="stack" />
             </div>
 
             <aside className="w-full mt-2 lg:mt-0">
@@ -180,10 +168,10 @@ export default function InfoPage() {
               </div>
             </aside>
           </main>
-
-          <SiteFooter />
         </div>
       </div>
     </div>
+    <SiteFooter />
+    </>
   );
 }
