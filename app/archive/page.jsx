@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Check } from 'lucide-react';
+import { Check, Play } from 'lucide-react';
 import { useSite } from '@/context/SiteContext';
 import SiteHeader from '@/components/SiteHeader';
+import SiteFooter from '@/components/SiteFooter';
 import { clampPopover } from '@/lib/clampPopover';
 
 const sharedMedia = {
@@ -92,13 +93,98 @@ const sectionsData = {
   ]
 };
 
+
+/* Consistente tekstjes voor elk vak: index, tool, titel, categorie en één regel uitleg */
+const descriptors = {
+  nl: ["Kuromi Knight, Cinnamoroll King & LP-houder", "Gothic magazine, planning & beheer", "macOS-desktop, iPod & eigen soundtrack", "Eigen kamer, custom maps & karakters", "Zen garden, standbeelden & kaarslicht", "Door het dorp, leeruitkomsten in boeken"],
+  en: ["Kuromi Knight, Cinnamoroll King & LP stand", "Gothic magazine, schedule & admin", "macOS desktop, iPod & custom soundtrack", "My own room, custom maps & characters", "Zen garden, statues & candlelight", "Through the town, learning outcomes in books"]
+};
+
+/* Per vak: kant waar de foto bij hover staat (right = rechts van de tekst, left = links),
+   hoe ver de foto in rust over de rand hangt (ro), hoogte in het vak (ry), beeldverhouding en hoogte */
+const CELLS = [
+  { cls: 'lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0', side: 'right', ro: '36px', ry: '55%', ar: '2 / 3', ph: '80%', img: 'https://i.pinimg.com/736x/75/13/27/7513276390ed3eeff2d9f25839318ace.jpg' },
+  { cls: 'lg-divider-b border-b-[2px] lg:border-b-0', side: 'left', ro: '24px', ry: '60%', ar: '16 / 10', ph: '62%', img: 'https://i.pinimg.com/736x/b8/73/30/b873302595741b7ba9321f0d911ca72a.jpg' },
+  { cls: 'lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0', side: 'right', ro: '44px', ry: '30%', ar: '16 / 10', ph: '60%', img: 'https://i.pinimg.com/736x/5e/60/70/5e60702e8474cf20f7272203af620c0f.jpg' },
+  { cls: 'lg-divider-b border-b-[2px] lg:border-b-0', side: 'left', ro: '30px', ry: '62%', ar: '4 / 3', ph: '66%', img: 'https://i.pinimg.com/736x/5f/56/ce/5f56ced15deb506f1ec69f26433bb61b.jpg' },
+  { cls: 'lg-divider-r border-b-[2px] lg:border-b-0', side: 'right', ro: '40px', ry: '58%', ar: '3 / 4', ph: '78%', img: 'https://i.pinimg.com/736x/a4/05/72/a40572fca98801b5f639cd6fc9039d7b.jpg' },
+  { cls: '', side: 'left', ro: '22px', ry: '38%', ar: '2 / 3', ph: '80%', img: 'https://i.pinimg.com/736x/02/74/1f/02741fd796a24c464d2da3febf11e004.jpg' }
+];
+
+/* vaste "willekeurige" verschuiving (zelfde op server en client), altijd naar binnen */
+const rnd = (i, k) => { const x = Math.sin((i + 1) * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
+const jit = (i, k, min, max) => `${Math.round(min + rnd(i, k) * (max - min))}px`;
+
 function MediaViewer({ media, caption, className = "w-full h-full object-cover block" }) {
-  if (!media) return null;
-  const isVideo = media.type === 'video' || (typeof media.url === 'string' && media.url.endsWith('.mov'));
-  if (isVideo) {
-    return <video src={media.url} poster={media.poster} controls playsInline className={className} />;
+  const { lang } = useSite();
+  const [failed, setFailed] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef(null);
+
+  const url = media && typeof media.url === 'string' ? media.url.trim() : '';
+  const isVideo = !!media && (media.type === 'video' || /\.(mov|mp4|m4v|webm)$/i.test(url));
+  const src = url ? encodeURI(url) : '';
+
+  // niets geüpload of bestand niet te laden: nette plek in plaats van een kapot beeld
+  if (!url || failed) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-neutral-100 px-4 text-center">
+        <span className="font-sans-clean text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
+          {isVideo ? (lang === 'nl' ? 'Video volgt' : 'Video coming soon') : (lang === 'nl' ? 'Beeld volgt' : 'Image coming soon')}
+        </span>
+      </div>
+    );
   }
-  return <img src={media.url} alt={caption || ''} loading="lazy" className={className} />;
+
+  if (isVideo) {
+    const type = /\.webm$/i.test(url) ? 'video/webm' : 'video/mp4'; // .mov met H.264 speelt als mp4
+    const start = () => {
+      const v = videoRef.current;
+      if (!v) return;
+      setPlaying(true);
+      const r = v.play();
+      if (r && r.catch) r.catch(() => setFailed(true));
+    };
+    return (
+      <div className="relative h-full w-full bg-black">
+        <video
+          ref={videoRef}
+          poster={media.poster ? encodeURI(media.poster) : undefined}
+          controls={playing}
+          playsInline
+          preload="metadata"
+          onPlay={() => setPlaying(true)}
+          onEnded={() => setPlaying(false)}
+          onError={() => setFailed(true)}
+          className="h-full w-full bg-black object-contain block"
+        >
+          <source src={src} type={type} onError={() => setFailed(true)} />
+        </video>
+        {!playing && (
+          <button
+            type="button"
+            onClick={start}
+            aria-label={lang === 'nl' ? 'Video afspelen' : 'Play video'}
+            className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/10 transition hover:bg-black/20"
+          >
+            <span className="mac-glass-play-btn flex h-14 w-14 items-center justify-center rounded-full sm:h-16 sm:w-16">
+              <Play className="ml-0.5 h-6 w-6 fill-black text-black" />
+            </span>
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={caption || ''}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className={className}
+    />
+  );
 }
 
 const capClass = "text-[11px] font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2";
@@ -235,169 +321,50 @@ export default function ArchivePage() {
       </div>
 
       <div className={`w-full max-w-[1500px] mx-auto ${activeModalIdx !== null ? 'hidden' : ''}`}>
-        <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 border-[2px] sm:border-[3px] border-black bg-white ${hoverGridClass}`}>
+        <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 lg:h-[calc(100dvh-8.5rem)] lg:min-h-[800px] border-[2px] sm:border-[3px] border-black bg-white ${hoverGridClass}`}>
 
-          {/* CELL 0: SANRIO CHESS */}
-          <div
-            className={`grid-cell lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 0 ? 'is-hovered' : ''}`}
-            data-cell="0"
-            onClick={() => openProject(0)}
-            onMouseEnter={(e) => handleCellEnter(0, 0, 0, e)}
-            onMouseLeave={handleCellLeave}
-          >
-            <div className="layer-typography">
-              <div className="flex items-center justify-between">
-                <span className="displaced-word w-date font-serif-luxury text-2xl sm:text-4xl lg:text-6xl weight-ultra-thin text-black">01.16.2026</span>
-                <span className="text-[10px] sm:text-xs font-sans-clean tracking-widest text-neutral-800 uppercase font-semibold underline underline-offset-4">BLENDER // 01 ↗</span>
-              </div>
-              <div className="mt-4 lg:mt-auto lg:pt-6">
-                <h2 className="displaced-word w-stealer font-serif-luxury text-3xl sm:text-5xl lg:text-7xl uppercase weight-thin text-black leading-none">SANRIO CHESS</h2>
-                <span className="block text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-600 font-semibold mt-1.5">Kuromi Knight, Cinnamoroll & LP Stand</span>
-              </div>
-            </div>
-            <div className="layer-photo">
-              <div className="displaced-photo p-arch w-full lg:w-56 aspect-[16/9] lg:aspect-[3/4.5] overflow-hidden bg-neutral-100">
-                <img src="https://i.pinimg.com/736x/75/13/27/7513276390ed3eeff2d9f25839318ace.jpg" alt="Sanrio Chess" className="w-full h-full object-cover block" />
-              </div>
-            </div>
-          </div>
+          {sectionsData[lang].map((p, i) => {
+            const c = CELLS[i];
+            const cat = p.category.includes(': ') ? p.category.split(': ')[1] : p.category;
+            return (
+              <div
+                key={p.id}
+                className={`grid-cell cell ${c.cls} border-black ${hoveredCell === i ? 'is-hovered' : ''}`}
+                data-cell={i}
+                data-side={c.side}
+                style={{ '--ro': c.ro, '--ry': c.ry, '--ar': c.ar, '--ph': c.ph }}
+                onClick={() => openProject(i)}
+                onMouseEnter={(e) => handleCellEnter(i, i % 2, Math.floor(i / 2), e)}
+                onMouseLeave={handleCellLeave}
+              >
+                <div className="cell-body">
+                  <div className="cell-row">
+                    <span className="cell-meta cell-index font-serif-luxury weight-ultra-thin" style={{ '--dx': jit(i, 1, 8, 40), '--dy': jit(i, 2, 2, 20) }}>
+                      {p.indexStr}
+                    </span>
+                    <span className="cell-meta cell-tool font-sans-clean" style={{ '--dx': jit(i, 3, 8, 40), '--dy': jit(i, 4, 6, 28) }}>
+                      {p.engineTag} ↗
+                    </span>
+                  </div>
 
-          {/* CELL 1: SOUNDDOG BREDA */}
-          <div
-            className={`grid-cell lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 1 ? 'is-hovered' : ''}`}
-            data-cell="1"
-            onClick={() => openProject(1)}
-            onMouseEnter={(e) => handleCellEnter(1, 1, 0, e)}
-            onMouseLeave={handleCellLeave}
-          >
-            <div className="layer-typography">
-              <div className="flex justify-between items-start">
-                <h2 className="displaced-word w-biggirls font-serif-luxury text-2xl sm:text-4xl lg:text-5xl leading-tight weight-thin text-black">
-                  SOUNDDOG<br /><span className="text-xl sm:text-2xl lg:text-3xl weight-ultra-thin">[BREDA]</span>
-                </h2>
-                <div className="displaced-word w-badge7 shrink-0">
-                  <div className="circle-badge-7"><span>CMS</span></div>
+                  <h2 className="cell-meta cell-title font-serif-luxury weight-thin" style={{ '--dx': jit(i, 5, 0, 50), '--dy': jit(i, 6, -8, 8) }}>
+                    {p.title}
+                  </h2>
+
+                  <div className="cell-meta cell-foot font-sans-clean" style={{ '--dx': jit(i, 7, 10, 70), '--dy': `-${jit(i, 8, 2, 14)}` }}>
+                    <span className="cell-cat">{cat}</span>
+                    <span className="cell-desc">{descriptors[lang][i]}</span>
+                  </div>
+                </div>
+
+                <div className="cell-photo">
+                  <img src={c.img} alt={p.title} className="block h-full w-full object-cover" />
                 </div>
               </div>
-              <div className="flex justify-end mt-4 lg:mt-auto">
-                <span className="font-sans-clean text-[10px] sm:text-xs text-neutral-800 font-semibold tracking-widest uppercase">Gothic Magazine // Timetable</span>
-              </div>
-            </div>
-            <div className="layer-photo">
-              <div className="displaced-photo p-runner w-full lg:w-72 aspect-[16/9] lg:aspect-[16/10] overflow-hidden bg-neutral-100">
-                <img src="https://i.pinimg.com/736x/b8/73/30/b873302595741b7ba9321f0d911ca72a.jpg" alt="Sound Dog" className="w-full h-full object-cover block" />
-              </div>
-            </div>
-          </div>
-
-          {/* CELL 2: MACOS PORTFOLIO */}
-          <div
-            className={`grid-cell lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 2 ? 'is-hovered' : ''}`}
-            data-cell="2"
-            onClick={() => openProject(2)}
-            onMouseEnter={(e) => handleCellEnter(2, 0, 1, e)}
-            onMouseLeave={handleCellLeave}
-          >
-            <div className="layer-typography">
-              <div>
-                <div className="text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-800 font-semibold mb-1">macOS Desktop // Audio</div>
-                <span className="text-[9px] sm:text-[11px] font-sans-clean uppercase tracking-wider text-neutral-500">Inclusief iPod & Custom Soundtrack</span>
-              </div>
-              <div className="mt-4 lg:mt-auto">
-                <span className="displaced-word w-scene3 font-serif-luxury text-xl sm:text-2xl lg:text-3xl tracking-widest text-black uppercase block weight-thin">SYSTEM DESKTOP</span>
-              </div>
-            </div>
-            <div className="layer-photo">
-              <div className="displaced-photo p-cobble w-full lg:w-64 aspect-[16/9] overflow-hidden bg-neutral-100">
-                <img src="https://i.pinimg.com/736x/5e/60/70/5e60702e8474cf20f7272203af620c0f.jpg" alt="macOS" className="w-full h-full object-cover block" />
-              </div>
-            </div>
-          </div>
-
-          {/* CELL 3: ROOM // HORROR */}
-          <div
-            className={`grid-cell lg-divider-b border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 3 ? 'is-hovered' : ''}`}
-            data-cell="3"
-            onClick={() => openProject(3)}
-            onMouseEnter={(e) => handleCellEnter(3, 1, 1, e)}
-            onMouseLeave={handleCellLeave}
-          >
-            <div className="layer-typography text-left lg:text-right">
-              <span className="text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-700 font-semibold block mb-1">RPG Maker // Horror</span>
-              <div className="my-3 lg:my-auto">
-                <h2 className="displaced-word w-noway font-serif-luxury text-3xl sm:text-5xl lg:text-8xl uppercase text-black weight-ultra-thin leading-none">
-                  ROOM // HORROR<br /><span className="text-2xl sm:text-4xl lg:text-5xl font-light weight-ultra-thin">[8-BIT]</span>
-                </h2>
-              </div>
-              <div className="text-[10px] sm:text-xs font-sans-clean text-neutral-800 tracking-wider uppercase font-semibold">04 // Custom Maps & Characters</div>
-            </div>
-            <div className="layer-photo">
-              <div className="displaced-photo p-statue w-full lg:w-56 aspect-[16/9] lg:aspect-[4/3] overflow-hidden bg-neutral-100">
-                <img src="https://i.pinimg.com/736x/5f/56/ce/5f56ced15deb506f1ec69f26433bb61b.jpg" alt="Room Horror" className="w-full h-full object-cover block" />
-              </div>
-            </div>
-          </div>
-
-          {/* CELL 4: LUNORA */}
-          <div
-            className={`grid-cell lg-divider-r border-b-[2px] lg:border-b-0 border-black p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 4 ? 'is-hovered' : ''}`}
-            data-cell="4"
-            onClick={() => openProject(4)}
-            onMouseEnter={(e) => handleCellEnter(4, 0, 2, e)}
-            onMouseLeave={handleCellLeave}
-          >
-            <div className="layer-typography">
-              <div>
-                <h2 className="displaced-word w-knife font-serif-luxury text-3xl sm:text-5xl lg:text-7xl uppercase text-black weight-ultra-thin">LUNORA</h2>
-                <span className="text-[10px] sm:text-xs font-sans-clean uppercase tracking-widest text-neutral-700 font-semibold block mt-1.5">Unity 3D // Zen Garden & Standbeelden</span>
-              </div>
-            </div>
-            <div className="layer-photo">
-              <div className="displaced-photo p-knife w-full lg:w-52 aspect-[16/9] lg:aspect-[3/4] overflow-hidden bg-neutral-100">
-                <img src="https://i.pinimg.com/736x/a4/05/72/a40572fca98801b5f639cd6fc9039d7b.jpg" alt="Lunora" className="w-full h-full object-cover block" />
-              </div>
-            </div>
-          </div>
-
-          {/* CELL 5: POWERPUFF */}
-          <div
-            className={`grid-cell p-5 sm:p-7 lg:p-10 flex flex-col justify-between cursor-pointer ${hoveredCell === 5 ? 'is-hovered' : ''}`}
-            data-cell="5"
-            onClick={() => openProject(5)}
-            onMouseEnter={(e) => handleCellEnter(5, 1, 2, e)}
-            onMouseLeave={handleCellLeave}
-          >
-            <div className="layer-typography">
-              <div className="flex items-start justify-between">
-                <h2 className="displaced-word w-enhypen font-serif-luxury text-3xl sm:text-5xl lg:text-6xl uppercase text-black weight-thin">POWERPUFF</h2>
-                <span className="text-xs font-sans-clean text-neutral-900 font-bold">2D ENGINE</span>
-              </div>
-              <div className="flex justify-start lg:justify-end items-center mt-3 lg:mt-auto">
-                <span
-                  className={`mac-trigger relative inline-block cursor-pointer ${openPopoverId === 'c5-pop' ? 'popover-open' : ''}`}
-                  onMouseEnter={(e) => clampPopover(e.currentTarget)}
-                  onClick={(e) => toggleInlinePopover(e, 'c5-pop', 440)}
-                >
-                  <span className="displaced-word w-author font-sans-clean text-xs sm:text-base text-black font-semibold tracking-widest lowercase underline underline-offset-4">leeruitkomsten & boeken</span>
-                  <span className={`mac-popover ${openPopoverId === 'c5-pop' ? 'active' : ''}`}>
-                    <strong className="block text-[11px] font-bold text-neutral-900 mb-0.5 uppercase tracking-wider font-sans-clean">Interactieve Wereld</strong>
-                    <span className="block text-[11px] text-neutral-600 leading-snug font-sans-clean">Wandel door het dorp naar school en ontdek de interactieve boeken.</span>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div className="layer-photo">
-              <div className="displaced-photo p-roof w-full lg:w-56 aspect-[16/9] lg:aspect-[3/4.5] overflow-hidden bg-neutral-100">
-                <img src="https://i.pinimg.com/736x/02/74/1f/02741fd796a24c464d2da3febf11e004.jpg" alt="Powerpuff" className="w-full h-full object-cover block" />
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </main>
 
-        <footer className="flex flex-wrap items-baseline gap-3 md:gap-36 text-sm md:text-xl font-normal mt-16 md:mt-24 mb-12 text-neutral-900 border-t border-neutral-100 pt-8 font-sans-clean">
-          <div>Sep 23, 2026, 3:26:01 PM (e659175)</div>
-          <div>&copy; 2009—2026 DOXXANGEL STUDIOS</div>
-        </footer>
       </div>
 
       {/* Project modal */}
@@ -483,6 +450,10 @@ export default function ArchivePage() {
           </div>
         </div>
       )}
+
+      <div className="w-full max-w-[1500px] mx-auto">
+        <SiteFooter />
+      </div>
     </div>
   );
 }

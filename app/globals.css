@@ -477,4 +477,88 @@ html.lenis, html.lenis body {
   bottom: 100%;
   border-color: transparent transparent rgba(246, 246, 248, 0.96) transparent;
 }
- 
+ /* Plak dit ONDERAAN in app/globals.css.
+   Nieuwe, consistente projectvakjes voor Archive. De oude regels voor .layer-photo,
+   .displaced-photo, .displaced-word en .p-* mag je laten staan of weghalen. */
+
+/* ---------- basis (mobiel): netjes gestapeld ---------- */
+.cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  cursor: pointer;
+}
+.cell-body { display: flex; flex-direction: column; gap: 0.9rem; flex: 1 1 auto; min-height: 0; }
+.cell-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.cell-index { font-size: 1.5rem; line-height: 1; color: #000; }
+.cell-tool {
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+  text-decoration: underline; text-underline-offset: 4px; color: #262626; white-space: nowrap;
+}
+.cell-title {
+  font-size: clamp(1.9rem, 9vw, 3.25rem); line-height: 0.98; text-transform: uppercase;
+  color: #000; overflow-wrap: anywhere; text-wrap: balance; margin: 0;
+}
+.cell-foot { display: flex; flex-direction: column; gap: 0.25rem; }
+.cell-cat { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #262626; }
+.cell-desc { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #525252; }
+.cell-photo {
+  margin-top: 1rem; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #f5f5f5;
+}
+.cell-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---------- desktop ---------- */
+@media (min-width: 1024px) {
+  .cell { padding: 1.75rem 2.5rem; }
+
+  /* in rust: tekst links, ruimte voor de foto rechts; bij hover maakt de kolom plek naast de foto */
+  .cell-body {
+    position: relative; z-index: 35; gap: 0.6rem; justify-content: space-between; width: 64%;
+    transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1), margin 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  }
+  .cell-title {
+    font-size: clamp(1.4rem, 2.9vw, 3.6rem);
+    margin-block: auto;
+    max-width: calc(100% - var(--dx, 0px));
+  }
+  .cell-foot { max-width: calc(100% - var(--dx, 0px)); }
+
+  /* rustpositie: de kleine teksten staan net iets verschoven in hun vak
+     (altijd naar binnen, dus nooit buiten de pagina); bij hover staan ze strak */
+  .cell-meta {
+    transform: translate(calc(var(--dx, 0px) * var(--dir, 1)), var(--dy, 0px));
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), font-size 0.5s ease;
+    will-change: transform;
+  }
+  .cell-tool { --dir: -1; }
+  .grid-cell:hover .cell-meta,
+  .grid-cell.is-hovered .cell-meta { transform: none; }
+
+  /* foto: in rust rechts en mag over de rand van het vak hangen (--ro, in px),
+     bij hover staat hij binnen het vak, naast de tekst */
+  .cell-photo {
+    position: absolute; z-index: 5; margin: 0;
+    left: calc(100% + var(--ro, 0px)); top: var(--ry, 50%); translate: -100% -50%;
+    height: var(--ph, 78%); width: auto; aspect-ratio: var(--ar, 3 / 4);
+    pointer-events: none;
+    transition: left 0.75s cubic-bezier(0.16, 1, 0.3, 1), top 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+      translate 0.75s cubic-bezier(0.16, 1, 0.3, 1), scale 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.5s ease, filter 0.5s ease;
+  }
+  .cell[data-side="right"]:hover .cell-photo,
+  .cell[data-side="right"].is-hovered .cell-photo { left: calc(100% - 2.5rem); top: 50%; translate: -100% -50%; scale: 1.04; }
+  .cell[data-side="left"]:hover .cell-photo,
+  .cell[data-side="left"].is-hovered .cell-photo { left: 2.5rem; top: 50%; translate: 0 -50%; scale: 1.04; }
+
+  .cell[data-side="right"]:hover .cell-body,
+  .cell[data-side="right"].is-hovered .cell-body { width: 50%; }
+  .cell[data-side="left"]:hover .cell-body,
+  .cell[data-side="left"].is-hovered .cell-body { width: 50%; margin-left: auto; }
+
+  /* de andere vakken treden terug en worden rustig (kleinere titel, geen verschuiving) */
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-photo { opacity: 0.25; scale: 0.86; filter: blur(1px); }
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-body { opacity: 0.45; width: 100%; }
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-meta { transform: none; }
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-title { font-size: clamp(1.1rem, 2vw, 2.4rem); }
+}

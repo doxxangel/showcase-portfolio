@@ -12,9 +12,10 @@ const LINKS = [
   { href: '/contact', label: 'CONTACT' },
 ];
 
-/* Eén header voor Archive, Info en Contact.
-   Gebruik: <SiteHeader onToggleAudio={handleToggleAudio} />  (prop is optioneel) */
-export default function SiteHeader({ onToggleAudio }) {
+/* Eén header voor alle pagina's.
+   <SiteHeader onToggleAudio={handleToggleAudio} />   (prop is optioneel)
+   <SiteHeader minimal />                              alleen NL/ENG + geluidsknop (landing) */
+export default function SiteHeader({ onToggleAudio = undefined, minimal = false }) {
   const { lang, setLang, audioActive, toggleAudio } = useSite();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -33,6 +34,41 @@ export default function SiteHeader({ onToggleAudio }) {
   }, [open]);
 
   const SoundIcon = audioActive ? Volume2 : VolumeX;
+
+  if (minimal) {
+    return (
+      <header className="relative z-[60] mb-2 w-full select-none md:mb-4">
+        <div className="flex items-center justify-end gap-3 font-editorial-nav text-[12px] font-semibold uppercase tracking-[0.16em] md:text-xs">
+          <div className="flex items-center">
+            <button
+              type="button"
+              onClick={() => setLang('nl')}
+              className={`cursor-pointer px-1.5 py-2 transition-colors ${lang === 'nl' ? 'font-bold text-black' : 'font-normal text-neutral-400 hover:text-black'}`}
+            >
+              NL
+            </button>
+            <span className="h-3.5 w-[1.5px] bg-neutral-300" />
+            <button
+              type="button"
+              onClick={() => setLang('en')}
+              className={`cursor-pointer px-1.5 py-2 transition-colors ${lang === 'en' ? 'font-bold text-black' : 'font-normal text-neutral-400 hover:text-black'}`}
+            >
+              ENG
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={toggleSound}
+            title="Toggle ambient audio"
+            aria-label="Toggle ambient audio"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-neutral-700 bg-neutral-900/80 text-white shadow-sm backdrop-blur-md transition-all duration-200 hover:bg-neutral-900 active:scale-90"
+          >
+            <SoundIcon className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <>

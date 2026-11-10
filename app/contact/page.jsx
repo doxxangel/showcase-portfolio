@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Check, ArrowRight, RotateCcw, AlertCircle, Loader2 } from 'lucide-react';
 import { useSite } from '@/context/SiteContext';
 import SiteHeader from '@/components/SiteHeader';
+import SiteFooter from '@/components/SiteFooter';
 import { clampPopover } from '@/lib/clampPopover';
 import Pop from '@/components/Pop';
 
@@ -52,7 +53,6 @@ const translations = {
 export default function ContactPage() {
   const { lang, audioActive, toggleAudio, playHover } = useSite();
   const [clock, setClock] = useState('--:--:-- CEST');
-  const [footerTime, setFooterTime] = useState('');
   const [isOpenNow, setIsOpenNow] = useState(true);
   const [openPopoverId, setOpenPopoverId] = useState(null);
   const [message, setMessage] = useState('');
@@ -66,7 +66,6 @@ export default function ContactPage() {
     const updateClock = () => {
       const now = new Date();
       setClock(now.toLocaleTimeString('nl-NL', { timeZone: availabilityConfig.timeZone }) + ' CEST');
-      setFooterTime(now.toLocaleString('nl-NL', { dateStyle: 'medium', timeStyle: 'medium', timeZone: availabilityConfig.timeZone }));
       const day = now.getDay();
       const hour = now.getHours();
       setIsOpenNow(availabilityConfig.openDays.includes(day) && hour >= availabilityConfig.startHour && hour < availabilityConfig.endHour);
@@ -281,10 +280,7 @@ export default function ContactPage() {
             </div>
           </main>
 
-          <footer className="flex flex-wrap items-baseline gap-3 md:gap-36 text-sm md:text-xl font-normal mt-16 md:mt-24 text-neutral-900 border-t border-neutral-100 pt-8 pb-12 font-sans-clean">
-            <div>{footerTime || 'Sep 23, 2026, 3:26:01 PM (e659175)'}</div>
-            <div>&copy; 2009—2026 DOXXANGEL STUDIOS</div>
-          </footer>
+          <SiteFooter />
         </div>
       </div>
     </div>

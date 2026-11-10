@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { useSite } from '@/context/SiteContext';
 import SiteHeader from '@/components/SiteHeader';
+import SiteFooter from '@/components/SiteFooter';
 import { clampPopover } from '@/lib/clampPopover';
 import Pop from '@/components/Pop';
 
@@ -180,10 +181,7 @@ export default function InfoPage() {
             </aside>
           </main>
 
-          <footer className="flex flex-wrap items-baseline gap-3 md:gap-36 text-sm md:text-xl font-normal mt-16 md:mt-24 text-neutral-900 border-t border-neutral-100 pt-8 pb-12 font-sans-clean">
-            <div>Sep 23, 2026, 3:26:01 PM (e659175)</div>
-            <div>&copy; 2009—2026 DOXXANGEL STUDIOS</div>
-          </footer>
+          <SiteFooter />
         </div>
       </div>
     </div>
