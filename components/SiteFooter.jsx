@@ -13,7 +13,6 @@ const FONT = 'Jeffrson';
 export default function SiteFooter() {
   const box = useRef(null);
   const word = useRef(null);
-
   useEffect(() => {
     const el = box.current;
     const span = word.current;
@@ -55,13 +54,6 @@ export default function SiteFooter() {
 
   return (
     <footer className="mt-10 w-full select-none md:mt-16" aria-label="Doxxangel Studios">
-      {/* klein regeltje boven het woordmerk */}
-      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-5 pb-3 font-sans-clean text-[11px] font-medium uppercase tracking-[0.16em] text-neutral-600 sm:px-8 md:px-14 md:text-xs lg:px-16">
-        <a href="mailto:Info@doxxangelstudios.nl" className="normal-case tracking-normal underline underline-offset-4 transition hover:opacity-60">
-          Info@doxxangelstudios.nl
-        </a>
-        <span className="tabular-nums">2004 &mdash; 2026</span>
-      </div>
       <div ref={box} className="relative h-[11vw] w-full overflow-hidden">
         <span
           ref={word}

@@ -538,6 +538,7 @@ html.lenis, html.lenis body {
 
 /* ---------- telefoon/tablet: meer lucht tussen de regels ---------- */
 @media (max-width: 1023px) {
+  .cell-index { display: none; } /* nummers (01 / 06) alleen op desktop */
   .cell { padding: 1.75rem 1.25rem 2rem; }
   .cell-body { gap: 1.25rem; }
   .cell-title { line-height: 1.05; }
