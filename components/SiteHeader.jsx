@@ -42,7 +42,7 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
     return (
       <header className="relative z-[60] mb-2 w-full select-none md:mb-4">
         {/* zelfde hoogte (h-9) en tussenruimte als de gewone navbar, zodat NL/ENG en geluid op exact dezelfde plek staan */}
-        <div className="flex h-9 items-center justify-end gap-2 font-editorial-nav text-[12px] font-semibold uppercase tracking-[0.16em] md:gap-4 md:text-xs">
+        <div className="type-label flex h-9 items-center justify-end gap-2 md:gap-4">
           <div className="flex items-center">
             <button
               type="button"
@@ -81,7 +81,7 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
           compact ? 'mb-0 border-b border-neutral-200 pb-3 md:pb-4' /* alleen in een project: lichte lijn */ : 'mb-10 md:mb-16'
         }`}
       >
-        <div className="flex items-center justify-between font-editorial-nav font-medium uppercase">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3">
             {/* hamburgermenu links van de naam; -ml-2 zodat het icoon gelijk staat met de paginarand */}
             <button
@@ -95,13 +95,13 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
             </button>
             <Link
               href="/"
-              className="whitespace-nowrap text-[11px] font-semibold tracking-[0.16em] transition hover:opacity-70 sm:text-[13px] sm:tracking-[0.2em] md:text-sm"
+              className="type-heading whitespace-nowrap transition hover:opacity-70"
             >
               DOXXANGEL STUDIOS
             </Link>
           </div>
 
-          <div className="flex items-center gap-2 text-[12px] font-semibold tracking-[0.16em] md:gap-4 md:text-xs">
+          <div className="type-label flex items-center gap-2 md:gap-4">
             <div className="flex items-center">
               <button
                 type="button"
@@ -156,18 +156,18 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
               className="flex items-baseline justify-between border-b border-black/10 py-4"
             >
               <span
-                className={`font-serif-luxury weight-ultra-thin text-5xl uppercase leading-none ${
+                className={`type-display ${
                   pathname === l.href ? 'underline decoration-[2px] underline-offset-8' : ''
                 }`}
               >
                 {l.label}
               </span>
-              <span className="font-editorial-nav text-[10px] tracking-[0.2em] text-neutral-400">0{i + 1}</span>
+              <span className="type-label text-neutral-400">0{i + 1}</span>
             </Link>
           ))}
         </nav>
 
-        <div className="mt-auto flex items-center justify-between font-editorial-nav text-xs font-semibold uppercase tracking-[0.16em]">
+        <div className="type-label mt-auto flex items-center justify-between">
           <button type="button" onClick={toggleSound} tabIndex={open ? 0 : -1} className="flex items-center gap-2 py-2">
             <SoundIcon className="h-4 w-4" />
             {lang === 'nl' ? 'Geluid' : 'Sound'} {audioActive ? 'on' : 'off'}

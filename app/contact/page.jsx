@@ -120,8 +120,8 @@ export default function ContactPage() {
     setMessage('');
   };
 
-  const label = "text-xs uppercase tracking-widest font-semibold text-neutral-500 mb-1";
-  const field = "minimal-input text-base md:text-xl text-black placeholder:text-neutral-300";
+  const label = "type-label text-neutral-500 mb-1";
+  const field = "minimal-input type-lead text-black placeholder:text-neutral-300";
 
   return (
     <>
@@ -137,7 +137,7 @@ export default function ContactPage() {
 
         <div className="w-full max-w-[1240px] mr-auto lg:pr-10">
           <div className="mb-8 md:mb-14">
-            <h1 className="inline-block text-[2.75rem] sm:text-6xl md:text-7xl font-serif-luxury weight-ultra-thin tracking-tight leading-none border-b-[3px] border-black pb-1">
+            <h1 className="type-display inline-block border-b-[3px] border-black pb-1">
               CONTACT
             </h1>
           </div>
@@ -155,36 +155,36 @@ export default function ContactPage() {
 
               <div className="border-t border-neutral-200 pt-6 space-y-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-neutral-500 uppercase tracking-widest text-xs font-semibold">{dict.lblStatus}</span>
+                  <span className="type-label text-neutral-500">{dict.lblStatus}</span>
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2.5 w-2.5">
                       {isOpenNow && <span className="status-pulse absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
                       <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isOpenNow ? 'bg-emerald-600' : 'bg-neutral-400'}`}></span>
                     </span>
-                    <span className="text-neutral-900 font-medium text-xs">{isOpenNow ? dict.valStatusOpen : dict.valStatusClosed}</span>
+                    <span className="type-small text-neutral-900">{isOpenNow ? dict.valStatusOpen : dict.valStatusClosed}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-neutral-500 uppercase tracking-widest text-xs font-semibold">{dict.lblTimezone}</span>
-                  <span className="tabular-nums text-neutral-800 text-xs">{clock}</span>
+                  <span className="type-label text-neutral-500">{dict.lblTimezone}</span>
+                  <span className="type-small tabular-nums text-neutral-800">{clock}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-neutral-500 uppercase tracking-widest text-xs font-semibold">{dict.lblResponse}</span>
-                  <span className="text-neutral-800 text-xs">{dict.valResponse}</span>
+                  <span className="type-label text-neutral-500">{dict.lblResponse}</span>
+                  <span className="type-small text-neutral-800">{dict.valResponse}</span>
                 </div>
               </div>
 
               <div className="border-t border-neutral-200 pt-6">
-                <h3 className="text-xs font-bold tracking-widest uppercase text-neutral-400 mb-2">{dict.lblDirectMail}</h3>
+                <h3 className="type-label text-neutral-500 mb-2">{dict.lblDirectMail}</h3>
                 <span
-                  className={`mac-trigger relative inline-block break-all text-sm sm:text-lg md:text-xl underline underline-offset-4 hover:opacity-70 transition cursor-pointer ${openPopoverId === 'c-mail' ? 'popover-open' : ''}`}
+                  className={`mac-trigger relative inline-block break-all type-lead underline underline-offset-4 hover:opacity-70 transition cursor-pointer ${openPopoverId === 'c-mail' ? 'popover-open' : ''}`}
                   onMouseEnter={(e) => { clampPopover(e.currentTarget); playHover(659); }}
                   onClick={(e) => togglePopover(e, 'c-mail', 659)}
                 >
                   Info@doxxangelstudios.nl
                   <span className="mac-popover">
-                    <strong className="block text-xs font-bold text-neutral-900 mb-1 font-sans-clean">{dict.popDirectTitle}</strong>
-                    <span className="block text-xs text-neutral-600 leading-relaxed font-sans-clean">{dict.popDirectDesc}</span>
+                    <strong className="type-label block text-neutral-900 mb-1">{dict.popDirectTitle}</strong>
+                    <span className="type-small block text-neutral-600">{dict.popDirectDesc}</span>
                     <a href="mailto:Info@doxxangelstudios.nl" className="block text-[11px] font-bold text-black uppercase underline underline-offset-2 mt-2 font-sans-clean">Stuur e-mail ↗</a>
                   </span>
                 </span>
@@ -192,7 +192,7 @@ export default function ContactPage() {
             </aside>
 
             <div className="space-y-10 md:space-y-12 order-1 lg:order-2">
-              <p className="text-base sm:text-lg md:text-2xl leading-[1.6] md:leading-[1.66]">
+              <p className="type-lead">
                 {lang === 'nl' ? (
                   <>
                     Ik sta open voor doordachte vragen over nieuwe{' '}
@@ -215,7 +215,7 @@ export default function ContactPage() {
               </p>
 
               <section className="border-t border-neutral-200 pt-8">
-                <h2 className="text-base md:text-lg font-bold tracking-wider uppercase underline underline-offset-4 mb-8">{dict.formTitle}</h2>
+                <h2 className="type-heading underline underline-offset-[6px] mb-8">{dict.formTitle}</h2>
 
                 {sentSuccess ? (
                   <div className="mt-6 p-6 sm:p-8 border-2 border-black bg-neutral-50">
@@ -224,10 +224,10 @@ export default function ContactPage() {
                         <Check className="w-4 h-4" />
                       </div>
                       <div className="space-y-2">
-                        <h3 className="font-bold text-lg sm:text-xl text-black">{dict.successTitle}</h3>
-                        <p className="text-neutral-600 text-sm leading-relaxed">{dict.successDesc}</p>
+                        <h3 className="type-heading text-black">{dict.successTitle}</h3>
+                        <p className="type-small text-neutral-600">{dict.successDesc}</p>
                         <div className="pt-3">
-                          <button type="button" onClick={resetForm} className="text-xs font-bold uppercase tracking-wider underline underline-offset-4 hover:opacity-60 transition inline-flex items-center gap-1.5 cursor-pointer">
+                          <button type="button" onClick={resetForm} className="type-label underline underline-offset-4 hover:opacity-60 transition inline-flex items-center gap-1.5 cursor-pointer">
                             <span>{dict.btnReset}</span>
                             <RotateCcw className="w-3.5 h-3.5" />
                           </button>
@@ -260,14 +260,14 @@ export default function ContactPage() {
 
                     <div className="flex flex-col">
                       <div className="flex items-center justify-between mb-1">
-                        <label htmlFor="message" className="text-xs uppercase tracking-widest font-semibold text-neutral-500">{dict.labelMessage}</label>
-                        <span className="text-xs tabular-nums text-neutral-400">{message.length} / 800</span>
+                        <label htmlFor="message" className="type-label text-neutral-500">{dict.labelMessage}</label>
+                        <span className="type-small tabular-nums text-neutral-400">{message.length} / 800</span>
                       </div>
                       <textarea id="message" name="message" rows="4" maxLength={800} required placeholder={dict.placeholderMessage} value={message} onChange={(e) => setMessage(e.target.value)} className={`${field} resize-none leading-relaxed`} onFocus={() => playHover(659)}></textarea>
                     </div>
 
                     <div className="pt-2 md:pt-4">
-                      <button type="submit" disabled={sending} onMouseEnter={() => playHover(784)} className="group w-full sm:w-auto justify-center inline-flex items-center gap-3 bg-black text-white hover:bg-neutral-800 px-8 py-3.5 text-sm font-medium tracking-wider uppercase transition-all duration-200 active:scale-[0.98] cursor-pointer">
+                      <button type="submit" disabled={sending} onMouseEnter={() => playHover(784)} className="group w-full sm:w-auto justify-center inline-flex items-center gap-3 bg-black text-white hover:bg-neutral-800 px-8 py-3.5 type-label transition-all duration-200 active:scale-[0.98] cursor-pointer">
                         {sending ? (
                           <><span>{dict.btnSending}</span><Loader2 className="w-4 h-4 animate-spin" /></>
                         ) : (

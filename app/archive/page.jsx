@@ -114,23 +114,29 @@ const descriptors = {
   en: ["macOS desktop, iPod & custom soundtrack", "My own room, custom maps & characters", "Zen garden, statues & candlelight", "Gothic magazine, schedule & admin", "Kuromi Knight, Cinnamoroll King & LP stand", "Through the town, learning outcomes in books"]
 };
 
-/* Per vak: kant waar de foto bij hover staat (right = rechts van de tekst, left = links),
-   hoe ver de foto in rust over de rand hangt (ro), hoogte in het vak (ry), beeldverhouding en hoogte */
+/* Compositie per vak (desktop). Bewust verschillend, zodat het raster speels oogt maar niet slordig:
+   align  = tekst links/rechts, title = titel boven/midden/onder, ts = titelschaal, indent = inspringing titel,
+   index  = groot of klein nummer, bw = breedte tekstkolom,
+   foto in rust: px/py = ankerpunt, tx/ty = verschuiving vanaf dat punt, rot = scheefstand, ar = beeldverhouding,
+                 ph = hoogte t.o.v. de rij; side = kant waar de foto bij hover gaat staan */
 const CELLS = [
-  { cls: 'lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0', side: 'right', ro: '36px', ry: '55%', ar: '2 / 3', ph: '80%', img: 'https://i.pinimg.com/736x/5e/60/70/5e60702e8474cf20f7272203af620c0f.jpg' },
-  { cls: 'lg-divider-b border-b-[2px] lg:border-b-0', side: 'left', ro: '24px', ry: '60%', ar: '16 / 10', ph: '62%', img: 'https://i.pinimg.com/736x/5f/56/ce/5f56ced15deb506f1ec69f26433bb61b.jpg' },
-  { cls: 'lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0', side: 'right', ro: '44px', ry: '30%', ar: '16 / 10', ph: '60%', img: 'https://i.pinimg.com/736x/a4/05/72/a40572fca98801b5f639cd6fc9039d7b.jpg' },
-  { cls: 'lg-divider-b border-b-[2px] lg:border-b-0', side: 'left', ro: '30px', ry: '62%', ar: '4 / 3', ph: '66%', img: 'https://i.pinimg.com/736x/b8/73/30/b873302595741b7ba9321f0d911ca72a.jpg' },
-  { cls: 'lg-divider-r border-b-[2px] lg:border-b-0', side: 'right', ro: '40px', ry: '58%', ar: '3 / 4', ph: '78%', img: 'https://i.pinimg.com/736x/75/13/27/7513276390ed3eeff2d9f25839318ace.jpg' },
-  { cls: '', side: 'left', ro: '22px', ry: '38%', ar: '2 / 3', ph: '80%', img: 'https://i.pinimg.com/736x/02/74/1f/02741fd796a24c464d2da3febf11e004.jpg' }
+  { cls: 'lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0', side: 'right', align: 'left', title: 'bottom', ts: 1.3, indent: '0rem', index: 'big', bw: '62%',
+    px: 'calc(100% + 48px)', py: '60%', tx: '-100%', ty: '-50%', rot: '-3deg', ar: '2 / 3', ph: 0.82, img: 'https://i.pinimg.com/736x/5e/60/70/5e60702e8474cf20f7272203af620c0f.jpg' },
+  { cls: 'lg-divider-b border-b-[2px] lg:border-b-0', side: 'right', align: 'left', title: 'center', ts: 0.9, indent: '3.5rem', index: 'small', bw: '56%',
+    px: '74%', py: '0%', tx: '-50%', ty: '-30%', rot: '2.5deg', ar: '16 / 10', ph: 0.55, img: 'https://i.pinimg.com/736x/5f/56/ce/5f56ced15deb506f1ec69f26433bb61b.jpg' },
+  { cls: 'lg-divider-r lg-divider-b border-b-[2px] lg:border-b-0', side: 'left', align: 'right', title: 'top', ts: 1, indent: '0rem', index: 'big', bw: '54%',
+    px: '-40px', py: '52%', tx: '0%', ty: '-50%', rot: '-2deg', ar: '16 / 10', ph: 0.7, img: 'https://i.pinimg.com/736x/a4/05/72/a40572fca98801b5f639cd6fc9039d7b.jpg' },
+  { cls: 'lg-divider-b border-b-[2px] lg:border-b-0', side: 'right', align: 'left', title: 'center', ts: 1.15, indent: '0rem', index: 'small', bw: '52%',
+    px: 'calc(100% - 3rem)', py: '100%', tx: '-100%', ty: '-62%', rot: '1.5deg', ar: '4 / 3', ph: 0.78, img: 'https://i.pinimg.com/736x/b8/73/30/b873302595741b7ba9321f0d911ca72a.jpg' },
+  { cls: 'lg-divider-r border-b-[2px] lg:border-b-0', side: 'right', align: 'left', title: 'bottom', ts: 0.95, indent: '5rem', index: 'big', bw: '62%',
+    px: 'calc(100% + 30px)', py: '38%', tx: '-100%', ty: '-50%', rot: '3deg', ar: '3 / 4', ph: 0.8, img: 'https://i.pinimg.com/736x/75/13/27/7513276390ed3eeff2d9f25839318ace.jpg' },
+  { cls: '', side: 'left', align: 'right', title: 'top', ts: 1.2, indent: '0rem', index: 'small', bw: '60%',
+    px: '2.5rem', py: '100%', tx: '0%', ty: '-45%', rot: '-2.5deg', ar: '2 / 3', ph: 0.75, img: 'https://i.pinimg.com/736x/02/74/1f/02741fd796a24c464d2da3febf11e004.jpg' }
 ];
 
 /* rusthoogte van elke rij (zelfde als --row-1/2/3 in globals.css, totaal 3.2) */
-const ROW_FR = [1.15, 0.95, 1.1];
+const ROW_FR = [1.3, 0.8, 1.1];
 
-/* vaste "willekeurige" verschuiving (zelfde op server en client), altijd naar binnen */
-const rnd = (i, k) => { const x = Math.sin((i + 1) * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
-const jit = (i, k, min, max) => `${Math.round(min + rnd(i, k) * (max - min))}px`;
 
 function MediaViewer({ media, caption, onEnlarge, className = "w-full h-full object-cover block" }) {
   const { lang } = useSite();
@@ -146,7 +152,7 @@ function MediaViewer({ media, caption, onEnlarge, className = "w-full h-full obj
   if (MEDIA_COMING_SOON || !url || failed) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-neutral-100 px-4 text-center">
-        <span className="font-sans-clean text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
+        <span className="type-label text-neutral-400">
           {isVideo ? 'Video coming soon' : 'Image coming soon'}
         </span>
       </div>
@@ -252,7 +258,7 @@ function Lightbox({ images, index, lang, onClose, onMove }) {
   }, [onClose, onMove]);
   if (!img || typeof document === 'undefined') return null;
   const many = images.length > 1;
-  const navBtn = 'cursor-pointer uppercase tracking-[0.2em] transition hover:opacity-60';
+  const navBtn = 'cursor-pointer uppercase transition hover:opacity-60';
   // via een portal direct in <body>, zodat hij altijd midden in het scherm staat
   return createPortal(
     <div
@@ -263,11 +269,11 @@ function Lightbox({ images, index, lang, onClose, onMove }) {
       className="calm-haze-entry fixed inset-0 z-[200] flex flex-col bg-white"
     >
       {/* bovenbalk zoals in het project: sluiten links, teller rechts */}
-      <div className="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4 font-editorial-nav text-[12px] font-medium uppercase select-none sm:px-8 sm:text-xs md:px-14 lg:px-16">
+      <div className="flex shrink-0 items-center justify-between border-b border-neutral-100 type-label px-5 py-4 select-none sm:px-8 md:px-14 lg:px-16">
         <button type="button" onClick={onClose} className={`flex items-center gap-2 font-semibold text-black ${navBtn}`}>
           <span className="text-sm">✕</span> <span>{lang === 'nl' ? 'Sluiten' : 'Close'}</span>
         </button>
-        {many && <span className="tabular-nums tracking-[0.2em] text-neutral-500">{index + 1} / {images.length}</span>}
+        {many && <span className="tabular-nums text-neutral-500">{index + 1} / {images.length}</span>}
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 py-6 sm:px-10">
@@ -284,7 +290,7 @@ function Lightbox({ images, index, lang, onClose, onMove }) {
 
       {/* onderbalk zoals vorig / volgend in het project */}
       {many && (
-        <div className="flex shrink-0 items-center justify-center gap-4 pb-6 font-editorial-nav text-[12px] font-medium uppercase text-black select-none sm:text-xs">
+        <div className="flex shrink-0 items-center justify-center gap-4 pb-6 type-label text-black select-none">
           <button type="button" onClick={(e) => { e.stopPropagation(); onMove(-1); }} className={navBtn}>{lang === 'nl' ? '← Vorige' : '← Prev'}</button>
           <span>•</span>
           <button type="button" onClick={(e) => { e.stopPropagation(); onMove(1); }} className={navBtn}>{lang === 'nl' ? 'Volgende →' : 'Next →'}</button>
@@ -301,7 +307,7 @@ const stripNum = (cat) => (cat.includes(': ') ? cat.split(': ')[1] : cat);
 /* true = ALLE projectbeelden op "coming soon"; lege url's ("") tonen altijd "coming soon" */
 const MEDIA_COMING_SOON = false;
 
-const capClass = "text-[11px] font-sans-clean font-semibold uppercase tracking-widest text-neutral-500 mt-2";
+const capClass = "type-label text-neutral-500 mt-2";
 
 export default function ArchivePage() {
   const { lang, audioActive, toggleAudio, playHover } = useSite();
@@ -426,8 +432,8 @@ export default function ArchivePage() {
         {activeCursorItem && activeCursorItem.item && (
           /* kort, zoals het wolkje op de landing: alleen de naam en wat een klik doet */
           <div>
-            <div className="font-sans-clean text-[13px] font-semibold leading-tight text-black">{activeCursorItem.item.title}</div>
-            <div className="font-sans-clean mt-1 text-xs leading-snug text-neutral-500">{lang === 'nl' ? 'Klik om het project te openen' : 'Click to open project'}</div>
+            <div className="type-label text-black">{activeCursorItem.item.title}</div>
+            <div className="type-small mt-1 text-neutral-500">{lang === 'nl' ? 'Klik om het project te openen' : 'Click to open project'}</div>
           </div>
         )}
       </div>
@@ -436,14 +442,14 @@ export default function ArchivePage() {
         <SiteHeader onToggleAudio={handleToggleAudio} compact={activeModalIdx !== null} onSamePage={closeProject} />
       </div>
 
-      <div className={`calm-haze-entry w-full max-w-[1500px] mx-auto ${activeModalIdx !== null ? 'hidden' : ''}`}>
+      <div className={`calm-haze-entry w-full max-w-[1500px] mr-auto lg:mb-36 ${activeModalIdx !== null ? 'hidden' : ''}`}>
         {/* paginatitel, zoals bij Info en Contact */}
         <div className="mb-8 md:mb-14">
-          <h1 className="inline-block text-[2.75rem] sm:text-6xl md:text-7xl font-serif-luxury weight-ultra-thin tracking-tight leading-none border-b-[3px] border-black pb-1">
+          <h1 className="type-display inline-block border-b-[3px] border-black pb-1">
             ARCHIVE
           </h1>
         </div>
-        <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 lg:h-[var(--grid-h)] border-[2px] lg:border-[2.5px] border-black bg-white ${hoverGridClass}`}>
+        <main className={`editorial-grid grid grid-cols-1 lg:h-[var(--grid-h)] border-[2px] lg:border-[2.5px] border-black bg-white ${hoverGridClass}`}>
 
           {sectionsData[lang].map((p, i) => {
             const c = CELLS[i];
@@ -454,26 +460,27 @@ export default function ArchivePage() {
                 className={`grid-cell cell ${c.cls} border-black ${hoveredCell === i ? 'is-hovered' : ''}`}
                 data-cell={i}
                 data-side={c.side}
-                style={{ '--ro': c.ro, '--ry': c.ry, '--ar': c.ar, '--ph': c.ph, '--rf': ROW_FR[Math.floor(i / 2)], '--ph-n': parseFloat(c.ph) / 100 }}
+                data-align={c.align}
+                data-title={c.title}
+                data-index={c.index}
+                style={{
+                  '--ts': c.ts, '--indent': c.indent, '--bw': c.bw,
+                  '--px': c.px, '--py': c.py, '--tx': c.tx, '--ty': c.ty, '--rot': c.rot,
+                  '--ar': c.ar, '--ph-n': c.ph, '--rf': ROW_FR[Math.floor(i / 2)],
+                }}
                 onClick={() => openProject(i)}
                 onMouseEnter={(e) => handleCellEnter(i, i % 2, Math.floor(i / 2), e)}
                 onMouseLeave={handleCellLeave}
               >
                 <div className="cell-body">
                   <div className="cell-row">
-                    <span className="cell-meta cell-index font-serif-luxury weight-ultra-thin" style={{ '--dx': jit(i, 1, 8, 40), '--dy': jit(i, 2, 2, 20) }}>
-                      {p.indexStr}
-                    </span>
-                    <span className="cell-meta cell-tool font-sans-clean" style={{ '--dx': jit(i, 3, 8, 40), '--dy': jit(i, 4, 6, 28) }}>
-                      {p.engineTag} ↗
-                    </span>
+                    <span className="cell-index">{p.indexStr}</span>
+                    <span className="cell-tool">{p.engineTag} ↗</span>
                   </div>
 
-                  <h2 className="cell-meta cell-title font-serif-luxury weight-thin" style={{ '--dx': jit(i, 5, 0, 50), '--dy': jit(i, 6, -8, 8) }}>
-                    {p.title}
-                  </h2>
+                  <h2 className="cell-title">{p.title}</h2>
 
-                  <div className="cell-meta cell-foot font-sans-clean" style={{ '--dx': jit(i, 7, 10, 70), '--dy': `-${jit(i, 8, 2, 14)}` }}>
+                  <div className="cell-foot">
                     <span className="cell-cat">{cat}</span>
                     <span className="cell-desc">{descriptors[lang][i]}</span>
                   </div>
@@ -491,9 +498,9 @@ export default function ArchivePage() {
 
       {/* Project modal */}
       {activeModalIdx !== null && currentProject && (
-        <div key={activeModalIdx} className="calm-haze-entry w-full max-w-[1500px] mx-auto">
-          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md pt-5 pb-3 md:pt-6 md:pb-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
-            <button onClick={closeProject} className="flex items-center gap-2 tracking-[0.2em] font-semibold text-black hover:opacity-60 transition cursor-pointer">
+        <div key={activeModalIdx} className="calm-haze-entry w-full max-w-[1500px] mr-auto">
+          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md pt-5 pb-3 md:pt-6 md:pb-4 border-b border-neutral-100 flex items-center justify-between type-label select-none">
+            <button onClick={closeProject} className="flex items-center gap-2 text-black hover:opacity-60 transition cursor-pointer">
               <span className="text-sm">✕</span> <span>{lang === 'nl' ? 'SLUITEN' : 'CLOSE'}</span>
             </button>
             <div className="flex items-center gap-4">
@@ -506,23 +513,23 @@ export default function ArchivePage() {
           <div className="pt-8 pb-12">
             <section className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 pb-10 sm:pb-16 items-start">
               <div className="md:col-span-4">
-                <h1 className="text-3xl sm:text-5xl lg:text-7xl font-serif-luxury weight-ultra-thin tracking-tight uppercase leading-none text-black m-0 p-0">
+                <h1 className="type-display text-black m-0 p-0">
                   {currentProject.title}
                 </h1>
               </div>
 
-              <div className="md:col-span-3 space-y-4 sm:space-y-6 text-xs sm:text-[13px] leading-relaxed font-sans-clean">
+              <div className="md:col-span-3 space-y-4 sm:space-y-6 type-small">
                 <div>
-                  <span className="block font-editorial-nav uppercase tracking-widest text-[10px] text-neutral-400 font-semibold mb-1">Engine & Tools</span>
-                  <div className="font-normal text-neutral-900 whitespace-pre-line leading-relaxed">{currentProject.services}</div>
+                  <span className="type-label block text-neutral-400 mb-1">Engine & Tools</span>
+                  <div className="text-neutral-900 whitespace-pre-line">{currentProject.services}</div>
                 </div>
                 <div>
-                  <span className="block font-editorial-nav uppercase tracking-widest text-[10px] text-neutral-400 font-semibold mb-1">Discipline</span>
-                  <div className="font-normal text-neutral-900">{stripNum(currentProject.category)}</div>
+                  <span className="type-label block text-neutral-400 mb-1">Discipline</span>
+                  <div className="text-neutral-900">{stripNum(currentProject.category)}</div>
                 </div>
               </div>
 
-              <div className="md:col-span-5 text-sm sm:text-base md:text-lg leading-[1.6] md:leading-[1.66] text-neutral-800 space-y-4 font-sans-clean font-normal">
+              <div className="md:col-span-5 type-lead text-neutral-800 space-y-4">
                 {currentProject.description.map((p, i) => <p key={i}>{p}</p>)}
               </div>
             </section>
@@ -546,16 +553,16 @@ export default function ArchivePage() {
             </section>
 
             {/* vorige / volgende onderaan, als je klaar bent met lezen */}
-            <nav className="mt-16 grid grid-cols-2 border-t border-neutral-200 pt-6 font-editorial-nav uppercase sm:mt-24">
+            <nav className="mt-16 grid grid-cols-2 border-t border-neutral-200 pt-6 sm:mt-24">
               <button onClick={prevProject} className="group flex cursor-pointer flex-col items-start gap-2 text-left transition hover:opacity-60">
-                <span className="text-[11px] font-semibold tracking-[0.2em] text-neutral-500">{lang === 'nl' ? '← Vorig project' : '← Previous project'}</span>
-                <span className="font-serif-luxury weight-thin text-xl normal-case tracking-tight text-black sm:text-3xl lg:text-4xl" style={{ letterSpacing: 0 }}>
+                <span className="type-label text-neutral-500">{lang === 'nl' ? '← Vorig project' : '← Previous project'}</span>
+                <span className="type-title text-black">
                   {sectionsData[lang][(activeModalIdx - 1 + sectionsData[lang].length) % sectionsData[lang].length].title}
                 </span>
               </button>
               <button onClick={nextProject} className="group flex cursor-pointer flex-col items-end gap-2 text-right transition hover:opacity-60">
-                <span className="text-[11px] font-semibold tracking-[0.2em] text-neutral-500">{lang === 'nl' ? 'Volgend project →' : 'Next project →'}</span>
-                <span className="font-serif-luxury weight-thin text-xl normal-case tracking-tight text-black sm:text-3xl lg:text-4xl" style={{ letterSpacing: 0 }}>
+                <span className="type-label text-neutral-500">{lang === 'nl' ? 'Volgend project →' : 'Next project →'}</span>
+                <span className="type-title text-black">
                   {sectionsData[lang][(activeModalIdx + 1) % sectionsData[lang].length].title}
                 </span>
               </button>

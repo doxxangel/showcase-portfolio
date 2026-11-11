@@ -179,7 +179,7 @@ export default function GateLanding() {
                   <Link
                     href={n.href}
                     tabIndex={gate === "open" ? 0 : -1}
-                    className="font-editorial-nav text-[11px] font-medium uppercase tracking-[0.2em] underline-offset-8 hover:underline focus-visible:underline sm:text-sm !text-black"
+                    className="type-heading underline-offset-8 hover:underline focus-visible:underline !text-black"
                   >
                     {n.label}
                   </Link>
@@ -224,8 +224,8 @@ export default function GateLanding() {
 
         {/* macOS-wolkje */}
         <div id="cursorPopover" ref={popover} aria-hidden>
-          <div className="font-sans-clean text-[13px] font-semibold leading-tight text-black">Enter Doxxangel Studios</div>
-          <div className="font-sans-clean mt-1 text-xs leading-snug text-neutral-500">Click to open the gates</div>
+          <div className="type-label text-black">Enter Doxxangel Studios</div>
+          <div className="type-small mt-1 text-neutral-500">Click to open the gates</div>
         </div>
       </main>
 

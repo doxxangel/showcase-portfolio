@@ -37,7 +37,7 @@ const STACK = [
 function ToolList({ title, items, lang, pp, prefix }) {
   return (
     <section className="pb-2 pt-2">
-      <h2 className="text-base md:text-lg font-bold tracking-wider uppercase underline underline-offset-4 mb-3">{title}</h2>
+      <h2 className="type-heading underline underline-offset-[6px] mb-4">{title}</h2>
       <div className="flex flex-wrap gap-x-2 gap-y-1">
         {items.map((t, i) => (
           <span key={t.name}>
@@ -88,25 +88,28 @@ export default function InfoPage() {
 
         <div className="w-full max-w-[1240px] mr-auto lg:pr-10">
           <div className="mb-8 md:mb-14">
-            <h1 className="inline-block text-[2.75rem] sm:text-6xl md:text-7xl font-serif-luxury weight-ultra-thin tracking-tight leading-none border-b-[3px] border-black pb-1">
+            <h1 className="type-display inline-block border-b-[3px] border-black pb-1">
               INFO
             </h1>
           </div>
 
           <main className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px] gap-10 lg:gap-16 items-start">
-            <div className="text-base sm:text-lg md:text-2xl leading-[1.6] md:leading-[1.66] space-y-6 md:space-y-9">
+            <div className="type-lead space-y-6 md:space-y-9">
               {lang === 'nl' ? (
                 <>
                   <p>
-                    Voormalig{' '}
-                    <Pop {...pp} id="dev" pitch={392} title="softwareontwikkelaar" desc="Gespecialiseerd in doordachte software-architectuur, minimalistische systemen en heldere code.">softwareontwikkelaar</Pop>{' '}
-                    momenteel op{' '}
-                    <Pop {...pp} id="sab" pitch={440} title="sabbatical" desc="Een bewuste rustperiode voor verdieping, studie, filosofie en creatieve vernieuwing.">sabbatical</Pop>
-                    . Geïnteresseerd in filosofie, spiritualiteit, technologie en samenleving. Ik schrijf over het menselijk bestaan via{' '}
-                    <Pop {...pp} id="ted" pitch={523} title="TEDNET" desc="Een essay-publicatie en platform voor filosofische reflecties op het moderne leven.">The Existential Detective Network</Pop>
-                    . Onlangs ben ik een{' '}
-                    <Pop {...pp} id="newp" pitch={587} title="nieuw project" desc="Een initiatief rondom natuurbeleving, stilte en verstilling via beeld en tekst.">nieuw project</Pop>{' '}
-                    gestart om mijn fascinatie voor de natuur vast te leggen.
+                    Ik ontwerp en ontwikkel op het snijvlak van{' '}
+                    <Pop {...pp} id="fe" pitch={392} title="front-end engineering" desc="Het bouwen van alles wat je in de browser ziet en aanraakt: structuur, stijl en interactie, met aandacht voor snelheid en toegankelijkheid.">front-end engineering</Pop>,{' '}
+                    <Pop {...pp} id="iwd" pitch={440} title="interactief webdesign" desc="Websites ontwerpen die reageren op wat de bezoeker doet, met beweging, geluid en feedback in plaats van alleen statische pagina's.">interactief webdesign</Pop>{' '}
+                    en{' '}
+                    <Pop {...pp} id="gam" pitch={523} title="gamification" desc="Spelelementen zoals uitdagingen, beloningen en verhaal inzetten buiten een game, om iets boeiender of begrijpelijker te maken.">gamification</Pop>.
+                  </p>
+                  <p>
+                    Door moderne webarchitectuur te combineren met speelse mechanics, zoals 3D-elementen, responsieve audio-feedback en intuïtieve verhaallijnen, help ik merken en agencies om bezoekers te boeien op een integere manier. Geen trucjes om aandacht af te dwingen, maar{' '}
+                    <Pop {...pp} id="egam" pitch={587} title="ethische gamification" desc="Spelelementen die de gebruiker helpen in plaats van manipuleren: geen verslavende loops of nepdruk, wel plezier, duidelijkheid en echte keuzes.">ethische gamification</Pop>
+                    : ervaringen die gebruikers{' '}
+                    <Pop {...pp} id="auto" pitch={659} title="autonomie" desc="Het gevoel dat je zelf de regie hebt: je kiest je eigen pad door de ervaring, in je eigen tempo.">autonomie</Pop>{' '}
+                    geven, het merkverhaal tastbaar maken en van elk websitebezoek een memorabele interactie maken.
                   </p>
                   <p>
                     Ik verzamel delen van mijn werkelijkheid door te{' '}
@@ -115,25 +118,22 @@ export default function InfoPage() {
                     <Pop {...pp} id="pin" pitch={587} title="visueel archief" desc="Een digitaal moodboard vol textuur, typografie, cinematografische stillevens en subculturen.">Pinterest</Pop>.
                   </p>
                   <p>Voor mij is persoonlijke stijl geen toeval, maar een constante dialoog tussen wat je voelt, ziet en hoort.</p>
-                  <p>
-                    Bekijk waar ik nu aan{' '}
-                    <Pop {...pp} id="work" pitch={784} title="now page" desc="Een publieke statusupdate geïnspireerd door Derek Sivers over huidige doelen en lectuur.">werk</Pop>,{' '}
-                    of lees hoe deze site is{' '}
-                    <Pop {...pp} id="built" pitch={880} title="colofon" desc="Notities over de minimalistische tech stack, typografie en het audiodesign.">gebouwd</Pop>.
-                  </p>
                 </>
               ) : (
                 <>
                   <p>
-                    Former{' '}
-                    <Pop {...pp} id="dev-en" pitch={392} title="software developer" desc="Professional focused on designing, writing, and optimizing code architectures and systems.">software developer</Pop>{' '}
-                    currently on{' '}
-                    <Pop {...pp} id="sab-en" pitch={440} title="sabbatical" desc="An extended leave of absence from standard employment for reflection, study, and creative renewal.">sabbatical</Pop>
-                    . Interested in philosophy, spirituality, technology and society. I write about existing as a human in our current times over at{' '}
-                    <Pop {...pp} id="ted-en" pitch={523} title="TEDNET" desc="An essay publication and platform exploring philosophical investigations into contemporary human living.">The Existential Detective Network</Pop>
-                    . I recently started a{' '}
-                    <Pop {...pp} id="newp-en" pitch={587} title="new project" desc="A creative initiative sharing deep appreciation for nature and wilderness through writing and imagery.">new project</Pop>{' '}
-                    to share my love of nature through writing and photography.
+                    I design and build at the intersection of{' '}
+                    <Pop {...pp} id="fe-en" pitch={392} title="front-end engineering" desc="Building everything you see and touch in the browser: structure, style and interaction, with care for speed and accessibility.">front-end engineering</Pop>,{' '}
+                    <Pop {...pp} id="iwd-en" pitch={440} title="interactive web design" desc="Designing websites that respond to what the visitor does, with motion, sound and feedback instead of static pages alone.">interactive web design</Pop>{' '}
+                    and{' '}
+                    <Pop {...pp} id="gam-en" pitch={523} title="gamification" desc="Using game elements such as challenges, rewards and story outside of games, to make something more engaging or easier to understand.">gamification</Pop>.
+                  </p>
+                  <p>
+                    By combining modern web architecture with playful mechanics, such as 3D elements, responsive audio feedback and intuitive storylines, I help brands and agencies engage visitors with integrity. No tricks to force attention, but{' '}
+                    <Pop {...pp} id="egam-en" pitch={587} title="ethical gamification" desc="Game elements that help the user instead of manipulating them: no addictive loops or fake pressure, but enjoyment, clarity and real choices.">ethical gamification</Pop>
+                    : experiences that give users{' '}
+                    <Pop {...pp} id="auto-en" pitch={659} title="autonomy" desc="The feeling that you are in control: you choose your own path through the experience, at your own pace.">autonomy</Pop>
+                    , make the brand story tangible and turn every website visit into a memorable interaction.
                   </p>
                   <p>
                     I capture fragments of thought through{' '}
@@ -142,13 +142,6 @@ export default function InfoPage() {
                     <Pop {...pp} id="pin-en" pitch={587} title="visual archives" desc="Curating moodboards of texture, editorial typography, cinematic frames, and quiet subcultures.">Pinterest</Pop>.
                   </p>
                   <p>To me, personal taste is an ongoing synthesis of what we hear, read, and observe.</p>
-                  <p>
-                    See what I'm up to{' '}
-                    <Pop {...pp} id="work-en" pitch={784} title="now page" desc="A public status log inspired by Derek Sivers articulating current priorities, reading, and experiments.">now</Pop>,{' '}
-                    or find out how I{' '}
-                    <Pop {...pp} id="built-en" pitch={880} title="colophon / built" desc="Technical notes detailing the lightweight stack, typography, and minimalist design choices behind this site.">built</Pop>{' '}
-                    this site.
-                  </p>
                 </>
               )}
 

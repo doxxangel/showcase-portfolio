@@ -15,15 +15,83 @@
 }
 
 /* ==========================================================================
+   0. TYPE SCALE — vaste set tekststijlen voor de hele site.
+   Gebruik deze klassen i.p.v. losse text-[11px] / tracking-widest / font-bold combinaties.
+   Lettertypes wisselen? Pas alleen --font-display en --font-text hieronder aan.
+   ========================================================================== */
+:root {
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* grote titels: ARCHIVE / INFO / CONTACT, projecttitel, menu */
+.type-display {
+  font-family: var(--font-display);
+  font-weight: 200;
+  font-size: clamp(2.75rem, 1.6rem + 3.6vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* kleinere serif-titels: projectnamen bij vorige / volgende */
+.type-title {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(1.25rem, 0.9rem + 1.4vw, 2.25rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* lopende tekst: intro's, projectbeschrijving, invulvelden */
+.type-lead {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+@media (min-width: 768px) { .type-lead { font-size: 1.375rem; } }
+/* kleine lopende tekst: wolkjes, waardes, meldingen */
+.type-small {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  letter-spacing: 0;
+}
+/* labels: navigatie, knoppen, bijschriften, tags — altijd hoofdletters */
+.type-label {
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+/* kopjes: iets groter dan een label (APPS I USE, logo, hoofdnavigatie op de landing) */
+.type-heading {
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.3;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+@media (min-width: 640px) {
+  .type-label { font-size: 12px; }
+  .type-heading { font-size: 14px; }
+}
+
+/* ==========================================================================
    1. ROOT VARIABLES & LAYOUT FRACTIONS
    ========================================================================== */
 :root {
   --line-thickness: 2.5px;
   --line-color: #000000;
-  --col-1: 1.05fr;
-  --col-2: 1.15fr;
-  --row-1: 1.15fr;
-  --row-2: 0.95fr;
+  --col-1: 0.95fr;
+  --col-2: 1.25fr;
+  --row-1: 1.3fr;
+  --row-2: 0.8fr;
   --row-3: 1.1fr;
 }
 
@@ -43,7 +111,7 @@ body {
 }
 
 .font-serif-luxury {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--font-display);
 }
 
 .font-editorial-nav {
@@ -477,12 +545,12 @@ header.menu-active,
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
   background: #fff; color: #000; border: 1.5px solid #000;
   padding: 0.5rem 0.8rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1;
+  font-family: var(--font-text);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1;
   cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease;
 }
 .site-btn:hover, .site-btn:focus-visible { background: #000; color: #fff; outline: none; }
-@media (min-width: 640px) { .site-btn { font-size: 11px; padding: 0.6rem 0.95rem; } }
+@media (min-width: 640px) { .site-btn { font-size: 12px; padding: 0.6rem 0.95rem; } }
 /* Lenis aanbevolen basis styles */
 html.lenis, html.lenis body {
   height: auto;
@@ -528,18 +596,21 @@ html.lenis, html.lenis body {
 }
 .cell-body { display: flex; flex-direction: column; gap: 0.9rem; flex: 1 1 auto; min-height: 0; }
 .cell-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
-.cell-index { font-size: 1.5rem; line-height: 1; color: #000; }
-.cell-tool {
-  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
-  text-decoration: underline; text-underline-offset: 4px; color: #262626; white-space: nowrap;
+.cell-index { font-family: var(--font-display); font-weight: 200; font-size: 1.5rem; line-height: 1; letter-spacing: 0.04em; color: #000; }
+/* kleine teksten in het raster = dezelfde label-stijl als de rest van de site */
+.cell-tool, .cell-cat, .cell-desc {
+  font-family: var(--font-text); font-weight: 600; font-size: 11px; line-height: 1.3;
+  letter-spacing: 0.18em; text-transform: uppercase;
 }
+.cell-tool { text-decoration: underline; text-underline-offset: 4px; color: #000; white-space: nowrap; }
+.cell-cat { color: #000; }
+.cell-desc { color: #737373; }
 .cell-title {
-  font-size: clamp(1.9rem, 9vw, 3.25rem); line-height: 0.98; text-transform: uppercase;
+  font-family: var(--font-display); font-weight: 300; letter-spacing: 0.04em;
+  font-size: clamp(1.9rem, 9vw, 3.25rem); line-height: 0.95; text-transform: uppercase;
   color: #000; overflow-wrap: anywhere; text-wrap: balance; margin: 0;
 }
-.cell-foot { display: flex; flex-direction: column; gap: 0.25rem; }
-.cell-cat { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #262626; }
-.cell-desc { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #525252; }
+.cell-foot { display: flex; flex-direction: column; gap: 0.35rem; }
 .cell-photo {
   margin-top: 1rem; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #f5f5f5;
 }
@@ -556,59 +627,67 @@ html.lenis, html.lenis body {
   .cell-photo { margin-top: 1.75rem; }
 }
 
-/* ---------- desktop ---------- */
+/* ---------- desktop: elk vak heeft een eigen, bewuste compositie ----------
+   Instellingen per vak staan in CELLS in app/archive/page.jsx:
+   data-align  = tekst links of rechts in het vak
+   data-title  = titel boven / midden / onder
+   data-index  = nummer groot (als beeldelement) of klein
+   --ts        = schaal van de titel, --indent = inspringing van de titel, --bw = breedte tekstkolom
+   --px/--py/--tx/--ty/--rot = waar de foto in rust hangt (mag bewust over randen heen) en hoe scheef */
 @media (min-width: 1024px) {
-  .cell { padding: 1.75rem 2.5rem; }
+  .cell { padding: 2rem 2.5rem; }
 
-  /* in rust: tekst links, ruimte voor de foto rechts; bij hover maakt de kolom plek naast de foto */
   .cell-body {
-    position: relative; z-index: 35; gap: 0.6rem; justify-content: space-between; width: 64%;
+    position: relative; z-index: 35; gap: 0.75rem; width: var(--bw, 64%);
     transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1), margin 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
   }
+  .cell[data-align="right"] .cell-body { margin-left: auto; text-align: right; }
+  .cell[data-align="right"] .cell-row { flex-direction: row-reverse; }
+  .cell[data-align="right"] .cell-foot { align-items: flex-end; }
+
   .cell-title {
-    font-size: clamp(1.4rem, 2.9vw, 3.6rem);
-    margin-block: auto;
-    max-width: calc(100% - var(--dx, 0px));
+    font-size: calc(clamp(1.4rem, 2.6vw, 3.4rem) * var(--ts, 1));
+    transition: font-size 0.5s ease;
   }
-  .cell-foot { max-width: calc(100% - var(--dx, 0px)); }
+  .cell[data-align="left"] .cell-title { padding-left: var(--indent, 0); }
+  .cell[data-align="right"] .cell-title { padding-right: var(--indent, 0); }
+  .cell[data-title="top"] .cell-title { margin-top: 0.75rem; margin-bottom: auto; }
+  .cell[data-title="center"] .cell-title { margin-block: auto; }
+  .cell[data-title="bottom"] .cell-title { margin-top: auto; margin-bottom: 0.75rem; }
 
-  /* rustpositie: de kleine teksten staan net iets verschoven in hun vak
-     (altijd naar binnen, dus nooit buiten de pagina); bij hover staan ze strak */
-  .cell-meta {
-    transform: translate(calc(var(--dx, 0px) * var(--dir, 1)), var(--dy, 0px));
-    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), font-size 0.5s ease;
-    will-change: transform;
-  }
-  .cell-tool { --dir: -1; }
-  .grid-cell:hover .cell-meta,
-  .grid-cell.is-hovered .cell-meta { transform: none; }
+  /* titels breken alleen tussen woorden af, nooit midden in een woord */
+  .cell-title { overflow-wrap: normal; hyphens: none; }
+  .cell-index { white-space: nowrap; transition: font-size 0.5s ease; }
 
-  /* foto heeft een vaste maat (rusthoogte van zijn rij), dus hij groeit niet mee bij hover */
-  /* foto: in rust rechts en mag over de rand van het vak hangen (--ro, in px),
-     bij hover staat hij binnen het vak, naast de tekst */
+  /* groot nummer als grafisch element */
+  .cell[data-index="big"] .cell-index { font-size: clamp(2.75rem, 4.4vw, 4.75rem); line-height: 0.8; }
+  .cell[data-index="big"] .cell-row { align-items: flex-start; }
+
+  /* foto: vaste maat (rusthoogte van zijn rij), in rust bewust scheef en over de randen;
+     bij hover recht en binnen het vak, naast de tekst */
   .cell-photo {
     position: absolute; z-index: 5; margin: 0;
-    left: calc(100% + var(--ro, 0px)); top: var(--ry, 50%); translate: -100% -50%;
+    left: var(--px); top: var(--py); translate: var(--tx, -100%) var(--ty, -50%); rotate: var(--rot, 0deg);
     height: calc(var(--grid-h) * var(--rf, 1) / 3.2 * var(--ph-n, 0.78)); width: auto; aspect-ratio: var(--ar, 3 / 4);
     pointer-events: none;
     transition: left 0.75s cubic-bezier(0.16, 1, 0.3, 1), top 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-      translate 0.75s cubic-bezier(0.16, 1, 0.3, 1), scale 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-      opacity 0.5s ease;
+      translate 0.75s cubic-bezier(0.16, 1, 0.3, 1), rotate 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+      scale 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
     will-change: left, top, translate, opacity;
   }
   .cell[data-side="right"]:hover .cell-photo,
-  .cell[data-side="right"].is-hovered .cell-photo { left: calc(100% - 2.5rem); top: 50%; translate: -100% -50%; }
+  .cell[data-side="right"].is-hovered .cell-photo { left: calc(100% - 2.5rem); top: 50%; translate: -100% -50%; rotate: 0deg; }
   .cell[data-side="left"]:hover .cell-photo,
-  .cell[data-side="left"].is-hovered .cell-photo { left: 2.5rem; top: 50%; translate: 0 -50%; }
+  .cell[data-side="left"].is-hovered .cell-photo { left: 2.5rem; top: 50%; translate: 0 -50%; rotate: 0deg; }
 
   .cell[data-side="right"]:hover .cell-body,
-  .cell[data-side="right"].is-hovered .cell-body { width: 50%; }
+  .cell[data-side="right"].is-hovered .cell-body { width: 50%; margin-left: 0; }
   .cell[data-side="left"]:hover .cell-body,
   .cell[data-side="left"].is-hovered .cell-body { width: 50%; margin-left: auto; }
 
-  /* de andere vakken treden terug en worden rustig (kleinere titel, geen verschuiving) */
+  /* de andere vakken treden terug en worden rustig */
   .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-photo { opacity: 0.25; scale: 0.86; }
   .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-body { opacity: 0.45; width: 100%; }
-  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-meta { transform: none; }
-  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-title { font-size: clamp(1.1rem, 2vw, 2.4rem); }
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-index { font-size: 1.5rem; }
+  .editorial-grid.has-hover .grid-cell:not(.is-hovered) .cell-title { font-size: calc(clamp(1.1rem, 2vw, 2.4rem) * var(--ts, 1)); }
 }
