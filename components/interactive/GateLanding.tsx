@@ -50,6 +50,51 @@ export default function GateLanding() {
     setGate("closed");
   };
 
+  /* scrollen: naar beneden = poort open, naar boven = poort dicht (muiswiel, trackpad, swipe en pijltjes) */
+  const gateRef = useRef<GateState>(gate);
+  gateRef.current = gate;
+  useEffect(() => {
+    let acc = 0; // opgetelde scroll, zodat een klein tikje op de trackpad niet meteen telt
+    let resetT = 0;
+    const go = (dir: 1 | -1) => {
+      if (dir > 0 && gateRef.current !== "open") open();
+      if (dir < 0 && gateRef.current === "open") setGate("closed");
+    };
+    const push = (dy: number) => {
+      acc += dy;
+      window.clearTimeout(resetT);
+      resetT = window.setTimeout(() => (acc = 0), 200);
+      if (Math.abs(acc) > 40) {
+        go(acc > 0 ? 1 : -1);
+        acc = 0;
+      }
+    };
+    const onWheel = (e: WheelEvent) => push(e.deltaY);
+    let touchY: number | null = null;
+    const onTouchStart = (e: TouchEvent) => (touchY = e.touches[0]?.clientY ?? null);
+    const onTouchMove = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY;
+      if (touchY === null || y === undefined) return;
+      push((touchY - y) * 1.5); // vinger omhoog = naar beneden scrollen
+      touchY = y;
+    };
+    const onKeyScroll = (e: KeyboardEvent) => {
+      if (["ArrowDown", "PageDown", " "].includes(e.key)) go(1);
+      if (["ArrowUp", "PageUp"].includes(e.key)) go(-1);
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("keydown", onKeyScroll);
+    return () => {
+      window.clearTimeout(resetT);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKeyScroll);
+    };
+  }, [open]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setGate("closed");
     window.addEventListener("keydown", onKey);

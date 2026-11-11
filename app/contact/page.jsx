@@ -147,7 +147,7 @@ export default function ContactPage() {
             <aside className="w-full space-y-8 order-2 lg:order-1">
               <div className="w-full aspect-square overflow-hidden bg-neutral-100">
                 <img
-                  src="https://i.pinimg.com/1200x/ee/61/5c/ee615cb1e5018aaab7d1daab1efe0cd3.jpg"
+                  src="/images/ikbaby.JPG"
                   alt="Portret foto"
                   className="w-full h-full object-cover contrast-110 brightness-95 block hover:scale-105 transition-transform duration-700 ease-out"
                 />

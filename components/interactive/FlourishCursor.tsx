@@ -45,11 +45,20 @@ export default function FlourishCursor() {
       raf = requestAnimationFrame(tick);
     };
 
+    // bij een video op volledig scherm: gewone muis terug (onze cursor valt daar niet over heen)
+    const onFullscreen = () => {
+      const fs = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+      root.classList.toggle("flourish-cursor", !fs);
+    };
+    document.addEventListener("fullscreenchange", onFullscreen);
+    document.addEventListener("webkitfullscreenchange", onFullscreen);
     document.addEventListener("pointermove", onMove);
     root.addEventListener("pointerleave", onLeave);
     root.addEventListener("pointerenter", onEnter);
     raf = requestAnimationFrame(tick);
     return () => {
+      document.removeEventListener("fullscreenchange", onFullscreen);
+      document.removeEventListener("webkitfullscreenchange", onFullscreen);
       document.removeEventListener("pointermove", onMove);
       root.removeEventListener("pointerleave", onLeave);
       root.removeEventListener("pointerenter", onEnter);

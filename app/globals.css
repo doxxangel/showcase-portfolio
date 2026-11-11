@@ -469,11 +469,23 @@ header.menu-active,
   }
 }
 
-/* geen 'forwards' en geen blijvende will-change: na de fade blijft er geen filter/transform
-   op de hele pagina hangen (dat maakte scrollen/hover traag en brak position: fixed) */
+/* 'backwards' i.p.v. 'both': na de fade blijft er niets op de pagina hangen.
+   Een blijvende transform/filter maakte scrollen traag en brak position: fixed (wolkjes, grote foto) */
 .calm-haze-entry {
-  animation: calmHazeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: calmHazeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
+
+/* knoppen in de stijl van de site: wit vlak, dunne zwarte rand, kleine hoofdletters */
+.site-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  background: #fff; color: #000; border: 1.5px solid #000;
+  padding: 0.5rem 0.8rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1;
+  cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease;
+}
+.site-btn:hover, .site-btn:focus-visible { background: #000; color: #fff; outline: none; }
+@media (min-width: 640px) { .site-btn { font-size: 11px; padding: 0.6rem 0.95rem; } }
 /* Lenis aanbevolen basis styles */
 html.lenis, html.lenis body {
   height: auto;
