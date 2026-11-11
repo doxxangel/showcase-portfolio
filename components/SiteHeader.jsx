@@ -42,7 +42,7 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
     return (
       <header className="relative z-[60] mb-2 w-full select-none md:mb-4">
         {/* zelfde hoogte (h-9) en tussenruimte als de gewone navbar, zodat NL/ENG en geluid op exact dezelfde plek staan */}
-        <div className="type-label flex h-9 items-center justify-end gap-2 md:gap-4">
+        <div className="type-label flex h-9 items-center justify-end gap-2 md:gap-4 max-sm:text-[10px] max-sm:tracking-[0.14em]">
           <div className="flex items-center">
             <button
               type="button"
@@ -95,13 +95,13 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
             </button>
             <Link
               href="/"
-              className="type-heading whitespace-nowrap transition hover:opacity-70"
+              className="type-heading whitespace-nowrap transition hover:opacity-70 max-sm:text-[11px] max-sm:tracking-[0.14em]"
             >
               DOXXANGEL STUDIOS
             </Link>
           </div>
 
-          <div className="type-label flex items-center gap-2 md:gap-4">
+          <div className="type-label flex items-center gap-2 md:gap-4 max-sm:text-[10px] max-sm:tracking-[0.14em]">
             <div className="flex items-center">
               <button
                 type="button"
