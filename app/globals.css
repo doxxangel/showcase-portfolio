@@ -18,7 +18,7 @@
    1. ROOT VARIABLES & LAYOUT FRACTIONS
    ========================================================================== */
 :root {
-  --line-thickness: 3px;
+  --line-thickness: 2.5px;
   --line-color: #000000;
   --col-1: 1.05fr;
   --col-2: 1.15fr;

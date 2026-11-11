@@ -437,13 +437,13 @@ export default function ArchivePage() {
       </div>
 
       <div className={`calm-haze-entry w-full max-w-[1500px] mx-auto ${activeModalIdx !== null ? 'hidden' : ''}`}>
-        {/* paginatitel op telefoon/tablet, zoals bij Info en Contact */}
-        <div className="mb-8 md:mb-14 lg:hidden">
-          <h1 className="inline-block text-5xl sm:text-7xl md:text-8xl font-serif-luxury weight-ultra-thin tracking-tight leading-none border-b-[4px] border-black pb-1">
+        {/* paginatitel, zoals bij Info en Contact */}
+        <div className="mb-8 md:mb-14">
+          <h1 className="inline-block text-[2.75rem] sm:text-6xl md:text-7xl font-serif-luxury weight-ultra-thin tracking-tight leading-none border-b-[3px] border-black pb-1">
             ARCHIVE
           </h1>
         </div>
-        <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 lg:h-[var(--grid-h)] border-[2px] sm:border-[3px] border-black bg-white ${hoverGridClass}`}>
+        <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 lg:h-[var(--grid-h)] border-[2px] lg:border-[2.5px] border-black bg-white ${hoverGridClass}`}>
 
           {sectionsData[lang].map((p, i) => {
             const c = CELLS[i];

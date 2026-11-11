@@ -88,7 +88,7 @@ export default function InfoPage() {
 
         <div className="w-full max-w-[1240px] mr-auto lg:pr-10">
           <div className="mb-8 md:mb-14">
-            <h1 className="inline-block text-5xl sm:text-7xl md:text-8xl font-serif-luxury weight-ultra-thin tracking-tight leading-none border-b-[4px] border-black pb-1">
+            <h1 className="inline-block text-[2.75rem] sm:text-6xl md:text-7xl font-serif-luxury weight-ultra-thin tracking-tight leading-none border-b-[3px] border-black pb-1">
               INFO
             </h1>
           </div>
