@@ -8,7 +8,7 @@ const FONT = 'Jeffrson';
 
 /* Footer voor Archive, Info en Contact (niet voor de landing).
    Over de hele breedte van het scherm staat doxxangel studios in Jeffrson;
-   helemaal onderaan zie je alleen het bovenste deel (VISIBLE) van de letters.
+   helemaal onderaan zie je alleen het bovenste deel (VISIBLE) van de letters; op de telefoon het hele woord.
    Gebruik: <SiteFooter /> BUITEN de pagina-wrapper met padding, zodat hij de volle breedte pakt. */
 export default function SiteFooter() {
   const box = useRef(null);
@@ -38,7 +38,10 @@ export default function SiteFooter() {
       span.style.left = `${m.actualBoundingBoxLeft * k}px`;
       span.style.top = `${-capTop}px`;
       // alle letters helemaal zichtbaar, alleen de staart van de g valt deels weg
-      el.style.height = `${(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent * VISIBLE) * k}px`;
+      // telefoon: woordmerk helemaal zichtbaar (plus wat lucht eronder); groter scherm: onderkant afgesneden
+      const phone = window.matchMedia('(max-width: 639px)').matches;
+      const below = phone ? m.actualBoundingBoxDescent + 8 : m.actualBoundingBoxDescent * VISIBLE;
+      el.style.height = `${(m.actualBoundingBoxAscent + below) * k}px`;
       span.style.opacity = '1';
     };
 

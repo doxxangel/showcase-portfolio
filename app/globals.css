@@ -102,8 +102,6 @@
 html, body {
   overflow-x: clip;
   max-width: 100%;
-  /* geen elastisch doorscrollen (iPhone): anders zie je onder de half afgesneden footer nog lege ruimte */
-  overscroll-behavior-y: none;
 }
 
 body {

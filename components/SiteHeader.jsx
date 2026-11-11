@@ -168,9 +168,10 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
         </nav>
 
         <div className="type-label mt-auto flex items-center justify-between">
-          <button type="button" onClick={toggleSound} tabIndex={open ? 0 : -1} className="flex items-center gap-2 py-2">
+          {/* knoppen erven geen hoofdletters, dus 'uppercase' er expliciet bij (zelfde stijl als © DOXXANGEL) */}
+          <button type="button" onClick={toggleSound} tabIndex={open ? 0 : -1} className="flex cursor-pointer items-center gap-2 py-2 uppercase transition hover:opacity-60">
             <SoundIcon className="h-4 w-4" />
-            {lang === 'nl' ? 'Geluid' : 'Sound'} {audioActive ? 'on' : 'off'}
+            {lang === 'nl' ? (audioActive ? 'Geluid aan' : 'Geluid uit') : (audioActive ? 'Sound on' : 'Sound off')}
           </button>
           <span className="text-neutral-400">&copy; DOXXANGEL</span>
         </div>
