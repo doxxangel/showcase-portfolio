@@ -14,8 +14,10 @@ const LINKS = [
 
 /* Eén header voor alle pagina's.
    <SiteHeader onToggleAudio={handleToggleAudio} />   (prop is optioneel)
-   <SiteHeader minimal />                              alleen NL/ENG + geluidsknop (landing) */
-export default function SiteHeader({ onToggleAudio = undefined, minimal = false }) {
+   <SiteHeader minimal />                              alleen NL/ENG + geluidsknop (landing)
+   <SiteHeader compact />                              geen losse links, altijd het hamburgermenu (project modals)
+   onSamePage: wordt aangeroepen als je in het menu op de pagina klikt waar je al bent */
+export default function SiteHeader({ onToggleAudio = undefined, minimal = false, compact = false, onSamePage = undefined }) {
   const { lang, setLang, audioActive, toggleAudio } = useSite();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -82,7 +84,7 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false 
             >
               DOXXANGEL STUDIOS
             </Link>
-            <nav aria-label="Hoofdnavigatie" className="hidden items-center gap-4 text-sm md:flex lg:gap-6">
+            <nav aria-label="Hoofdnavigatie" className={`hidden items-center gap-4 text-sm lg:gap-6 ${compact ? '' : 'md:flex'}`}>
               {LINKS.map((l) => (
                 <span key={l.href} className="flex items-center gap-4 lg:gap-6">
                   <span className="nav-pipe" />
@@ -135,7 +137,7 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false 
               onClick={() => setOpen((o) => !o)}
               aria-label={open ? 'Sluit menu' : 'Open menu'}
               aria-expanded={open}
-              className="flex h-9 w-9 cursor-pointer items-center justify-center md:hidden"
+              className={`flex h-9 w-9 cursor-pointer items-center justify-center ${compact ? '' : 'md:hidden'}`}
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -146,7 +148,7 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false 
       {/* mobiel menu: schermvullend, in dezelfde editorial stijl */}
       <div
         aria-hidden={!open}
-        className={`fixed inset-0 z-50 flex flex-col bg-white px-5 pb-8 pt-28 transition-opacity duration-300 sm:px-8 md:hidden ${
+        className={`fixed inset-0 z-50 flex flex-col bg-white px-5 pb-8 pt-28 transition-opacity duration-300 sm:px-8 md:px-14 lg:px-16 ${compact ? '' : 'md:hidden'} ${
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
@@ -156,6 +158,12 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false 
               key={l.href}
               href={l.href}
               tabIndex={open ? 0 : -1}
+              onClick={() => {
+                if (l.href === pathname) {
+                  setOpen(false);
+                  if (onSamePage) onSamePage();
+                }
+              }}
               className="flex items-baseline justify-between border-b border-black/10 py-4"
             >
               <span

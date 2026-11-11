@@ -166,7 +166,7 @@ export default function ContactPage() {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-neutral-500 uppercase tracking-widest text-xs font-semibold">{dict.lblTimezone}</span>
-                  <span className="font-mono text-neutral-800 text-xs">{clock}</span>
+                  <span className="tabular-nums text-neutral-800 text-xs">{clock}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-neutral-500 uppercase tracking-widest text-xs font-semibold">{dict.lblResponse}</span>
@@ -177,7 +177,7 @@ export default function ContactPage() {
               <div className="border-t border-neutral-200 pt-6">
                 <h3 className="text-xs font-bold tracking-widest uppercase text-neutral-400 mb-2">{dict.lblDirectMail}</h3>
                 <span
-                  className={`mac-trigger relative inline-block break-all text-sm sm:text-lg md:text-xl underline underline-offset-4 hover:opacity-70 transition font-mono cursor-pointer ${openPopoverId === 'c-mail' ? 'popover-open' : ''}`}
+                  className={`mac-trigger relative inline-block break-all text-sm sm:text-lg md:text-xl underline underline-offset-4 hover:opacity-70 transition cursor-pointer ${openPopoverId === 'c-mail' ? 'popover-open' : ''}`}
                   onMouseEnter={(e) => { clampPopover(e.currentTarget); playHover(659); }}
                   onClick={(e) => togglePopover(e, 'c-mail', 659)}
                 >
@@ -261,7 +261,7 @@ export default function ContactPage() {
                     <div className="flex flex-col">
                       <div className="flex items-center justify-between mb-1">
                         <label htmlFor="message" className="text-xs uppercase tracking-widest font-semibold text-neutral-500">{dict.labelMessage}</label>
-                        <span className="text-xs font-mono text-neutral-400">{message.length} / 800</span>
+                        <span className="text-xs tabular-nums text-neutral-400">{message.length} / 800</span>
                       </div>
                       <textarea id="message" name="message" rows="4" maxLength={800} required placeholder={dict.placeholderMessage} value={message} onChange={(e) => setMessage(e.target.value)} className={`${field} resize-none leading-relaxed`} onFocus={() => playHover(659)}></textarea>
                     </div>

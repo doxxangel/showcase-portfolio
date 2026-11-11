@@ -55,10 +55,6 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.font-mono-code {
-  font-family: 'JetBrains Mono', monospace;
-}
-
 .weight-ultra-thin {
   font-weight: 200 !important;
   letter-spacing: 0.08em;

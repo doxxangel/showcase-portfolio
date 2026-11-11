@@ -435,10 +435,16 @@ export default function ArchivePage() {
       </div>
 
       <div className="w-full max-w-[1600px] mr-auto">
-        <SiteHeader onToggleAudio={handleToggleAudio} />
+        <SiteHeader onToggleAudio={handleToggleAudio} compact={activeModalIdx !== null} onSamePage={closeProject} />
       </div>
 
       <div className={`calm-haze-entry w-full max-w-[1500px] mx-auto ${activeModalIdx !== null ? 'hidden' : ''}`}>
+        {/* paginatitel op telefoon/tablet, zoals bij Info en Contact */}
+        <div className="mb-8 md:mb-14 lg:hidden">
+          <h1 className="inline-block text-5xl sm:text-7xl md:text-8xl font-serif-luxury weight-ultra-thin tracking-tight leading-none border-b-[4px] border-black pb-1">
+            ARCHIVE
+          </h1>
+        </div>
         <main className={`editorial-grid grid grid-cols-1 lg:grid-cols-2 lg:h-[var(--grid-h)] border-[2px] sm:border-[3px] border-black bg-white ${hoverGridClass}`}>
 
           {sectionsData[lang].map((p, i) => {
@@ -542,7 +548,7 @@ export default function ArchivePage() {
             </section>
 
             {/* vorige / volgende onderaan, als je klaar bent met lezen */}
-            <nav className="mt-16 grid grid-cols-2 border-t-[3px] border-black pt-6 font-editorial-nav uppercase sm:mt-24">
+            <nav className="mt-16 grid grid-cols-2 border-t border-neutral-200 pt-6 font-editorial-nav uppercase sm:mt-24">
               <button onClick={prevProject} className="group flex cursor-pointer flex-col items-start gap-2 text-left transition hover:opacity-60">
                 <span className="text-[11px] font-semibold tracking-[0.2em] text-neutral-500">{lang === 'nl' ? '← Vorig project' : '← Previous project'}</span>
                 <span className="font-serif-luxury weight-thin text-xl normal-case tracking-tight text-black sm:text-3xl lg:text-4xl" style={{ letterSpacing: 0 }}>
