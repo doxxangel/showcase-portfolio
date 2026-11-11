@@ -15,15 +15,18 @@ export default function SmoothScroll({ children }) {
       touchMultiplier: 1.8,
     });
 
+    window.__lenis = lenis; // zodat menu en grote foto de pagina kunnen vastzetten (lib/scrollLock.js)
+
+    let rafId = 0;
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-
-    const rafId = requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
       cancelAnimationFrame(rafId);
+      if (window.__lenis === lenis) delete window.__lenis;
       lenis.destroy();
     };
   }, []);

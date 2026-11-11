@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Volume2, VolumeX, Menu, X } from 'lucide-react';
 import { useSite } from '@/context/SiteContext';
+import { lockScroll, unlockScroll } from '@/lib/scrollLock';
 
 const LINKS = [
   { href: '/archive', label: 'ARCHIVE' },
@@ -26,13 +27,15 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
 
   useEffect(() => setOpen(false), [pathname]);
 
+  // menu open = pagina erachter staat stil
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
+    if (!open) return;
+    lockScroll();
     const onKey = (e) => e.key === 'Escape' && setOpen(false);
     window.addEventListener('keydown', onKey);
     return () => {
       window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
+      unlockScroll();
     };
   }, [open]);
 
@@ -137,7 +140,8 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
       {/* mobiel menu: schermvullend, in dezelfde editorial stijl */}
       <div
         aria-hidden={!open}
-        className={`fixed inset-0 z-50 flex flex-col bg-white px-5 pb-8 pt-28 transition-opacity duration-300 sm:px-8 md:px-14 lg:px-16 ${
+        data-lenis-prevent
+        className={`fixed inset-0 z-50 flex touch-none flex-col overscroll-contain bg-white px-5 pb-8 pt-28 transition-opacity duration-300 sm:px-8 md:px-14 lg:px-16 ${
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >

@@ -7,6 +7,7 @@ import { useSite } from '@/context/SiteContext';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import { clampPopover } from '@/lib/clampPopover';
+import { lockScroll, unlockScroll } from '@/lib/scrollLock';
 
 /* Beelden per project (uit public/images/<map>/).
    Elke rij is een lijst beelden naast elkaar: span = breedte van 12 kolommen,
@@ -250,10 +251,10 @@ function Lightbox({ images, index, lang, onClose, onMove }) {
       if (e.key === 'ArrowLeft') onMove(-1);
     };
     window.addEventListener('keydown', onKey);
-    document.documentElement.style.overflow = 'hidden';
+    lockScroll();
     return () => {
       window.removeEventListener('keydown', onKey);
-      document.documentElement.style.overflow = '';
+      unlockScroll();
     };
   }, [onClose, onMove]);
   if (!img || typeof document === 'undefined') return null;
