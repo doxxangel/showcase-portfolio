@@ -188,7 +188,8 @@ body {
   }
 
   /* buitenrand als laag bovenop, zodat foto's die over de rand hangen er altijd achter zitten */
-  .editorial-grid { position: relative; --grid-h: clamp(860px, 112dvh, 1080px); }
+  /* z-index 0 = eigen laag: lijnen en foto's van het raster komen nooit boven het menu uit */
+  .editorial-grid { position: relative; z-index: 0; --grid-h: clamp(860px, 112dvh, 1080px); }
   .editorial-grid::after {
     content: '';
     position: absolute;

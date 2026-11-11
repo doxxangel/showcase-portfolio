@@ -492,7 +492,7 @@ export default function ArchivePage() {
       {/* Project modal */}
       {activeModalIdx !== null && currentProject && (
         <div key={activeModalIdx} className="calm-haze-entry w-full max-w-[1500px] mx-auto">
-          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md py-3 md:py-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
+          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md pt-5 pb-3 md:pt-6 md:pb-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
             <button onClick={closeProject} className="flex items-center gap-2 tracking-[0.2em] font-semibold text-black hover:opacity-60 transition cursor-pointer">
               <span className="text-sm">✕</span> <span>{lang === 'nl' ? 'SLUITEN' : 'CLOSE'}</span>
             </button>

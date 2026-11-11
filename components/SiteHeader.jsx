@@ -15,7 +15,8 @@ const LINKS = [
 /* Eén header voor alle pagina's.
    <SiteHeader onToggleAudio={handleToggleAudio} />   (prop is optioneel)
    <SiteHeader minimal />                              alleen NL/ENG + geluidsknop (landing)
-   <SiteHeader compact />                              geen losse links, altijd het hamburgermenu (project modals)
+   Overal: geen losse links, altijd het hamburgermenu.
+   <SiteHeader compact />                              met lichte lijn en zonder ruimte eronder (project modals)
    onSamePage: wordt aangeroepen als je in het menu op de pagina klikt waar je al bent */
 export default function SiteHeader({ onToggleAudio = undefined, minimal = false, compact = false, onSamePage = undefined }) {
   const { lang, setLang, audioActive, toggleAudio } = useSite();
@@ -76,35 +77,27 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
     <>
       <header
         className={`relative z-[60] w-full select-none ${
-          compact ? 'mb-0 border-b border-neutral-200 pb-3 md:pb-4' /* in een project: lichte lijn, project-balk er direct onder */ : 'mb-10 md:mb-16'
+          compact ? 'mb-0 border-b border-neutral-200 pb-3 md:pb-4' /* alleen in een project: lichte lijn */ : 'mb-10 md:mb-16'
         }`}
       >
         <div className="flex items-center justify-between font-editorial-nav font-medium uppercase">
-          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
-            {!compact && <span className="nav-pipe hidden md:inline-block" />}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* hamburgermenu links van de naam; -ml-2 zodat het icoon gelijk staat met de paginarand */}
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              aria-label={open ? 'Sluit menu' : 'Open menu'}
+              aria-expanded={open}
+              className="-ml-2 flex h-9 w-9 cursor-pointer items-center justify-center"
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
             <Link
               href="/"
               className="whitespace-nowrap text-[11px] font-semibold tracking-[0.16em] transition hover:opacity-70 sm:text-[13px] sm:tracking-[0.2em] md:text-sm"
             >
               DOXXANGEL STUDIOS
             </Link>
-            <nav aria-label="Hoofdnavigatie" className={`hidden items-center gap-4 text-sm lg:gap-6 ${compact ? '' : 'md:flex'}`}>
-              {LINKS.map((l) => (
-                <span key={l.href} className="flex items-center gap-4 lg:gap-6">
-                  <span className="nav-pipe" />
-                  <Link
-                    href={l.href}
-                    aria-current={pathname === l.href ? 'page' : undefined}
-                    className={`tracking-[0.2em] transition hover:opacity-60 ${
-                      pathname === l.href ? 'font-semibold underline decoration-[1.5px] underline-offset-[10px]' : ''
-                    }`}
-                  >
-                    {l.label}
-                  </Link>
-                </span>
-              ))}
-              <span className="nav-pipe" />
-            </nav>
           </div>
 
           <div className="flex items-center gap-2 text-[12px] font-semibold tracking-[0.16em] md:gap-4 md:text-xs">
@@ -136,15 +129,6 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
               <SoundIcon className="h-3.5 w-3.5" />
             </button>
 
-            <button
-              type="button"
-              onClick={() => setOpen((o) => !o)}
-              aria-label={open ? 'Sluit menu' : 'Open menu'}
-              aria-expanded={open}
-              className={`flex h-9 w-9 cursor-pointer items-center justify-center ${compact ? '' : 'md:hidden'}`}
-            >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
           </div>
         </div>
       </header>
@@ -152,11 +136,11 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
       {/* mobiel menu: schermvullend, in dezelfde editorial stijl */}
       <div
         aria-hidden={!open}
-        className={`fixed inset-0 z-50 flex flex-col bg-white px-5 pb-8 pt-28 transition-opacity duration-300 sm:px-8 md:px-14 lg:px-16 ${compact ? '' : 'md:hidden'} ${
+        className={`fixed inset-0 z-50 flex flex-col bg-white px-5 pb-8 pt-28 transition-opacity duration-300 sm:px-8 md:px-14 lg:px-16 ${
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
-        <nav className="flex flex-col border-t border-black/10">
+        <nav className="flex flex-col">
           {LINKS.map((l, i) => (
             <Link
               key={l.href}
