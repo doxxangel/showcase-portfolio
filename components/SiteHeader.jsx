@@ -74,10 +74,14 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
 
   return (
     <>
-      <header className="relative z-[60] mb-10 w-full select-none md:mb-16">
+      <header
+        className={`relative z-[60] w-full select-none ${
+          compact ? 'mb-0 border-b border-neutral-200 pb-3 md:pb-4' /* in een project: lichte lijn, project-balk er direct onder */ : 'mb-10 md:mb-16'
+        }`}
+      >
         <div className="flex items-center justify-between font-editorial-nav font-medium uppercase">
           <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
-            <span className="nav-pipe hidden md:inline-block" />
+            {!compact && <span className="nav-pipe hidden md:inline-block" />}
             <Link
               href="/"
               className="whitespace-nowrap text-[11px] font-semibold tracking-[0.16em] transition hover:opacity-70 sm:text-[13px] sm:tracking-[0.2em] md:text-sm"

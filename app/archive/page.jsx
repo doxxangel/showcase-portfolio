@@ -23,15 +23,15 @@ const sharedMedia = {
       { type: 'image', url: B + 'macos/macos message.png', ar: '2358 / 1334', span: 6, caption: { nl: 'Berichtenvenster', en: 'Messages window' } },
     ],
   ],
-  1: [ // Room // Horror — rpgmaker/
+  1: [ // 8-Bit Horror Game — rpgmaker/
     [
       { type: 'video', url: B + 'rpgmaker/rpgmakervideo.mp4', ar: '812 / 614', span: 6, caption: { nl: 'Gameplay', en: 'Gameplay' } },
-      { type: 'video', url: B + 'rpgmaker/rpgmakershoes.mov', ar: '1586 / 1106', span: 6, caption: { nl: 'Schoenen-scène', en: 'Shoes scene' } },
+      { type: 'video', url: B + 'rpgmaker/rpgmakershoes.mov', ar: '1586 / 1106', span: 6, caption: { nl: 'Gameplay', en: 'Gameplay' } },
     ],
     [
-      { type: 'image', url: B + 'rpgmaker/rpggame1.png', ar: '2018 / 1702', span: 4, caption: { nl: 'Mijn kamer als map', en: 'My room as a map' } },
+      { type: 'image', url: B + 'rpgmaker/rpggame1.png', ar: '2018 / 1702', span: 4, caption: { nl: 'Mijn kamer', en: 'My room' } },
       { type: 'image', url: B + 'rpgmaker/rpgmakeroutsie.png', ar: '1579 / 1124', span: 4, caption: { nl: 'Buiten', en: 'Outside' } },
-      { type: 'image', url: B + 'rpgmaker/rpgmakerpiano.png', ar: '1552 / 1198', span: 4, caption: { nl: 'De piano', en: 'The piano' } },
+      { type: 'image', url: B + 'rpgmaker/rpgmakerpiano.png', ar: '1552 / 1198', span: 4, caption: { nl: 'Het huis', en: 'The house' } },
     ],
   ],
   2: [ // Lunora Garden — unity/
@@ -39,8 +39,8 @@ const sharedMedia = {
       { type: 'video', url: B + 'unity/lunoravideo.mp4', ar: '1918 / 886', span: 12, caption: { nl: 'Wandeling door de tuin', en: 'A walk through the garden' } },
     ],
     [
-      { type: 'image', url: B + 'unity/lunoragarden1.png', ar: '1919 / 884', span: 6, caption: { nl: 'Paars licht & kaarsen', en: 'Violet light & candles' } },
-      { type: 'image', url: B + 'unity/lunoragarden2.png', ar: '1915 / 888', span: 6, caption: { nl: 'Standbeelden & water', en: 'Statues & water' } },
+      { type: 'image', url: B + 'unity/lunoragarden1.png', ar: '1919 / 884', span: 6, caption: { nl: 'Decor', en: 'Scenery' } },
+      { type: 'image', url: B + 'unity/lunoragarden2.png', ar: '1915 / 888', span: 6, caption: { nl: 'Decor', en: 'Scenery' } },
     ],
     [
       { type: 'image', url: B + 'unity/mindmaplunora.png', ar: '1915 / 1079', span: 8, start: 3, caption: { nl: 'Mindmap // concept Lunora', en: 'Mind map // Lunora concept' } },
@@ -64,45 +64,46 @@ const sharedMedia = {
   ],
   4: [ // Sanrio Chess — blender/
     [
-      { type: 'image', url: B + 'blender/blenderkuromi.png', ar: '576 / 1024', span: 3, caption: { nl: 'Kuromi Knight', en: 'Kuromi Knight' } },
-      { type: 'image', url: B + 'blender/blendercinnamorol.png', ar: '896 / 1172', span: 4, caption: { nl: 'Cinnamoroll', en: 'Cinnamoroll' } },
-      { type: 'image', url: B + 'blender/blenderhorse.png', ar: '1 / 1', span: 5, caption: { nl: 'Paard // schaakstuk', en: 'Horse // chess piece' } },
+      { type: 'image', url: B + 'blender/blenderkuromi.png', ar: '576 / 1024', span: 3, caption: { nl: '3D model', en: '3D model' } },
+      { type: 'image', url: B + 'blender/blendercinnamorol.png', ar: '896 / 1172', span: 4, caption: { nl: '3D model', en: '3D model' } },
+      { type: 'image', url: B + 'blender/blenderhorse.png', ar: '1 / 1', span: 5, caption: { nl: '3D model', en: '3D model' } },
     ],
     [
-      { type: 'image', url: B + 'blender/blenderking.png', ar: '1198 / 774', span: 8, start: 3, caption: { nl: 'Cinnamoroll King', en: 'Cinnamoroll King' } },
+      { type: 'image', url: B + 'blender/devanlpstand.png', ar: '703 / 1282', span: 3, caption: { nl: '3D model', en: '3D model' } },
+      { type: 'image', url: B + 'blender/blenderking.png', ar: '1198 / 774', span: 9, caption: { nl: '3D model', en: '3D model' } },
     ],
   ],
   5: [ // Powerpuff RPG — powerpuff/
     [
-      { type: 'video', url: B + 'powerpuff/powerpuff video.mov', poster: B + 'powerpuff/powerpuff home screen .png', ar: '2852 / 1606', span: 12, caption: { nl: 'Gameplay // wandeling naar school', en: 'Gameplay // walk to school' } },
+      { type: 'video', url: B + 'powerpuff/powerpuff video.mov', poster: B + 'powerpuff/powerpuff home screen .png', zoom: 1.012, ar: '2852 / 1606', span: 12, caption: { nl: 'Gameplay', en: 'Gameplay' } },
     ],
     [
-      { type: 'video', url: B + 'powerpuff/powerpuff 2 video.mov', ar: '1820 / 1432', span: 5, caption: { nl: 'Boeken met leeruitkomsten', en: 'Books with learning outcomes' } },
+      { type: 'video', url: B + 'powerpuff/powerpuff 2 video.mov', ar: '1820 / 1432', span: 5, caption: { nl: 'De woonkamer', en: 'The living room' } },
       { type: 'image', url: B + 'powerpuff/powerpuffgrocery.png', ar: '2784 / 1610', span: 7, caption: { nl: 'De supermarkt', en: 'The supermarket' } },
     ],
   ],
 };
 
 /* tailwind moet deze klassen letterlijk zien */
-const SPAN = { 3: 'md:col-span-3', 4: 'md:col-span-4', 5: 'md:col-span-5', 6: 'md:col-span-6', 7: 'md:col-span-7', 8: 'md:col-span-8', 12: 'md:col-span-12' };
+const SPAN = { 3: 'md:col-span-3', 4: 'md:col-span-4', 5: 'md:col-span-5', 6: 'md:col-span-6', 7: 'md:col-span-7', 8: 'md:col-span-8', 9: 'md:col-span-9', 12: 'md:col-span-12' };
 const START = { 3: 'md:col-start-3' };
 
 const sectionsData = {
   nl: [
     { id: 0, title: "MACOS PORTFOLIO", category: "ARCHIEF 01: INTERACTION", indexStr: "01 / 06", services: "HTML & JavaScript\nOperating System UI\nAmbient Audio Design", description: ["In plaats van een traditionele scrollende website is dit portfolio vormgegeven als een complete macOS desktop omgeving. Bezoekers hebben het gevoel dat ze rechtstreeks in mijn computer navigeren via vensters, iconen en mappen.", "De interactieve ervaring is verrijkt met een zelf gecomponeerde soundtrack die kan worden afgespeeld via een nostalgische iPod-widget op het bureaublad, wat zorgt voor een immersieve, tactiele sfeer."], popoverSummary: "Een portfolio vermomd als macOS desktop met interactieve vensters en zelfgemaakte muziek.", engineTag: "HTML // JS", tonePitch: "G4" },
-    { id: 1, title: "ROOM // HORROR", category: "ARCHIEF 02: GAME DESIGN", indexStr: "02 / 06", services: "RPG Maker\n8-Bit Pixel Art\nNarratieve Gotische Horror", description: ["Een sfeervolle 8-bit gotische horror game ontwikkeld in RPG Maker. Het concept vertrekt vanuit een intieme setting: de levels en maps zijn direct gemodelleerd naar mijn eigen kamer en leefomgeving.", "Door herkenbare alledaagse ruimtes te combineren met gotische spanning, custom sprite-designs en donkere pixel-art ontstaat een beklemmende en persoonlijke spelervaring."], popoverSummary: "Gotische 8-bit horror game gemaakt in RPG Maker met levels gebaseerd op mijn eigen kamer.", engineTag: "RPG Maker", tonePitch: "A4" },
-    { id: 2, title: "LUNORA GARDEN", category: "ARCHIEF 03: 3D WORLD", indexStr: "03 / 06", services: "Unity 3D Engine\nOmgevingsontwerp\nSelf-Care App Concept", description: ["Een kalmerende virtuele Zen Garden ontworpen voor Lunora, een hypothetische self-care en wellness applicatie. Het doel was om de gebruiker onder te dompelen in een rustgevende, dromerige 3D-wereld.", "De tuin heeft een kenmerkend paars kleurenpalet en is opgebouwd met klassieke marmeren standbeelden, zacht kaarslicht, kabbelend water en serene wandelpaden voor ontspanning en mindfulness."], popoverSummary: "Rustgevende paarse 3D Zen Garden in Unity voor de hypothetische self-care app Lunora.", engineTag: "Unity 3D", tonePitch: "B4" },
+    { id: 1, title: "8-BIT HORROR GAME", category: "ARCHIEF 02: GAME DESIGN", indexStr: "02 / 06", services: "RPG Maker\n8-Bit Pixel Art\nNarratieve Gotische Horror", description: ["Een sfeervolle 8-bit gotische horror game ontwikkeld in RPG Maker. Het concept vertrekt vanuit een intieme setting: de levels en maps zijn direct gemodelleerd naar mijn eigen kamer en leefomgeving.", "Door herkenbare alledaagse ruimtes te combineren met gotische spanning, custom sprite-designs en donkere pixel-art ontstaat een beklemmende en persoonlijke spelervaring."], popoverSummary: "Gotische 8-bit horror game gemaakt in RPG Maker met levels gebaseerd op mijn eigen kamer.", engineTag: "RPG Maker", tonePitch: "A4" },
+    { id: 2, title: "LUNORA GARDEN", category: "ARCHIEF 03: GAME DESIGN", indexStr: "03 / 06", services: "Unity 3D Engine\nOmgevingsontwerp\nSelf-Care App Concept", description: ["Een kalmerende virtuele Zen Garden ontworpen voor Lunora, een hypothetische self-care en wellness applicatie. Het doel was om de gebruiker onder te dompelen in een rustgevende, dromerige 3D-wereld.", "De tuin heeft een kenmerkend paars kleurenpalet en is opgebouwd met klassieke marmeren standbeelden, zacht kaarslicht, kabbelend water en serene wandelpaden voor ontspanning en mindfulness."], popoverSummary: "Rustgevende paarse 3D Zen Garden in Unity voor de hypothetische self-care app Lunora.", engineTag: "Unity 3D", tonePitch: "B4" },
     { id: 3, title: "SOUNDDOG BREDA", category: "ARCHIEF 04: WEB & CMS", indexStr: "04 / 06", services: "Web Design & Development\nCMS & SMS Integratie\nGothic Magazine Styling", description: ["Een op maat gemaakt webplatform ontworpen voor live muzieklocatie Sound Dog in Breda. De site heeft een uitgesproken gothic magazine stijl die perfect past bij het rauwe, authentieke karakter van de zaal.", "Het platform beschikt over een eenvoudig beheersysteem (CMS/SMS-achtergrond) waarmee de crew zelf gemakkelijk de concertplanning kan posten, optredens kan wijzigen, foto's kan uploaden en zaalhuur-tarieven kan aanpassen."], popoverSummary: "Gothic magazine stijl website voor Sound Dog Breda inclusief planning en beheerpaneel.", engineTag: "Web // CMS", tonePitch: "E4" },
     { id: 4, title: "SANRIO CHESS", category: "ARCHIEF 05: 3D MODELLING", indexStr: "05 / 06", services: "Blender 3D\nCharacter Design\nProduct Sculpting", description: ["Voor dit 3D-project heb ik een unieke set schaakstukken ontworpen gebaseerd op bekende Sanrio karakters. Zo werd onder andere een Kuromi Knight gemodelleerd en een Cinnamoroll King, waarbij schattige esthetiek gecombineerd werd met strakke 3D geometrie.", "Daarnaast heb ik binnen hetzelfde traject een 3D-model gemaakt van mijn klasgenoot, die een grote passie heeft voor vinyl en LP's. Speciaal voor hem ontwierp ik een custom 3D LP-houder die perfect aansluit bij zijn muzikale identiteit."], popoverSummary: "Kuromi Knight, Cinnamoroll King & een gepersonaliseerde 3D LP-houder gemodelleerd in Blender.", engineTag: "Blender 3D", tonePitch: "C4" },
-    { id: 5, title: "POWERPUFF RPG", category: "ARCHIEF 06: GAME PORTFOLIO", indexStr: "06 / 06", services: "HTML & JavaScript\n2D Game Development\nGamified Portfolio", description: ["Een speelbare portfolio-website vermomd als een retro 2D avonturengame in Powerpuff-stijl. De bezoeker bestuurt mijn gepixelde avatar die zich verplaatst tussen huis, de supermarkt en school.", "Onderweg ontdek je interactieve boeken waarin docenten en beoordelaars mijn officiële leeruitkomsten en projectdocumentatie op een speelse, memorabele manier konden lezen."], popoverSummary: "Gamified portfolio waarin je door een interactieve 2D-wereld loopt en leeruitkomsten leest via boeken.", engineTag: "HTML // JS", tonePitch: "C5" }
+    { id: 5, title: "POWERPUFF RPG", category: "ARCHIEF 06: INTERACTION", indexStr: "06 / 06", services: "HTML & JavaScript\n2D Game Development\nGamified Portfolio", description: ["Een speelbare portfolio-website vermomd als een retro 2D avonturengame in Powerpuff-stijl. De bezoeker bestuurt mijn gepixelde avatar die zich verplaatst tussen huis, de supermarkt en school.", "Onderweg ontdek je interactieve boeken waarin docenten en beoordelaars mijn officiële leeruitkomsten en projectdocumentatie op een speelse, memorabele manier konden lezen."], popoverSummary: "Gamified portfolio waarin je door een interactieve 2D-wereld loopt en leeruitkomsten leest via boeken.", engineTag: "HTML // JS", tonePitch: "C5" }
   ],
   en: [
     { id: 0, title: "MACOS PORTFOLIO", category: "ARCHIVE 01: INTERACTION", indexStr: "01 / 06", services: "HTML & JavaScript\nOperating System UI\nAmbient Audio Design", description: ["Rather than a standard scrolling page, this portfolio is built as a complete macOS desktop experience. Visitors interact directly with desktop folders, finder windows, and app icons as if operating inside a personal computer.", "The project includes an original self-composed soundtrack embedded inside a nostalgic desktop iPod widget, crafting a tactile and atmospheric digital environment."], popoverSummary: "An interactive portfolio structured like a macOS desktop with custom sound and an iPod player.", engineTag: "HTML // JS", tonePitch: "G4" },
-    { id: 1, title: "ROOM // HORROR", category: "ARCHIVE 02: GAME DESIGN", indexStr: "02 / 06", services: "RPG Maker\n8-Bit Pixel Art\nNarrative Gothic Horror", description: ["An atmospheric 8-bit gothic horror game developed in RPG Maker. The environment was directly drafted from my own personal room and familiar everyday spaces to build an intimate sense of unease.", "By juxtaposing comforting surroundings with eerie gothic storytelling, custom pixel character sprites, and dark ambient sound, the game constructs an eerie and personal narrative."], popoverSummary: "Gothic 8-bit horror game developed in RPG Maker with maps designed after my personal room.", engineTag: "RPG Maker", tonePitch: "A4" },
-    { id: 2, title: "LUNORA GARDEN", category: "ARCHIVE 03: 3D WORLD", indexStr: "03 / 06", services: "Unity 3D Engine\nEnvironment Design\nSelf-Care App Concept", description: ["A tranquil virtual Zen Garden created for Lunora, a conceptual self-care and mental wellness app. The environment invites users into an ethereal, calming 3D refuge.", "Bathed in a soothing violet light, the garden features classical statues, flickering candles, quiet water features, and classical architectural elements tailored for relaxation."], popoverSummary: "A calming violet 3D Zen Garden built in Unity for the hypothetical self-care app Lunora.", engineTag: "Unity 3D", tonePitch: "B4" },
+    { id: 1, title: "8-BIT HORROR GAME", category: "ARCHIVE 02: GAME DESIGN", indexStr: "02 / 06", services: "RPG Maker\n8-Bit Pixel Art\nNarrative Gothic Horror", description: ["An atmospheric 8-bit gothic horror game developed in RPG Maker. The environment was directly drafted from my own personal room and familiar everyday spaces to build an intimate sense of unease.", "By juxtaposing comforting surroundings with eerie gothic storytelling, custom pixel character sprites, and dark ambient sound, the game constructs an eerie and personal narrative."], popoverSummary: "Gothic 8-bit horror game developed in RPG Maker with maps designed after my personal room.", engineTag: "RPG Maker", tonePitch: "A4" },
+    { id: 2, title: "LUNORA GARDEN", category: "ARCHIVE 03: GAME DESIGN", indexStr: "03 / 06", services: "Unity 3D Engine\nEnvironment Design\nSelf-Care App Concept", description: ["A tranquil virtual Zen Garden created for Lunora, a conceptual self-care and mental wellness app. The environment invites users into an ethereal, calming 3D refuge.", "Bathed in a soothing violet light, the garden features classical statues, flickering candles, quiet water features, and classical architectural elements tailored for relaxation."], popoverSummary: "A calming violet 3D Zen Garden built in Unity for the hypothetical self-care app Lunora.", engineTag: "Unity 3D", tonePitch: "B4" },
     { id: 3, title: "SOUNDDOG BREDA", category: "ARCHIVE 04: WEB & CMS", indexStr: "04 / 06", services: "Web Design & Development\nCMS & Admin Architecture\nGothic Magazine Styling", description: ["A tailored web platform developed for live music venue Sound Dog in Breda. The visual identity embraces a gothic magazine editorial look that reflects the underground, authentic energy of the venue.", "The site includes a clean content management background allowing the crew to effortlessly post concert schedules, update show listings, upload live photographs, and modify rehearsal studio booking rates."], popoverSummary: "Gothic magazine style website for Sound Dog Breda with concert scheduling and admin CMS.", engineTag: "Web // CMS", tonePitch: "E4" },
     { id: 4, title: "SANRIO CHESS", category: "ARCHIVE 05: 3D MODELLING", indexStr: "05 / 06", services: "Blender 3D\nCharacter Design\nProduct Sculpting", description: ["For this 3D sculpting assignment, I designed a bespoke chess set utilizing iconic Sanrio characters. The project featured custom sculpts including a Kuromi Knight and a Cinnamoroll King, harmonizing cute aesthetics with clean 3D geometry.", "Additionally, I created a full 3D sculpt of my classmate who is deeply passionate about vinyl records. As a personalized piece, I designed and modeled a custom vinyl LP stand tailored to his style."], popoverSummary: "Kuromi Knight, Cinnamoroll King & a personalized 3D LP record stand created in Blender.", engineTag: "Blender 3D", tonePitch: "C4" },
-    { id: 5, title: "POWERPUFF RPG", category: "ARCHIVE 06: GAME PORTFOLIO", indexStr: "06 / 06", services: "HTML & JavaScript\n2D Game Development\nGamified Portfolio", description: ["A gamified portfolio experience styled like a nostalgic 2D Powerpuff adventure. Players control my pixel avatar roaming through town between school, groceries, and home.", "Scattered across the map are interactive books where teachers and reviewers can examine my semester learning outcomes and design processes directly inside the game."], popoverSummary: "A playable 2D game portfolio where professors explore my learning outcomes through interactive books.", engineTag: "HTML // JS", tonePitch: "C5" }
+    { id: 5, title: "POWERPUFF RPG", category: "ARCHIVE 06: INTERACTION", indexStr: "06 / 06", services: "HTML & JavaScript\n2D Game Development\nGamified Portfolio", description: ["A gamified portfolio experience styled like a nostalgic 2D Powerpuff adventure. Players control my pixel avatar roaming through town between school, groceries, and home.", "Scattered across the map are interactive books where teachers and reviewers can examine my semester learning outcomes and design processes directly inside the game."], popoverSummary: "A playable 2D game portfolio where professors explore my learning outcomes through interactive books.", engineTag: "HTML // JS", tonePitch: "C5" }
   ]
 };
 
@@ -423,13 +424,10 @@ export default function ArchivePage() {
       {/* Mouse-following definition popover */}
       <div ref={popoverRef} id="cursorPopover" className={activeCursorItem ? 'active' : ''}>
         {activeCursorItem && activeCursorItem.item && (
+          /* kort, zoals het wolkje op de landing: alleen de naam en wat een klik doet */
           <div>
-            <strong className="block text-sm font-bold text-neutral-900 mb-1 uppercase tracking-wide font-sans-clean">{activeCursorItem.item.title}</strong>
-            <p className="text-xs text-neutral-600 leading-relaxed font-sans-clean">{activeCursorItem.item.popoverSummary}</p>
-            <div className="mt-2.5 pt-2 border-t border-black/10 flex items-center justify-between font-sans-clean">
-              <span className="text-[10px] font-bold tracking-wider text-black uppercase underline underline-offset-2">{lang === 'nl' ? 'Klik om te openen ↗' : 'Click to open ↗'}</span>
-              <span className="text-[10px] text-neutral-500 font-medium">{activeCursorItem.item.engineTag}</span>
-            </div>
+            <div className="font-sans-clean text-[13px] font-semibold leading-tight text-black">{activeCursorItem.item.title}</div>
+            <div className="font-sans-clean mt-1 text-xs leading-snug text-neutral-500">{lang === 'nl' ? 'Klik om het project te openen' : 'Click to open project'}</div>
           </div>
         )}
       </div>
@@ -494,7 +492,7 @@ export default function ArchivePage() {
       {/* Project modal */}
       {activeModalIdx !== null && currentProject && (
         <div key={activeModalIdx} className="calm-haze-entry w-full max-w-[1500px] mx-auto">
-          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md py-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
+          <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md py-3 md:py-4 border-b border-neutral-100 flex items-center justify-between font-editorial-nav text-[12px] sm:text-xs uppercase font-medium select-none">
             <button onClick={closeProject} className="flex items-center gap-2 tracking-[0.2em] font-semibold text-black hover:opacity-60 transition cursor-pointer">
               <span className="text-sm">✕</span> <span>{lang === 'nl' ? 'SLUITEN' : 'CLOSE'}</span>
             </button>
