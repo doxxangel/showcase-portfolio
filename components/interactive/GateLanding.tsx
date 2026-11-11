@@ -137,7 +137,7 @@ export default function GateLanding() {
     "aspect-[813/1338] h-full shrink-0 origin-[var(--o)] transition-transform duration-[1600ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none [backface-visibility:hidden]";
 
   return (
-    <div className="flex min-h-dvh flex-col bg-white px-5 pt-6 text-black selection:bg-black selection:text-white sm:px-8 md:px-14 md:pt-8 lg:px-16">
+    <div className="flex min-h-dvh flex-col bg-white px-5 pt-8 text-black selection:bg-black selection:text-white sm:px-8 md:px-14 md:pt-10 lg:px-16">
       {/* alleen taal + geluid */}
       <div className="mr-auto w-full max-w-[1600px]">
         <SiteHeader minimal />

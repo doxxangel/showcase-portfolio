@@ -41,7 +41,8 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
   if (minimal) {
     return (
       <header className="relative z-[60] mb-2 w-full select-none md:mb-4">
-        <div className="flex items-center justify-end gap-3 font-editorial-nav text-[12px] font-semibold uppercase tracking-[0.16em] md:text-xs">
+        {/* zelfde hoogte (h-9) en tussenruimte als de gewone navbar, zodat NL/ENG en geluid op exact dezelfde plek staan */}
+        <div className="flex h-9 items-center justify-end gap-2 font-editorial-nav text-[12px] font-semibold uppercase tracking-[0.16em] md:gap-4 md:text-xs">
           <div className="flex items-center">
             <button
               type="button"
@@ -124,7 +125,7 @@ export default function SiteHeader({ onToggleAudio = undefined, minimal = false,
               onClick={toggleSound}
               title="Toggle ambient audio"
               aria-label="Toggle ambient audio"
-              className="hidden h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-neutral-700 bg-neutral-900/80 text-white shadow-sm backdrop-blur-md transition-all duration-200 hover:bg-neutral-900 active:scale-90 md:flex"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-neutral-700 bg-neutral-900/80 text-white shadow-sm backdrop-blur-md transition-all duration-200 hover:bg-neutral-900 active:scale-90"
             >
               <SoundIcon className="h-3.5 w-3.5" />
             </button>
