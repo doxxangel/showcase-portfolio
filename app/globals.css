@@ -20,6 +20,8 @@
    Lettertypes wisselen? Pas alleen --font-display en --font-text hieronder aan.
    ========================================================================== */
 :root {
+  /* 'stop-motion' gevoel voor het archief-raster: 9 stappen in ~0.75s = ~12 fps */
+  --step: steps(14, end);
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -239,7 +241,7 @@ body {
     width: var(--line-thickness);
     height: 100%;
     background-color: var(--line-color);
-    z-index: 50;
+    z-index: 1; /* lijnen onder foto's en tekst */
     pointer-events: none;
   }
 
@@ -251,11 +253,11 @@ body {
     width: 100%;
     height: var(--line-thickness);
     background-color: var(--line-color);
-    z-index: 50;
+    z-index: 1; /* lijnen onder foto's en tekst */
     pointer-events: none;
   }
 
-  /* buitenrand als laag bovenop, zodat foto's die over de rand hangen er altijd achter zitten */
+  /* buitenrand als aparte laag; ligt onder foto's en tekst (feedback docent: beeld en tekst bovenop de lijnen) */
   /* z-index 0 = eigen laag: lijnen en foto's van het raster komen nooit boven het menu uit */
   .editorial-grid { position: relative; z-index: 0; --grid-h: clamp(860px, 112dvh, 1080px); }
   .editorial-grid::after {
@@ -263,15 +265,15 @@ body {
     position: absolute;
     inset: calc(var(--line-thickness) * -1);
     border: var(--line-thickness) solid var(--line-color);
-    z-index: 50;
+    z-index: 1; /* lijnen onder foto's en tekst */
     pointer-events: none;
   }
 
   .editorial-grid {
     grid-template-columns: var(--col-1) var(--col-2);
     grid-template-rows: var(--row-1) var(--row-2) var(--row-3);
-    transition: grid-template-columns 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                grid-template-rows 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: grid-template-columns 0.75s var(--step),
+                grid-template-rows 0.75s var(--step);
   }
 
   .editorial-grid.hover-c0-r0 {
@@ -603,8 +605,8 @@ html.lenis, html.lenis body {
   letter-spacing: 0.18em; text-transform: uppercase;
 }
 .cell-tool { text-decoration: underline; text-underline-offset: 4px; color: #000; white-space: nowrap; }
-.cell-cat { color: #000; }
-.cell-desc { color: #737373; }
+.cell-cat { color: #000; font-weight: 400; }   /* niet vet: meer contrast met de titel */
+.cell-desc { color: #737373; font-weight: 400; }
 .cell-title {
   font-family: var(--font-display); font-weight: 300; letter-spacing: 0.04em;
   font-size: clamp(1.9rem, 9vw, 3.25rem); line-height: 0.95; text-transform: uppercase;
@@ -639,7 +641,7 @@ html.lenis, html.lenis body {
 
   .cell-body {
     position: relative; z-index: 35; gap: 0.75rem; width: var(--bw, 64%);
-    transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1), margin 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    transition: width 0.75s var(--step), margin 0.75s var(--step), opacity 0.4s steps(5, end);
   }
   .cell[data-align="right"] .cell-body { margin-left: auto; text-align: right; }
   .cell[data-align="right"] .cell-row { flex-direction: row-reverse; }
@@ -647,7 +649,7 @@ html.lenis, html.lenis body {
 
   .cell-title {
     font-size: calc(clamp(1.4rem, 2.6vw, 3.4rem) * var(--ts, 1));
-    transition: font-size 0.5s ease;
+    transition: font-size 0.5s steps(6, end);
   }
   .cell[data-align="left"] .cell-title { padding-left: var(--indent, 0); }
   .cell[data-align="right"] .cell-title { padding-right: var(--indent, 0); }
@@ -657,7 +659,7 @@ html.lenis, html.lenis body {
 
   /* titels breken alleen tussen woorden af, nooit midden in een woord */
   .cell-title { overflow-wrap: normal; hyphens: none; }
-  .cell-index { white-space: nowrap; transition: font-size 0.5s ease; }
+  .cell-index { white-space: nowrap; transition: font-size 0.5s steps(6, end); }
 
   /* groot nummer als grafisch element */
   .cell[data-index="big"] .cell-index { font-size: clamp(2.75rem, 4.4vw, 4.75rem); line-height: 0.8; }
@@ -670,9 +672,9 @@ html.lenis, html.lenis body {
     left: var(--px); top: var(--py); translate: var(--tx, -100%) var(--ty, -50%); rotate: var(--rot, 0deg);
     height: calc(var(--grid-h) * var(--rf, 1) / 3.2 * var(--ph-n, 0.78)); width: auto; aspect-ratio: var(--ar, 3 / 4);
     pointer-events: none;
-    transition: left 0.75s cubic-bezier(0.16, 1, 0.3, 1), top 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-      translate 0.75s cubic-bezier(0.16, 1, 0.3, 1), rotate 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-      scale 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+    transition: left 0.75s var(--step), top 0.75s var(--step),
+      translate 0.75s var(--step), rotate 0.75s var(--step),
+      scale 0.75s var(--step), opacity 0.5s steps(6, end);
     will-change: left, top, translate, opacity;
   }
   .cell[data-side="right"]:hover .cell-photo,

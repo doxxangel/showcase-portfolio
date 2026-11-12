@@ -13,6 +13,9 @@ const NAV = [
 
 type GateState = "closed" | "peek" | "open";
 
+const LAYERS = 6; // aantal lagen per deur
+const DEPTH = 1.6; // px tussen de lagen
+
 export default function GateLanding() {
   const { playHover } = useSite();
   const [gate, setGate] = useState<GateState>("closed");
@@ -131,10 +134,29 @@ export default function GateLanding() {
     };
   }, []);
 
-  const angle = gate === "open" ? (desktop ? 68 : 78) : gate === "peek" ? 7 : 0;
+  /* muis-kanteling (-1..1), alleen met een echte muis */
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const onMove = (e: PointerEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() =>
+        setTilt({ x: e.clientX / window.innerWidth - 0.5, y: e.clientY / window.innerHeight - 0.5 })
+      );
+    };
+    window.addEventListener("pointermove", onMove);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+
+  const angle = gate === "open" ? (desktop ? 84 : 84) : gate === "peek" ? 7 : 0;
 
   const swing =
-    "aspect-[813/1338] h-full shrink-0 origin-[var(--o)] transition-transform duration-[1600ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none [backface-visibility:hidden]";
+    "aspect-[813/1338] h-full shrink-0 origin-[var(--o)] transition-transform duration-[1600ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none relative [transform-style:preserve-3d]";
 
   return (
     <div className="flex min-h-dvh flex-col bg-white px-5 pt-8 text-black selection:bg-black selection:text-white sm:px-8 md:px-14 md:pt-10 lg:px-16">
@@ -157,7 +179,7 @@ export default function GateLanding() {
             }`}
           >
             <h1
-              className={`font-serif-luxury weight-thin relative z-30 text-[clamp(2.2rem,min(7.5vw,10vh),6.2rem)] uppercase leading-[0.95] tracking-tight !text-black transition-opacity duration-1000 ${
+              className={`font-serif-luxury weight-thin relative z-30 text-[clamp(2.2rem,min(6.2vw,8.5vh),5.2rem)] uppercase leading-[0.95] tracking-tight !text-black transition-opacity duration-1000 ${
                 gate === "open" ? "opacity-100 delay-500" : "opacity-0"
               }`}
             >
@@ -166,25 +188,22 @@ export default function GateLanding() {
               Studios
             </h1>
 
-            {/* zelfde dikke streepjes als de header */}
+            {/* klein en zonder streepjes: meer contrast met de grote titel */}
             <nav
               aria-label="Hoofdnavigatie"
-              className={`relative z-30 flex items-center gap-3 !text-black transition-opacity duration-1000 sm:gap-5 ${
+              className={`relative z-30 flex items-center gap-7 !text-black transition-opacity duration-1000 sm:gap-10 ${
                 gate === "open" ? "opacity-100 delay-700" : "opacity-0"
               }`}
             >
-              <span className="nav-pipe" />
               {NAV.map((n) => (
-                <span key={n.href} className="flex items-center gap-3 sm:gap-5">
-                  <Link
-                    href={n.href}
-                    tabIndex={gate === "open" ? 0 : -1}
-                    className="type-heading underline-offset-8 hover:underline focus-visible:underline !text-black"
-                  >
-                    {n.label}
-                  </Link>
-                  <span className="nav-pipe" />
-                </span>
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  tabIndex={gate === "open" ? 0 : -1}
+                  className="type-label underline-offset-[6px] hover:underline focus-visible:underline !text-black"
+                >
+                  {n.label}
+                </Link>
               ))}
             </nav>
           </div>
@@ -192,19 +211,44 @@ export default function GateLanding() {
 
         {/* de poort */}
         <div
-          className={`relative z-20 flex h-[min(calc((100dvh-8rem)*0.88),72vw)] items-stretch justify-center gap-[1.4vh] [perspective:1800px] ${
-            gate === "open" ? "pointer-events-none" : ""
+          className={`relative flex h-[min(calc((100dvh-8rem)*0.88),72vw)] items-stretch justify-center [perspective:1400px] ${
+            gate === "open" ? "pointer-events-none z-0" : "z-20" /* open: titel ligt vóór de deuren */
           }`}
           aria-hidden={gate === "open"}
         >
-          {/* eslint-disable @next/next/no-img-element */}
-          <div className={swing} style={{ ["--o" as string]: "left", transform: `rotateY(${-angle}deg)` }}>
-            <img src="/images/gate-left.png" alt="" width={813} height={1338} decoding="sync" draggable={false} className="block h-full w-full select-none" />
+          {/* echte 3D: elke deur is een stapel lagen (dikte van het smeedijzer),
+              en de hele poort kantelt een beetje mee met de muis */}
+          <div
+            className="flex h-full items-stretch justify-center gap-[1.4vh] transition-transform duration-[900ms] ease-out [transform-style:preserve-3d] motion-reduce:transition-none"
+            style={{ transform: `rotateX(${tilt.y * -5}deg) rotateY(${tilt.x * 9}deg)` }}
+          >
+            {(["left", "right"] as const).map((side) => (
+              <div
+                key={side}
+                className={swing}
+                style={{ ["--o" as string]: side, transform: `rotateY(${side === "left" ? angle : -angle}deg)` }}
+              >
+                {Array.from({ length: LAYERS }, (_, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={`/images/gate-${side}.png`}
+                    alt=""
+                    width={813}
+                    height={1338}
+                    decoding="sync"
+                    draggable={false}
+                    className="absolute inset-0 block h-full w-full select-none"
+                    style={{
+                      transform: `translateZ(${(i - (LAYERS - 1) / 2) * DEPTH}px)`,
+                      // achterste lagen iets lichter grijs, zodat je de dikte ziet
+                      opacity: i === LAYERS - 1 ? 1 : 0.55 + (0.35 * i) / (LAYERS - 1),
+                    }}
+                  />
+                ))}
+              </div>
+            ))}
           </div>
-          <div className={swing} style={{ ["--o" as string]: "right", transform: `rotateY(${angle}deg)` }}>
-            <img src="/images/gate-right.png" alt="" width={813} height={1338} decoding="sync" draggable={false} className="block h-full w-full select-none" />
-          </div>
-          {/* eslint-enable @next/next/no-img-element */}
 
           <button
             type="button"
@@ -228,6 +272,11 @@ export default function GateLanding() {
           <div className="type-small mt-1 text-neutral-500">Click to open the gates</div>
         </div>
       </main>
+
+      {/* wat ik doe: altijd zichtbaar, ook als de poort nog dicht is (zelfde stijl als de links) */}
+      <p className="type-label pb-6 pt-2 text-center !text-neutral-500 md:pb-8">
+        Front-end developer &amp; UI/UX designer
+      </p>
 
     </div>
   );

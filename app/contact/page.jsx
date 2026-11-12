@@ -11,9 +11,10 @@ const availabilityConfig = { openDays: [1, 2, 3, 4, 5], startHour: 9, endHour: 1
 
 const translations = {
   nl: {
-    lblStatus: "Status", valStatusOpen: "Momenteel Beschikbaar", valStatusClosed: "Niet Beschikbaar",
-    lblTimezone: "Tijdzone", lblResponse: "Reactietijd", valResponse: "Binnen 48-72 uur",
-    lblDirectMail: "Direct Mail", popDirectTitle: "Directe Post", popDirectDesc: "Opent je mailclient om direct een bericht te sturen.",
+    lblStatus: "Momenteel", valStatusOpen: "De steen de berg op aan het duwen", valStatusClosed: "Offline", valStatusNight: "Slapen",
+    lblTimezone: "Mijn klok", lblResponse: "Reactietijd", valResponse: "Best snel",
+    photoCaption: "Nog steeds zo blij met elke mail.",
+    lblDirectMail: "Liever direct mailen?", popDirectTitle: "Directe Post", popDirectDesc: "Opent je mailclient om direct een bericht te sturen.",
     formTitle: "Stuur een bericht", labelName: "Je Naam *", placeholderName: "Bijv. Jeanne d'Arc",
     labelEmail: "E-mailadres *", placeholderEmail: "Jeanne@domein.nl", labelSubject: "Onderwerp / Doel",
     subjectOptions: [
@@ -30,9 +31,10 @@ const translations = {
     errorMsg: "Er ging iets mis bij het verzenden. Controleer je invoer of probeer het later opnieuw."
   },
   en: {
-    lblStatus: "Status", valStatusOpen: "Currently Available", valStatusClosed: "Currently Unavailable",
-    lblTimezone: "Timezone", lblResponse: "Response Time", valResponse: "Within 48-72 hours",
-    lblDirectMail: "Direct Mail", popDirectTitle: "Direct Dispatch", popDirectDesc: "Opens your preferred email client to write directly.",
+    lblStatus: "Right now", valStatusOpen: "Pushing the boulder uphill", valStatusClosed: "Offline", valStatusNight: "Asleep",
+    lblTimezone: "My clock", lblResponse: "Reply time", valResponse: "Pretty quick",
+    photoCaption: "Still this happy with every email.",
+    lblDirectMail: "Rather email directly?", popDirectTitle: "Direct Dispatch", popDirectDesc: "Opens your preferred email client to write directly.",
     formTitle: "Send a message", labelName: "Your Name *", placeholderName: "E.g. Jane Doe",
     labelEmail: "Email Address *", placeholderEmail: "jane@domain.com", labelSubject: "Subject / Purpose",
     subjectOptions: [
@@ -52,8 +54,8 @@ const translations = {
 
 export default function ContactPage() {
   const { lang, audioActive, toggleAudio, playHover } = useSite();
-  const [clock, setClock] = useState('--:--:-- CEST');
-  const [isOpenNow, setIsOpenNow] = useState(true);
+  const [clock, setClock] = useState('--:--:--');
+  const [mood, setMood] = useState('open'); // 'open' | 'off' | 'night'
   const [openPopoverId, setOpenPopoverId] = useState(null);
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
@@ -65,10 +67,14 @@ export default function ContactPage() {
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
-      setClock(now.toLocaleTimeString('nl-NL', { timeZone: availabilityConfig.timeZone }) + ' CEST');
-      const day = now.getDay();
-      const hour = now.getHours();
-      setIsOpenNow(availabilityConfig.openDays.includes(day) && hour >= availabilityConfig.startHour && hour < availabilityConfig.endHour);
+      setClock(now.toLocaleTimeString('nl-NL', { timeZone: availabilityConfig.timeZone }));
+      // dag en uur in Amsterdam, niet in de tijdzone van de bezoeker
+      const ams = new Date(now.toLocaleString('en-US', { timeZone: availabilityConfig.timeZone }));
+      const day = ams.getDay();
+      const hour = ams.getHours();
+      if (hour >= 23 || hour < 7) setMood('night');
+      else if (availabilityConfig.openDays.includes(day) && hour >= availabilityConfig.startHour && hour < availabilityConfig.endHour) setMood('open');
+      else setMood('off');
     };
     updateClock();
     const interval = setInterval(updateClock, 1000);
@@ -152,25 +158,26 @@ export default function ContactPage() {
                   className="w-full h-full object-cover contrast-110 brightness-95 block hover:scale-105 transition-transform duration-700 ease-out"
                 />
               </div>
+              <p className="type-small italic text-neutral-500 -mt-5">{dict.photoCaption}</p>
 
               <div className="border-t border-neutral-200 pt-6 space-y-4">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="type-label text-neutral-500">{dict.lblStatus}</span>
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-6 text-sm">
+                  <span className="type-label text-neutral-500 shrink-0">{dict.lblStatus}</span>
+                  <div className="flex items-center gap-2 text-right">
                     <span className="relative flex h-2.5 w-2.5">
-                      {isOpenNow && <span className="status-pulse absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
-                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isOpenNow ? 'bg-emerald-600' : 'bg-neutral-400'}`}></span>
+                      {mood === 'open' && <span className="status-pulse absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
+                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${mood === 'open' ? 'bg-emerald-600' : 'bg-neutral-400'}`}></span>
                     </span>
-                    <span className="type-small text-neutral-900">{isOpenNow ? dict.valStatusOpen : dict.valStatusClosed}</span>
+                    <span className="type-small text-neutral-900">{mood === 'open' ? dict.valStatusOpen : mood === 'night' ? dict.valStatusNight : dict.valStatusClosed}</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="type-label text-neutral-500">{dict.lblTimezone}</span>
-                  <span className="type-small tabular-nums text-neutral-800">{clock}</span>
+                <div className="flex items-center justify-between gap-6 text-sm">
+                  <span className="type-label text-neutral-500 shrink-0">{dict.lblTimezone}</span>
+                  <span className="type-small text-right text-neutral-800"><span className="tabular-nums">{clock}</span></span>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="type-label text-neutral-500">{dict.lblResponse}</span>
-                  <span className="type-small text-neutral-800">{dict.valResponse}</span>
+                <div className="flex items-center justify-between gap-6 text-sm">
+                  <span className="type-label text-neutral-500 shrink-0">{dict.lblResponse}</span>
+                  <span className="type-small text-right text-neutral-800">{dict.valResponse}</span>
                 </div>
               </div>
 

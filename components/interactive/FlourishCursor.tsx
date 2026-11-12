@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 const WIDTH = 28;
 const HEIGHT = 33;
 const HOT_SCALE = 1.35;
+const LERP = 0.14;
 
 export default function FlourishCursor() {
   const el = useRef<HTMLImageElement>(null);
@@ -37,8 +38,9 @@ export default function FlourishCursor() {
     const onEnter = () => m.seen && el.current && (el.current.style.opacity = "1");
 
     const tick = () => {
-      m.px += (m.x - m.px) * 0.4;
-      m.py += (m.y - m.py) * 0.4;
+      // lerp: de fleur-de-lis zweeft zichtbaar achter de muis aan (lager = meer vertraging)
+      m.px += (m.x - m.px) * LERP;
+      m.py += (m.y - m.py) * LERP;
       m.scale += ((m.hot ? HOT_SCALE : 1) - m.scale) * 0.2;
       if (el.current)
         el.current.style.transform = `translate3d(${m.px}px,${m.py}px,0) translate(-50%,-50%) scale(${m.scale})`;
