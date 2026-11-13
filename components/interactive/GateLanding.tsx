@@ -200,7 +200,7 @@ export default function GateLanding() {
                   key={n.href}
                   href={n.href}
                   tabIndex={gate === "open" ? 0 : -1}
-                  className="type-label underline-offset-[6px] hover:underline focus-visible:underline !text-black"
+                  className="type-label -mx-4 -my-4 px-4 py-4 underline-offset-[6px] hover:underline focus-visible:underline !text-black" /* grote klikzone, zelfde plek */
                 >
                   {n.label}
                 </Link>

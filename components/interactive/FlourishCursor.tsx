@@ -10,7 +10,10 @@ import { useEffect, useRef } from "react";
 const WIDTH = 28;
 const HEIGHT = 33;
 const HOT_SCALE = 1.35;
-const LERP = 0.14;
+// de gewone muis blijft zichtbaar; de fleur-de-lis zweeft er rechtsonder achteraan
+const OFFSET_X = 12;
+const OFFSET_Y = 14;
+const LERP = 0.1; // per 1/60 s, dus even traag op een 60 Hz- als op een 120 Hz-scherm
 
 export default function FlourishCursor() {
   const el = useRef<HTMLImageElement>(null);
@@ -22,6 +25,7 @@ export default function FlourishCursor() {
 
     const m = { x: -200, y: -200, px: -200, py: -200, scale: 1, hot: false, seen: false };
     let raf = 0;
+    let last = performance.now();
 
     const onMove = (e: PointerEvent) => {
       m.x = e.clientX;
@@ -37,13 +41,17 @@ export default function FlourishCursor() {
     const onLeave = () => el.current && (el.current.style.opacity = "0");
     const onEnter = () => m.seen && el.current && (el.current.style.opacity = "1");
 
-    const tick = () => {
+    const tick = (now: number) => {
       // lerp: de fleur-de-lis zweeft zichtbaar achter de muis aan (lager = meer vertraging)
-      m.px += (m.x - m.px) * LERP;
-      m.py += (m.y - m.py) * LERP;
-      m.scale += ((m.hot ? HOT_SCALE : 1) - m.scale) * 0.2;
+      // omgerekend naar de echte tijd tussen frames, anders is hij op een 120 Hz-scherm twee keer zo snel
+      const frames = Math.min((now - last) / (1000 / 60), 4);
+      last = now;
+      const k = 1 - Math.pow(1 - LERP, frames);
+      m.px += (m.x - m.px) * k;
+      m.py += (m.y - m.py) * k;
+      m.scale += ((m.hot ? HOT_SCALE : 1) - m.scale) * (1 - Math.pow(0.8, frames));
       if (el.current)
-        el.current.style.transform = `translate3d(${m.px}px,${m.py}px,0) translate(-50%,-50%) scale(${m.scale})`;
+        el.current.style.transform = `translate3d(${m.px}px,${m.py}px,0) translate(${OFFSET_X}px,${OFFSET_Y}px) scale(${m.scale})`;
       raf = requestAnimationFrame(tick);
     };
 
@@ -71,8 +79,6 @@ export default function FlourishCursor() {
 
   return (
     <>
-      <style>{`html.flourish-cursor, html.flourish-cursor * { cursor: none !important; }
-html.flourish-cursor input, html.flourish-cursor textarea { cursor: text !important; }`}</style>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={el}
